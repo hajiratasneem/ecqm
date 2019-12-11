@@ -4,8 +4,7 @@ using FHIR version '4.0.0'
 
 include FHIRHelpers version '4.0.0' called FHIRHelpers
 
-include MATGlobalCommonFunctions version '4.0.000' called Global
-include Hospice version '2.0.000' called Hospice
+include MATGlobalCommonFunctions_FHIR4 version '4.0.000' called Global
 
 codesystem "LOINC": 'urn:oid:2.16.840.1.113883.6.1'
 codesystem "SNOMEDCT": 'http://snomed.info/sct'
@@ -69,7 +68,7 @@ define "Height in Measurement Period":
 			and Height.value is not null
 
 define "Denominator Exclusions":
-	Hospice.Has Hospice
+	"Has Hospice"
 		or exists ( "Pregnancy Diagnosis Which Overlaps Measurement Period" )
 
 define "Numerator 2":
@@ -85,7 +84,26 @@ define "BMI Percentile in Measurement Period":
 		where (BMIPercentile.effective as Period) during "Measurement Period"
 			and BMIPercentile.value is not null
 
+define "Numerator":
+	"Numerator 1" and "Numerator 2" and "Numerator 3"
+	
 define "Initial Population":
 	AgeInYearsAt(start of "Measurement Period") >= 3 and AgeInYearsAt(start of "Measurement Period") < 17
 
+define "Has Hospice":
 
+            exists ( [Encounter: "Encounter Inpatient"] DischargeHospice
+            		where (DischargeHospice.status='in-progress' or DischargeHospice.status='finished')
+            		    and (
+			        FHIRHelpers.ToConcept(DischargeHospice.hospitalization.dischargeDisposition).codes[0] ~ "Discharge to home for hospice care (procedure)"
+					    or FHIRHelpers.ToConcept(DischargeHospice.hospitalization.dischargeDisposition).codes[0] ~ "Discharge to healthcare facility for hospice care (procedure)"
+			    )
+            			and DischargeHospice.period ends during "Measurement Period"
+                )
+            	or exists ( [ServiceRequest: "Hospice care ambulatory"] HospiceOrder
+            			where HospiceOrder.intent= 'order'
+				and FHIRHelpers.ToDateTime(HospiceOrder.authoredOn) during "Measurement Period"
+            	)
+            	or exists ( [Procedure: "Hospice care ambulatory"] HospicePerformed
+            			where (HospicePerformed.performed as Period) overlaps "Measurement Period"
+            	)

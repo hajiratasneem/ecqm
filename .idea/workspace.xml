@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5dbc261d-3ff9-4e9c-97b5-866167254321" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CMS133v8.cql" afterPath="$PROJECT_DIR$/CMS133v8.cql" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CMS159v8.cql" afterPath="$PROJECT_DIR$/CMS159v8.cql" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CMS161v8.cql" afterPath="$PROJECT_DIR$/CMS161v8.cql" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CMS177v8.cql" afterPath="$PROJECT_DIR$/CMS177v8.cql" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CMS22v8.cql" afterPath="$PROJECT_DIR$/CMS22v8.cql" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CMS50v8.cql" afterPath="$PROJECT_DIR$/CMS50v8.cql" />
-    </list>
+    <list default="true" id="5dbc261d-3ff9-4e9c-97b5-866167254321" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -285,7 +277,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="67" y="27" width="1299" height="741" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
