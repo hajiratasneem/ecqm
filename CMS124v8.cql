@@ -91,7 +91,7 @@ define "Pap Test Within 5 Years":
 define "Initial Population":
 	AgeInYearsAt(start of "Measurement Period")>= 23
 		and AgeInYearsAt(start of "Measurement Period")<= 64
-		and Patient.gender in "Female"
+		and Patient.gender.value='female'
 		and exists "Qualifying Encounters"
 
 define "Has Hospice":

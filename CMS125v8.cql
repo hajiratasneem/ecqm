@@ -96,7 +96,7 @@ define "Right Mastectomy Diagnosis":
 		where Interval[FHIRHelpers.ToDateTime(RightMastectomy.onset),FHIRHelpers.ToDateTime(RightMastectomy.abatement)] starts before end of "Measurement Period"
 
 define "Initial Population":
-	(Patient.gender = 'female' )
+	Patient.gender.value='female'
 		and AgeInYearsAt(start of "Measurement Period")in Interval[51, 74 )
 		and exists("Qualifying Encounters")
 

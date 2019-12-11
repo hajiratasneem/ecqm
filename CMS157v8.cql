@@ -60,8 +60,15 @@ define "Numerator 1":
 					and FHIRHelpers.ToDateTime(PainAssessed.issued) during FaceToFaceEncounterWithChemo.period
 				and PainAssessed.value is not null
 
+define "Numerator": exists"Numerator 1" and exists"Numerator 2"
+
+define "Denominator": exists"Denominator 1" and exists"Denominator 2"
+
 define "Initial Population 1":
 	"Face to Face Encounter with Ongoing Chemotherapy"
+
+define "Initial Population":
+	exists("Initial Population 1") and exists("Initial Population 2")
 
 define "Face to Face Encounter with Ongoing Chemotherapy":
 	from
