@@ -3,8 +3,8 @@ library ChildhoodImmunizationStatus version '8.3.000'
 using FHIR version '4.0.0'
 
 include FHIRHelpers version '4.0.0' called FHIRHelpers
+include Hospice_FHIR4 version '1.0.000' called Hospice
 //include MATGlobalCommonFunctions version '4.0.000' called Global
-//include Hospice version '2.0.000' called Hospice
 
 codesystem "SNOMEDCT": 'urn:oid:2.16.840.1.113883.6.96'
 codesystem "LOINC": 'urn:oid:2.16.840.1.113883.6.1'
@@ -114,7 +114,7 @@ define "Four DTaP Vaccinations":
 		return DTaPVaccination1
 
 define "Denominator Exclusions":
-	"Has Hospice"
+	Hospice."Has Hospice"
 
 define "Four Pneumococcal Conjugate Vaccinations":
 	from
@@ -481,20 +481,3 @@ define "All Hib Vaccinations":
 			such that AllHiBDoses1.recorded  more than 1 day before AllHiBDoses2.recorded 
 				or AllHiBDoses1.recorded  more than 1 day after AllHiBDoses2.recorded 
 				
-define "Has Hospice":
-
-            exists ( [Encounter: "Encounter Inpatient"] DischargeHospice
-            		where (DischargeHospice.status='in-progress' or DischargeHospice.status='finished')
-            		    and (
-			        FHIRHelpers.ToConcept(DischargeHospice.hospitalization.dischargeDisposition).codes[0] ~ "Discharge to home for hospice care (procedure)"
-					    or FHIRHelpers.ToConcept(DischargeHospice.hospitalization.dischargeDisposition).codes[0] ~ "Discharge to healthcare facility for hospice care (procedure)"
-			    )
-            			and DischargeHospice.period ends during "Measurement Period"
-                )
-            	or exists ( [ServiceRequest: "Hospice care ambulatory"] HospiceOrder
-            			where HospiceOrder.intent= 'order'
-				and FHIRHelpers.ToDateTime(HospiceOrder.authoredOn) during "Measurement Period"
-            	)
-            	or exists ( [Procedure: "Hospice care ambulatory"] HospicePerformed
-            			where (HospicePerformed.performed as Period) overlaps "Measurement Period"
-            	)

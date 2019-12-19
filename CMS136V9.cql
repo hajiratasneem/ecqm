@@ -4,7 +4,7 @@ using FHIR version '4.0.0'
 
 include FHIRHelpers version '4.0.0' called FHIRHelpers
 
-
+include Hospice_FHIR4 version '1.0.000' called Hospice
 //include MATGlobalCommonFunctions version '4.0.000' called Global
 //include Hospice version '2.0.000' called Hospice
 
@@ -142,13 +142,13 @@ define "Two or More Followup Encounters":
 	Count("Encounters 300 Days after Initial ADHD Medication")>= 2
 
 define "Denominator Exclusions 1":
-	"Has Hospice"
+	Hospice."Has Hospice"
 		or exists ( "Narcolepsy Exclusion" )
 		or exists ( "Inpatient Stay with Qualifying Diagnosis within 30 Days of Initial ADHD Dispense" )
 		or exists ( "Previously on ADHD Medication Exclusion" )
 
 define "Denominator Exclusions 2":
-	"Has Hospice"
+	Hospice."Has Hospice"
 		or exists ( "Narcolepsy Exclusion" )
 		or exists ( "Inpatient Stay with Qualifying Diagnosis within 300 Days of Initial ADHD Dispense" )
 		or exists ( "Previously on ADHD Medication Exclusion" )
@@ -182,21 +182,3 @@ define function "Cumulative Medication Duration"(MedicationAdministration List<"
 	Sum((collapse(MedicationAdministration.effective as Period))MedicationPeriod
 			return all duration in days of MedicationPeriod
 	)
-	
-define "Has Hospice":
-
-            exists ( [Encounter: "Encounter Inpatient"] DischargeHospice
-            		where (DischargeHospice.status='in-progress' or DischargeHospice.status='finished')
-            		    and (
-			        FHIRHelpers.ToConcept(DischargeHospice.hospitalization.dischargeDisposition).codes[0] ~ "Discharge to home for hospice care (procedure)"
-					    or FHIRHelpers.ToConcept(DischargeHospice.hospitalization.dischargeDisposition).codes[0] ~ "Discharge to healthcare facility for hospice care (procedure)"
-			    )
-            			and DischargeHospice.period ends during "Measurement Period"
-                )
-            	or exists ( [ServiceRequest: "Hospice care ambulatory"] HospiceOrder
-            			where HospiceOrder.intent= 'order'
-				and FHIRHelpers.ToDateTime(HospiceOrder.authoredOn) during "Measurement Period"
-            	)
-            	or exists ( [Procedure: "Hospice care ambulatory"] HospicePerformed
-            			where (HospicePerformed.performed as Period) overlaps "Measurement Period"
-            	)

@@ -3,7 +3,7 @@ library DiabetesEyeExam version '8.4.000'
 using FHIR version '4.0.0'
 
 include FHIRHelpers version '4.0.0' called FHIRHelpers
-
+include Hospice_FHIR4 version '1.0.000' called Hospice
 
 //include MATGlobalCommonFunctions version '4.0.000' called Global
 //include Hospice version '2.0.000' called Hospice
@@ -67,7 +67,7 @@ define "Denominator Exclusions":
 				and FrailtyLTI."Has Spent More Than 90 Days in Long Term Care"
 	)
 		or FrailtyLTI."Advanced Illness and Frailty Exclusion Including Under Age 80"
-		or "Has Hospice"
+		or Hospice."Has Hospice"
 
 define "Diabetic Retinopathy Overlapping Measurement Period":
 	exists ( [Condition: "Diabetic Retinopathy"] Retinopathy
@@ -88,20 +88,3 @@ define "Initial Population":
 		and exists ( [Condition: "Diabetes"] Diabetes
 				where ( Diabetes.onset as Period) overlaps "Measurement Period"
 		)
-define "Has Hospice":
-
-            exists ( [Encounter: "Encounter Inpatient"] DischargeHospice
-            		where (DischargeHospice.status='in-progress' or DischargeHospice.status='finished')
-            		    and (
-			        FHIRHelpers.ToConcept(DischargeHospice.hospitalization.dischargeDisposition).codes[0] ~ "Discharge to home for hospice care (procedure)"
-					    or FHIRHelpers.ToConcept(DischargeHospice.hospitalization.dischargeDisposition).codes[0] ~ "Discharge to healthcare facility for hospice care (procedure)"
-			    )
-            			and DischargeHospice.period ends during "Measurement Period"
-                )
-            	or exists ( [ServiceRequest: "Hospice care ambulatory"] HospiceOrder
-            			where HospiceOrder.intent= 'order'
-				and FHIRHelpers.ToDateTime(HospiceOrder.authoredOn) during "Measurement Period"
-            	)
-            	or exists ( [Procedure: "Hospice care ambulatory"] HospicePerformed
-            			where (HospicePerformed.performed as Period) overlaps "Measurement Period"
-            	)

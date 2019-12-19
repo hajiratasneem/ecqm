@@ -38,7 +38,7 @@ context Patient
 
 define "Numerator":
 	FHIRHelpers.ToInteger(Last([Observation: "PHQ 9 and PHQ 9M Tools"] DepressionAssessment
-			where (DepressionAssessment.status = 'final' or DepressionAssessment.status = 'amended' or DepressionAssessment.status = 'corrected')
+			where (DepressionAssessment.status.value = 'final' or DepressionAssessment.status.value = 'amended' or DepressionAssessment.status.value = 'corrected')
 					and "ToDate"(FHIRHelpers.ToDateTime(DepressionAssessment.issued))in "Follow-Up Assessment Period"
 			sort by FHIRHelpers.ToDateTime(issued)
 	).value) < 5
@@ -67,12 +67,12 @@ define "Disorder Diagnoses":
 
 define "Palliative Care Order":
 	[ServiceRequest: "Palliative Care"] PalliativeCare
-		where PalliativeCare.intent='order'
+		where PalliativeCare.intent.value='order'
 			and FHIRHelpers.ToDateTime(PalliativeCare.authoredOn) occurs before end of "Follow-Up Assessment Period"
 
 define "Encounter Palliative Care":
 	[Encounter: "Palliative care encounter"] PalliativeCareEncounter
-		where (PalliativeCareEncounter.status='in-progress' or PalliativeCareEncounter.status='finished')
+		where (PalliativeCareEncounter.status.value='in-progress' or PalliativeCareEncounter.status.value='finished')
 		            and PalliativeCareEncounter.period starts before end of "Follow-Up Assessment Period"
 
 define "Patient Expired":
@@ -82,7 +82,7 @@ define "Patient Expired":
 define "Depression Encounter":
 	[Encounter: "Contact or Office Visit"] ValidEncounter
 		with "Depression Diagnoses" Depression
-			such that (ValidEncounter.status='in-progress' or ValidEncounter.status='finished')
+			such that (ValidEncounter.status.value='in-progress' or ValidEncounter.status.value='finished')
 		            and ValidEncounter.period overlaps Interval[FHIRHelpers.ToDateTime(Depression.onset),FHIRHelpers.ToDateTime(Depression.abatement)]
 								and ValidEncounter.period ends during "Denominator Identification Period"
 
@@ -97,12 +97,12 @@ define "Index Depression Assessment":
 
 define "Depression Assessments Greater than 9":
 	[Observation: "PHQ 9 and PHQ 9M Tools"] DepressionAssessment
-		where (DepressionAssessment.status = 'final' or DepressionAssessment.status = 'amended' or DepressionAssessment.status = 'corrected')
+		where (DepressionAssessment.status.value = 'final' or DepressionAssessment.status.value = 'amended' or DepressionAssessment.status.value = 'corrected')
 					and FHIRHelpers.ToInteger(DepressionAssessment.value) > 9
 
 define "Long Term Care Encounter":
 	[Encounter: "Care Services in Long-Term Residential Facility"] EncounterLongTermCare
-		where (EncounterLongTermCare.status='in-progress' or EncounterLongTermCare.status='finished')
+		where (EncounterLongTermCare.status.value='in-progress' or EncounterLongTermCare.status.value='finished')
 		            and EncounterLongTermCare.period starts before end of "Follow-Up Assessment Period"
 
 define "Denominator Exclusions":

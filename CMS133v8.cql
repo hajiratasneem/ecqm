@@ -86,7 +86,7 @@ define "Denominator":
 
 define "Cataract Surgery Between January and September of Measurement Period":
 	[Procedure: "Cataract Surgery"] CataractSurgery
-		where CataractSurgery.status='completed'
+		where CataractSurgery.status.value='completed'
       and (CataractSurgery.performed as Period) during "Measurement Period"
 			and (CataractSurgery.performed as Period) starts 93 days or more before end of "Measurement Period"
 

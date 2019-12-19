@@ -37,7 +37,7 @@ define "Qualifying Encounters":
 		union [Encounter: "Preventive Care, Established Office Visit, 0 to 17"]
 		union [Encounter: "Preventive Care Services - Established Office Visit, 18 and Up"]
 		union [Encounter: "Office Visit"] ) Encounter
-		where (Encounter.status='in-progress' or Encounter.status='finished')
+		where (Encounter.status.value='in-progress' or Encounter.status.value='finished')
 		    and Encounter.period during "Measurement Period"
 
 define "Denominator":

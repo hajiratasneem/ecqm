@@ -34,7 +34,7 @@ define "Denominator 2":
 
 define "Radiation Treatment During Measurement Period":
 	[Procedure: "Radiation Treatment Management"] RadiationTreatmentProcedure
-		where RadiationTreatmentProcedure.status='completed'
+		where RadiationTreatmentProcedure.status.value='completed'
 			    and (RadiationTreatmentProcedure.performed as Period) during "Measurement Period"
 
 define "Radiation Treatment with Cancer Diagnosis":
@@ -46,7 +46,7 @@ define "Radiation Treatment with Cancer Diagnosis":
 define "Numerator 2":
 	"Radiation Treatment with Cancer Diagnosis" RadiationTherapy
 		with [Observation: "Standardized Pain Assessment Tool"] PainAssessed
-			such that (PainAssessed.status = 'final' or PainAssessed.status = 'amended' or PainAssessed.status = 'corrected')
+			such that (PainAssessed.status.value = 'final' or PainAssessed.status.value = 'amended' or PainAssessed.status.value = 'corrected')
 					and FHIRHelpers.ToDateTime(PainAssessed.issued) during (RadiationTherapy.performed as Period)
 				and PainAssessed.value is not null
 
@@ -56,7 +56,7 @@ define "Initial Population 2":
 define "Numerator 1":
 	"Face to Face Encounter with Ongoing Chemotherapy" FaceToFaceEncounterWithChemo
 		with [Observation: "Standardized Pain Assessment Tool"] PainAssessed
-			such that (PainAssessed.status = 'final' or PainAssessed.status = 'amended' or PainAssessed.status = 'corrected')
+			such that (PainAssessed.status.value = 'final' or PainAssessed.status.value = 'amended' or PainAssessed.status.value = 'corrected')
 					and FHIRHelpers.ToDateTime(PainAssessed.issued) during FaceToFaceEncounterWithChemo.period
 				and PainAssessed.value is not null
 
@@ -76,9 +76,9 @@ define "Face to Face Encounter with Ongoing Chemotherapy":
 		[Procedure: "Chemotherapy Administration"] ChemoBeforeEncounter,
 		[Procedure: "Chemotherapy Administration"] ChemoAfterEncounter,
 		[Condition: "Cancer"] Cancer
-		where (FaceToFaceEncounter.status='in-progress' or FaceToFaceEncounter.status='finished')
-      and ChemoBeforeEncounter.status='completed'
-      and ChemoAfterEncounter.status='completed'
+		where (FaceToFaceEncounter.status.value='in-progress' or FaceToFaceEncounter.status.value='finished')
+      and ChemoBeforeEncounter.status.value='completed'
+      and ChemoAfterEncounter.status.value='completed'
       and Cancer.clinicalStatus.coding[0].code='active'
       and (ChemoBeforeEncounter.performed as Period) starts 30 days or less on or before day of end of FaceToFaceEncounter.period
 			and (ChemoAfterEncounter.performed as Period) starts 30 days or less on or after day of end of FaceToFaceEncounter.period

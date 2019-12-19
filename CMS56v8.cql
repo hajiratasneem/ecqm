@@ -3,6 +3,7 @@ library FunctionalStatusAssessmentforTotalHipReplacement version '8.1.000'
 using FHIR version '4.0.0'
 
 include FHIRHelpers version '4.0.0' called FHIRHelpers
+include Hospice_FHIR4 version '1.0.000' called Hospice
 
 codesystem "ICD-10-CM": 'http://hl7.org/fhir/sid/icd-10-cm'
 codesystem "LOINC": 'http://loinc.org'
@@ -61,57 +62,57 @@ define "Total Hip Arthroplasty with 2 or More Lower Body Fractures":
 		)>= 2
 
 define "Denominator Exclusions":
-	"Has Hospice"
+	Hospice."Has Hospice"
 		or exists ( "Total Hip Arthroplasty with 2 or More Lower Body Fractures" )
 		or exists ( "Dementia Diagnosis" )
 
 define "Total Hip Arthroplasty Procedure":
 	( [Procedure: "Primary THA Procedure"] THAProcedure
-			where THAProcedure.status='completed'
+			where THAProcedure.status.value='completed'
 			    and (THAProcedure.performed as Period) starts 12 months or less before start of "Measurement Period"
 	)
 
 define "HOOS Total Assessment Scores":
 	[Observation: "Quality of life score [HOOS]"] HOOSLifeQuality
 		with [Observation: "Sport-recreation score [HOOS]"] HOOSSport
-			such that (HOOSSport.status = 'final' or HOOSSport.status = 'amended' or HOOSSport.status = 'corrected')
+			such that (HOOSSport.status.value = 'final' or HOOSSport.status.value = 'amended' or HOOSSport.status.value = 'corrected')
 			and FHIRHelpers.ToDateTime(HOOSLifeQuality.issued) same day as FHIRHelpers.ToDateTime(HOOSSport.issued)
 				and HOOSSport.value is not null
 		with [Observation: "Activities of daily living score [HOOS]"] HOOSActivityScore
-			such that (HOOSActivityScore.status = 'final' or HOOSActivityScore.status = 'amended' or HOOSActivityScore.status = 'corrected')
+			such that (HOOSActivityScore.status.value = 'final' or HOOSActivityScore.status.value = 'amended' or HOOSActivityScore.status.value = 'corrected')
 			    and FHIRHelpers.ToDateTime(HOOSLifeQuality.issued) same day as FHIRHelpers.ToDateTime(HOOSActivityScore.issued)
 				and HOOSActivityScore.value is not null
 		with [Observation: "Symptoms score [HOOS]"] HOOSSymptoms
-			such that (HOOSSymptoms.status = 'final' or HOOSSymptoms.status = 'amended' or HOOSSymptoms.status = 'corrected')
+			such that (HOOSSymptoms.status.value = 'final' or HOOSSymptoms.status.value = 'amended' or HOOSSymptoms.status.value = 'corrected')
 			    and FHIRHelpers.ToDateTime(HOOSLifeQuality.issued) same day as FHIRHelpers.ToDateTime(HOOSSymptoms.issued)
 				and HOOSSymptoms.value is not null
 		with [Observation: "Pain score [HOOS]"] HOOSPain
-			such that (HOOSPain.status = 'final' or HOOSPain.status = 'amended' or HOOSPain.status = 'corrected')
+			such that (HOOSPain.status.value = 'final' or HOOSPain.status.value = 'amended' or HOOSPain.status.value = 'corrected')
 			    and FHIRHelpers.ToDateTime(HOOSLifeQuality.issued) same day as FHIRHelpers.ToDateTime(HOOSPain.issued)
 				and HOOSPain.value is not null
-		where (HOOSLifeQuality.status = 'final' or HOOSLifeQuality.status = 'amended' or HOOSLifeQuality.status = 'corrected')
+		where (HOOSLifeQuality.status.value = 'final' or HOOSLifeQuality.status.value = 'amended' or HOOSLifeQuality.status.value = 'corrected')
 		and HOOSLifeQuality.value is not null
 
 define "HOOSJr Total Assessment Scores":
 	( [Observation: "Hip Dysfunction and Osteoarthritis Outcome Score for Joint Replacement [HOOSJR]"] HOOSJr
-			where (HOOSJr.status = 'final' or HOOSJr.status = 'amended' or HOOSJr.status = 'corrected')
+			where (HOOSJr.status.value = 'final' or HOOSJr.status.value = 'amended' or HOOSJr.status.value = 'corrected')
 			and HOOSJr.value is not null
 	)
 
 define "PROMIS10 Total Assessment Scores":
 	[Observation: "PROMIS-10 Global Mental Health (GMH) score T-score"] Promis10MentalScore
 		with [Observation: "PROMIS-10 Global Physical Health (GPH) score T-score"] Promis10PhysicalScore
-			such that (Promis10PhysicalScore.status = 'final' or Promis10PhysicalScore.status = 'amended' or Promis10PhysicalScore.status = 'corrected')
+			such that (Promis10PhysicalScore.status.value = 'final' or Promis10PhysicalScore.status.value = 'amended' or Promis10PhysicalScore.status.value = 'corrected')
 			    and FHIRHelpers.ToDateTime(Promis10MentalScore.issued) same day as FHIRHelpers.ToDateTime(Promis10PhysicalScore.issued)
 				and Promis10PhysicalScore.value is not null
-		where (Promis10MentalScore.status = 'final' or Promis10MentalScore.status = 'amended' or Promis10MentalScore.status = 'corrected')
+		where (Promis10MentalScore.status.value = 'final' or Promis10MentalScore.status.value = 'amended' or Promis10MentalScore.status.value = 'corrected')
 			    and Promis10MentalScore.value is not null
 
 define "Qualifying Encounter":
 	( [Encounter: "Outpatient Consultation"]
 		union [Encounter: "Office Visit"]
 		union [Encounter: "Postoperative follow-up visit, normally included in the surgical package, to indicate that an evaluation and management service was performed during a postoperative period for a reason(s) related to the original procedure"] ) ValidEncounters
-		where (ValidEncounters.status='in-progress' or ValidEncounters.status='finished')
+		where (ValidEncounters.status.value='in-progress' or ValidEncounters.status.value='finished')
 		    and ValidEncounters.period during "Measurement Period"
 
 define "Assessed Initial and Followup HOOSJr with THA":
@@ -173,19 +174,19 @@ define "Numerator":
 
 define "VR12 Orthogonal Total Assessment Scores":
 	( [Observation: "VR-12 Mental component summary (MCS) score - orthogonal method T-score"] VR12MentalOrthogonal
-		where (VR12MentalOrthogonal.status = 'final' or VR12MentalOrthogonal.status = 'amended' or VR12MentalOrthogonal.status = 'corrected')
+		where (VR12MentalOrthogonal.status.value = 'final' or VR12MentalOrthogonal.status.value = 'amended' or VR12MentalOrthogonal.status.value = 'corrected')
 			    and VR12MentalOrthogonal.value is not null ) VR12MentalScore
 		with ( [Observation: "VR-12 Physical component summary (PCS) score - orthogonal method T-score"] VR12PhysicalOrthogonal
-			where (VR12PhysicalOrthogonal.status = 'final' or VR12PhysicalOrthogonal.status = 'amended' or VR12PhysicalOrthogonal.status = 'corrected')
+			where (VR12PhysicalOrthogonal.status.value = 'final' or VR12PhysicalOrthogonal.status.value = 'amended' or VR12PhysicalOrthogonal.status.value = 'corrected')
 			    and VR12PhysicalOrthogonal.value is not null ) VR12PhysicalScore
 			such that FHIRHelpers.ToDateTime(VR12MentalScore.issued) same day as FHIRHelpers.ToDateTime(VR12PhysicalScore.issued)
 
 define "VR12 Oblique Total Assessment Scores":
 	( [Observation: "VR-12 Mental component summary (MCS) score - oblique method T-score"] VR12MentalAssessment
-		where (VR12MentalAssessment.status = 'final' or VR12MentalAssessment.status = 'amended' or VR12MentalAssessment.status = 'corrected')
+		where (VR12MentalAssessment.status.value = 'final' or VR12MentalAssessment.status.value = 'amended' or VR12MentalAssessment.status.value = 'corrected')
 			    and VR12MentalAssessment.value is not null ) VR12MentalScore
 		with ( [Observation: "VR-12 Physical component summary (PCS) score - oblique method T-score"] VR12PhysicalAssessment
-			where (VR12PhysicalAssessment.status = 'final' or VR12PhysicalAssessment.status = 'amended' or VR12PhysicalAssessment.status = 'corrected')
+			where (VR12PhysicalAssessment.status.value = 'final' or VR12PhysicalAssessment.status.value = 'amended' or VR12PhysicalAssessment.status.value = 'corrected')
 			    and VR12PhysicalAssessment.value is not null ) VR12PhysicalScore
 			such that FHIRHelpers.ToDateTime(VR12MentalScore.issued) same day as FHIRHelpers.ToDateTime(VR12PhysicalScore.issued)
 
@@ -195,20 +196,3 @@ define "Initial Population":
 			and AgeInYearsAt(start of "Measurement Period")>= 19
 
 
-define "Has Hospice":
-
-            exists ( [Encounter: "Encounter Inpatient"] DischargeHospice
-            		where (DischargeHospice.status='in-progress' or DischargeHospice.status='finished')
-            		    and (
-			        FHIRHelpers.ToConcept(DischargeHospice.hospitalization.dischargeDisposition).codes[0] ~ "Discharge to home for hospice care (procedure)"
-					    or FHIRHelpers.ToConcept(DischargeHospice.hospitalization.dischargeDisposition).codes[0] ~ "Discharge to healthcare facility for hospice care (procedure)"
-			    )
-            			and DischargeHospice.period ends during "Measurement Period"
-                )
-            	or exists ( [ServiceRequest: "Hospice care ambulatory"] HospiceOrder
-            			where HospiceOrder.intent= 'order'
-				and FHIRHelpers.ToDateTime(HospiceOrder.authoredOn) during "Measurement Period"
-            	)
-            	or exists ( [Procedure: "Hospice care ambulatory"] HospicePerformed
-            			where (HospicePerformed.performed as Period) overlaps "Measurement Period"
-            	)

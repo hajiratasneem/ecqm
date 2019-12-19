@@ -65,24 +65,24 @@ define "Medical or Patient Reason for Not Communicating Absence of Macular Edema
 	[Communication: "Macular edema absent (situation)"] MacularEdemaAbsentNotCommunicated
 		with "Diabetic Retinopathy Encounter" EncounterDiabeticRetinopathy
 			such that FHIRHelpers.ToDateTime(MacularEdemaAbsentNotCommunicated.sent) during EncounterDiabeticRetinopathy.period
-		where ( MacularEdemaAbsentNotCommunicated.statusReason in "Medical Reason"
-				or MacularEdemaAbsentNotCommunicated.statusReason in "Patient Reason"
+		where ( MacularEdemaAbsentNotCommunicated.status.valueReason in "Medical Reason"
+				or MacularEdemaAbsentNotCommunicated.status.valueReason in "Patient Reason"
 		)
 
 define "Medical or Patient Reason for Not Communicating Level of Severity of Retinopathy":
 	[Communication: "Level of Severity of Retinopathy Findings"] LevelOfSeverityNotCommunicated
 		with "Diabetic Retinopathy Encounter" EncounterDiabeticRetinopathy
 			such that FHIRHelpers.ToDateTime(LevelOfSeverityNotCommunicated.sent) during EncounterDiabeticRetinopathy.period
-		where ( LevelOfSeverityNotCommunicated.statusReason in "Medical Reason"
-				or LevelOfSeverityNotCommunicated.statusReason in "Patient Reason"
+		where ( LevelOfSeverityNotCommunicated.status.valueReason in "Medical Reason"
+				or LevelOfSeverityNotCommunicated.status.valueReason in "Patient Reason"
 		)
 
 define "Medical or Patient Reason for Not Communicating Presence of Macular Edema":
 	[Communication: "Macular Edema Findings Present"] MacularEdemaPresentNotCommunicated
 		with "Diabetic Retinopathy Encounter" EncounterDiabeticRetinopathy
 			such that FHIRHelpers.ToDateTime(MacularEdemaPresentNotCommunicated.sent) during EncounterDiabeticRetinopathy.period
-		where ( MacularEdemaPresentNotCommunicated.statusReason in "Medical Reason"
-				or MacularEdemaPresentNotCommunicated.statusReason in "Patient Reason"
+		where ( MacularEdemaPresentNotCommunicated.status.valueReason in "Medical Reason"
+				or MacularEdemaPresentNotCommunicated.status.valueReason in "Patient Reason"
 		)
 
 define "Results of Dilated Macular or Fundus Exam Communicated":

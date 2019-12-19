@@ -72,22 +72,22 @@ define "Initial Qualifying Encounter During Measurement Period":
 		union [Encounter: "Annual Wellness Visit"]
 		union [Encounter: "Preventive Care, Established Office Visit, 0 to 17"]
 		union [Encounter: "Preventive Care Services - Established Office Visit, 18 and Up"] ) QualifyingEncounter
-		where (QualifyingEncounter.status='in-progress' or QualifyingEncounter.status='finished')
+		where (QualifyingEncounter.status.value='in-progress' or QualifyingEncounter.status.value='finished')
 		            and QualifyingEncounter.period during "Measurement Period"
 
 define "Hemodialysis During Measurement Period":
 	[Procedure: "Hemodialysis"] Hemodialysis
-		where Hemodialysis.status='completed'
+		where Hemodialysis.status.value='completed'
           and (Hemodialysis.performed as Period) during "Measurement Period"
 
 define "Peritoneal Dialysis During Measurement Period":
 	[Procedure: "Peritoneal Dialysis"] PeritonealDialysis
-		where PeritonealDialysis.status='completed'
+		where PeritonealDialysis.status.value='completed'
           and (PeritonealDialysis.performed as Period) during "Measurement Period"
 
 define "Peritoneal Dialysis During Influenza Season":
 	[Procedure: "Peritoneal Dialysis"] FluSeasonPeritonealDialysis
-		where FluSeasonPeritonealDialysis.status='completed'
+		where FluSeasonPeritonealDialysis.status.value='completed'
           and (FluSeasonPeritonealDialysis.performed as Period) starts during "Influenza Season"
 
 define "Intolerance of Influenza Vaccination Procedure":
@@ -96,7 +96,7 @@ define "Intolerance of Influenza Vaccination Procedure":
 
 define "Influenza Vaccination Procedure":
 	[Procedure: "Influenza Vaccination"] FluVaccination
-		where FluVaccination.status='completed'
+		where FluVaccination.status.value='completed'
           and (FluVaccination.performed as Period) starts during "Influenza Season Including August and September of the Prior Year"
 
 define "Influenza Immunization Administered":
@@ -105,12 +105,12 @@ define "Influenza Immunization Administered":
 
 define "Hemodialysis During Influenza Season":
 	[Procedure: "Hemodialysis"] FluSeasonHemodialysis
-		where FluSeasonHemodialysis.status='completed'
+		where FluSeasonHemodialysis.status.value='completed'
           and (FluSeasonHemodialysis.performed as Period) starts during "Influenza Season"
 
 define "Encounter During Influenza Season":
 	[Encounter: "Encounter-Influenza"] FluEncounter
-		where (FluEncounter.status='in-progress' or FluEncounter.status='finished')
+		where (FluEncounter.status.value='in-progress' or FluEncounter.status.value='finished')
 		            and FluEncounter.period starts during "Influenza Season"
 
 define "Diagnosis of Intolerance to Influenza Vaccine":
@@ -138,12 +138,12 @@ define "Diagnosis of Allergy to Influenza Vaccine":
 
 define "Medical Patient or System Reason for Not Performing Influenza Vaccination":
 	[Procedure: "Influenza Vaccination"] NoFluVaccination
-		where NoFluVaccination.status='not-done'
+		where NoFluVaccination.status.value='not-done'
       and start of (NoFluVaccination.performed as Period) during "Influenza Season Including August and September of the Prior Year"
-			and ( NoFluVaccination.statusReason in "Medical Reason"
-					or NoFluVaccination.statusReason in "Patient Reason"
-					or NoFluVaccination.statusReason in "System Reason"
-					or NoFluVaccination.statusReason in "Influenza Vaccination Declined"
+			and ( NoFluVaccination.status.valueReason in "Medical Reason"
+					or NoFluVaccination.status.valueReason in "Patient Reason"
+					or NoFluVaccination.status.valueReason in "System Reason"
+					or NoFluVaccination.status.valueReason in "Influenza Vaccination Declined"
 			)
 
 define "Denominator Exceptions":
@@ -164,17 +164,17 @@ define "Influenza Season Including August and September of the Prior Year":
 
 define "Medical Patient or System Reason for Not Administering Influenza Vaccine":
 	[Immunization: "Influenza Vaccine"] NoFluVaccine
-		where NoFluVaccine.status='not-done'
+		where NoFluVaccine.status.value='not-done'
       and FHIRHelpers.ToDateTime(NoFluVaccine.recorded) during "Influenza Season Including August and September of the Prior Year"
-			and ( NoFluVaccine.statusReason in "Medical Reason"
-					or NoFluVaccine.statusReason in "Patient Reason"
-					or NoFluVaccine.statusReason in "System Reason"
-					or NoFluVaccine.statusReason in "Influenza Vaccination Declined"
+			and ( NoFluVaccine.status.valueReason in "Medical Reason"
+					or NoFluVaccine.status.valueReason in "Patient Reason"
+					or NoFluVaccine.status.valueReason in "System Reason"
+					or NoFluVaccine.status.valueReason in "Influenza Vaccination Declined"
 			)
 
 define "Influenza Vaccine Previously Received":
 	[Observation: "Previous Receipt of Influenza Vaccine"] PreviousReceiptFluVaccine
-		where (PreviousReceiptFluVaccine.status = 'final' or PreviousReceiptFluVaccine.status = 'amended' or PreviousReceiptFluVaccine.status = 'corrected')
+		where (PreviousReceiptFluVaccine.status.value = 'final' or PreviousReceiptFluVaccine.status.value = 'amended' or PreviousReceiptFluVaccine.status.value = 'corrected')
 			and FHIRHelpers.ToDateTime(PreviousReceiptFluVaccine.issued) during "Influenza Season Including August and September of the Prior Year"
 
 define "Numerator":

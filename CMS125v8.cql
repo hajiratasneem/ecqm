@@ -4,6 +4,7 @@ using FHIR version '4.0.0'
 
 include FHIRHelpers version '4.0.0' called FHIRHelpers
 include AdvancedIllnessandFrailtyExclusionECQM version '4.0.000' called FrailtyLTI
+include Hospice_FHIR4 version '1.0.000' called Hospice
 
 codesystem "ICD-10-CM": 'http://hl7.org/fhir/sid/icd-10-cm'
 codesystem "LOINC": 'http://loinc.org'
@@ -50,28 +51,28 @@ define "Denominator":
 
 define "Bilateral Mastectomy Procedure":
 	[Procedure: "Bilateral Mastectomy"] BilateralMastectomyPerformed
-		where BilateralMastectomyPerformed.status='completed'
+		where BilateralMastectomyPerformed.status.value='completed'
 					and (BilateralMastectomyPerformed.performed as Period) ends before end of "Measurement Period"
 
 define "Numerator":
 	exists ( [DiagnosticReport: "Mammography"] Mammogram
-			where (Mammogram.status='final' or Mammogram.status='amended' or Mammogram.status='corrected' or Mammogram.status='appended')
+			where (Mammogram.status.value='final' or Mammogram.status.value='amended' or Mammogram.status.value='corrected' or Mammogram.status.value='appended')
 		    and ( (Mammogram.effective as Period) ends 27 months or less before day of end "Measurement Period")
 	)
 
 define "Left Mastectomy Procedure":
 	[Procedure: "Unilateral Mastectomy Left"] UnilateralMastectomyLeftPerformed
-		where UnilateralMastectomyLeftPerformed.status='completed'
+		where UnilateralMastectomyLeftPerformed.status.value='completed'
 					and (UnilateralMastectomyLeftPerformed.performed as Period) ends before end of "Measurement Period"
 
 define "Right Mastectomy Procedure":
 	[Procedure: "Unilateral Mastectomy Right"] UnilateralMastectomyRightPerformed
-		where UnilateralMastectomyRightPerformed.status='completed'
+		where UnilateralMastectomyRightPerformed.status.value='completed'
 					and (UnilateralMastectomyRightPerformed.performed as Period) ends before end of "Measurement Period"
 
 define "Unilateral Mastectomy Procedure":
 	[Procedure: "Unilateral Mastectomy"] UnilateralMastectomy
-		where UnilateralMastectomy.status='completed'
+		where UnilateralMastectomy.status.value='completed'
 					and (UnilateralMastectomy.performed as Period) ends before end of "Measurement Period"
 
 define "Bilateral Mastectomy Diagnosis":
@@ -101,7 +102,7 @@ define "Initial Population":
 		and exists("Qualifying Encounters")
 
 define "Denominator Exclusions":
-	"Has Hospice"
+	Hospice."Has Hospice"
 		or ( Count("Unilateral Mastectomy Procedure")= 2 )
 		or ( ( exists ( "Right Mastectomy Diagnosis" )
 					or exists ( "Right Mastectomy Procedure" )
@@ -117,23 +118,6 @@ define "Denominator Exclusions":
 					and FrailtyLTI."Has Spent More Than 90 Days in Long Term Care"
 		)
 
-define "Has Hospice":
-
-            exists ( [Encounter: "Encounter Inpatient"] DischargeHospice
-            		where (DischargeHospice.status='in-progress' or DischargeHospice.status='finished')
-            		    and (
-			        FHIRHelpers.ToConcept(DischargeHospice.hospitalization.dischargeDisposition).codes[0] ~ "Discharge to home for hospice care (procedure)"
-					    or FHIRHelpers.ToConcept(DischargeHospice.hospitalization.dischargeDisposition).codes[0] ~ "Discharge to healthcare facility for hospice care (procedure)"
-			    )
-            			and DischargeHospice.period ends during "Measurement Period"
-                )
-            	or exists ( [ServiceRequest: "Hospice care ambulatory"] HospiceOrder
-            			where HospiceOrder.intent= 'order'
-				and FHIRHelpers.ToDateTime(HospiceOrder.authoredOn) during "Measurement Period"
-            	)
-            	or exists ( [Procedure: "Hospice care ambulatory"] HospicePerformed
-            			where (HospicePerformed.performed as Period) overlaps "Measurement Period"
-            	)
 
 define "Qualifying Encounters":
 	( [Encounter: "Office Visit"]
@@ -141,5 +125,5 @@ define "Qualifying Encounters":
 		union [Encounter: "Preventive Care Services - Established Office Visit, 18 and Up"]
 		union [Encounter: "Preventive Care Services-Initial Office Visit, 18 and Up"]
 		union [Encounter: "Home Healthcare Services"] ) ValidEncounter
-		where (ValidEncounter.status='in-progress' or ValidEncounter.status='finished')
+		where (ValidEncounter.status.value='in-progress' or ValidEncounter.status.value='finished')
 					and ValidEncounter.period during "Measurement Period"

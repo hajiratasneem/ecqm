@@ -3,6 +3,7 @@ library FallsScreeningforFutureFallRisk version '8.1.000'
 using FHIR version '4.0.0'
 
 include FHIRHelpers version '4.0.0' called FHIRHelpers
+include Hospice_FHIR4 version '1.0.000' called Hospice
 
 codesystem "ICD-10-CM": 'http://hl7.org/fhir/sid/icd-10-cm'
 codesystem "LOINC": 'http://loinc.org'
@@ -46,7 +47,7 @@ define "Denominator":
 
 define "Numerator":
 	exists [Observation: "Falls Screening"] FallsScreen
-		where (FallsScreen.status = 'final' or FallsScreen.status = 'amended' or FallsScreen.status = 'corrected')
+		where (FallsScreen.status.value = 'final' or FallsScreen.status.value = 'amended' or FallsScreen.status.value = 'corrected')
 			and FHIRHelpers.ToDateTime(FallsScreen.issued) during "Measurement Period"
 
 define "Qualifying Encounter":
@@ -61,12 +62,12 @@ define "Qualifying Encounter":
 		union [Encounter: "Nursing Facility Visit"]
 		union [Encounter: "Care Services in Long-Term Residential Facility"]
 		union [Encounter: "Audiology Visit"] ) ValidEncounter
-		where (ValidEncounter.status='in-progress' or ValidEncounter.status='finished')
+		where (ValidEncounter.status.value='in-progress' or ValidEncounter.status.value='finished')
 		    and ValidEncounter.period during "Measurement Period"
 
 define "Ambulatory Status Assessment During Measurement Period":
 	[Observation: "Ambulatory Status"] AmbulatoryStatusAssessment
-		where (AmbulatoryStatusAssessment.status = 'final' or AmbulatoryStatusAssessment.status = 'amended' or AmbulatoryStatusAssessment.status = 'corrected')
+		where (AmbulatoryStatusAssessment.status.value = 'final' or AmbulatoryStatusAssessment.status.value = 'amended' or AmbulatoryStatusAssessment.status.value = 'corrected')
 			and FHIRHelpers.ToDateTime(AmbulatoryStatusAssessment.issued) during "Measurement Period"
 			and AmbulatoryStatusAssessment.value is not null
 
@@ -77,7 +78,7 @@ define "Assessed as Not Ambulatory During Measurement Period":
 
 define "Assessed as Not Ambulatory Prior to Measurement Period":
 	Last([Observation: "Ambulatory Status"] PriorAmbulatoryStatus
-			where (PriorAmbulatoryStatus.status = 'final' or PriorAmbulatoryStatus.status = 'amended' or PriorAmbulatoryStatus.status = 'corrected')
+			where (PriorAmbulatoryStatus.status.value = 'final' or PriorAmbulatoryStatus.status.value = 'amended' or PriorAmbulatoryStatus.status.value = 'corrected')
 			and FHIRHelpers.ToDateTime(PriorAmbulatoryStatus.issued) before start "Measurement Period"
 			sort by FHIRHelpers.ToDateTime(issued)
 	).value in "Patient not ambulatory"
@@ -87,26 +88,8 @@ define "Denominator Exclusions":
 		or ( "Assessed as Not Ambulatory Prior to Measurement Period"
 				and not exists ( "Ambulatory Status Assessment During Measurement Period" )
 		)
-		or "Has Hospice"
+		or Hospice."Has Hospice"
 
 define "Initial Population":
 	AgeInYearsAt(start of "Measurement Period")>= 65
 		and exists "Qualifying Encounter"
-
-define "Has Hospice":
-
-            exists ( [Encounter: "Encounter Inpatient"] DischargeHospice
-            		where (DischargeHospice.status='in-progress' or DischargeHospice.status='finished')
-            		    and (
-			        FHIRHelpers.ToConcept(DischargeHospice.hospitalization.dischargeDisposition).codes[0] ~ "Discharge to home for hospice care (procedure)"
-					    or FHIRHelpers.ToConcept(DischargeHospice.hospitalization.dischargeDisposition).codes[0] ~ "Discharge to healthcare facility for hospice care (procedure)"
-			    )
-            			and DischargeHospice.period ends during "Measurement Period"
-                )
-            	or exists ( [ServiceRequest: "Hospice care ambulatory"] HospiceOrder
-            			where HospiceOrder.intent= 'order'
-				and FHIRHelpers.ToDateTime(HospiceOrder.authoredOn) during "Measurement Period"
-            	)
-            	or exists ( [Procedure: "Hospice care ambulatory"] HospicePerformed
-            			where (HospicePerformed.performed as Period) overlaps "Measurement Period"
-            	)

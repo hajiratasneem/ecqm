@@ -3,6 +3,7 @@ library AppropriateTreatmentforChildrenwithUpperRespiratoryInfectionURI version 
 using FHIR version '4.0.0'
 
 include FHIRHelpers version '4.0.0' called FHIRHelpers
+include Hospice_FHIR4 version '1.0.000' called Hospice
 
 codesystem "ICD-10-CM": 'http://hl7.org/fhir/sid/icd-10-cm'
 codesystem "LOINC": 'http://loinc.org'
@@ -43,12 +44,12 @@ define "Qualifying Encounter":
 		union [Encounter: "Preventive Care Services, Initial Office Visit, 0 to 17"]
 		union [Encounter: "Preventive Care, Established Office Visit, 0 to 17"]
 		union [Encounter: "Hospital Observation Care - Initial"] ) ValidEncounter
-		where (ValidEncounter.status='in-progress' or ValidEncounter.status='finished')
+		where (ValidEncounter.status.value='in-progress' or ValidEncounter.status.value='finished')
 					and ValidEncounter.period during "Measurement Period"
 
 define "In Hospice":
 	"Initial Population" InitialPopulation
-		where "Has Hospice"
+		where Hospice."Has Hospice"
 
 define "Encounter with Upper Respiratory Infection":
 	from
@@ -69,7 +70,7 @@ define "Encounter with Competing Diagnosis for Upper Respiratory Infection":
 define "Numerator":
 	"Encounter with Upper Respiratory Infection" EncounterWithURI
 		without [MedicationRequest: "Antibiotic Medications for Pharyngitis"] OrderedAntibiotic
-			such that OrderedAntibiotic.intent='order'
+			such that OrderedAntibiotic.intent.value='order'
         and FHIRHelpers.ToDateTime(OrderedAntibiotic.authoredOn) 3 days or less on or after start of EncounterWithURI.QualifyingEncounter.period
 		return EncounterWithURI.QualifyingEncounter
 
@@ -81,7 +82,7 @@ define "Denominator Exclusions":
 define "Encounter with Upper Respiratory Infection and Antibiotics Active 30 Days Prior":
 	"Encounter with Upper Respiratory Infection" EncounterWithURI
 		with [MedicationStatement: "Antibiotic Medications for Pharyngitis"] ActiveAntibiotic
-			such that ActiveAntibiotic.status='active'
+			such that ActiveAntibiotic.status.value='active'
         and (ActiveAntibiotic.effective as Period) overlaps Interval["ToDate"((start of Interval[FHIRHelpers.ToDateTime(EncounterWithURI.URI.onset),FHIRHelpers.ToDateTime(EncounterWithURI.URI.abatement)])- 30 days), start of Interval[FHIRHelpers.ToDateTime(EncounterWithURI.URI.onset),FHIRHelpers.ToDateTime(EncounterWithURI.URI.abatement)]]
 		return EncounterWithURI.QualifyingEncounter
 
@@ -90,24 +91,6 @@ define "Initial Population":
 		where AgeInYearsAt(start of "Measurement Period")>= 3
 				and AgeInYearsAt(start of "Measurement Period")< 18
 		return EncounterWithURI.QualifyingEncounter
-
-define "Has Hospice":
-
-            exists ( [Encounter: "Encounter Inpatient"] DischargeHospice
-            		where (DischargeHospice.status='in-progress' or DischargeHospice.status='finished')
-            		    and (
-			        FHIRHelpers.ToConcept(DischargeHospice.hospitalization.dischargeDisposition).codes[0] ~ "Discharge to home for hospice care (procedure)"
-					    or FHIRHelpers.ToConcept(DischargeHospice.hospitalization.dischargeDisposition).codes[0] ~ "Discharge to healthcare facility for hospice care (procedure)"
-			    )
-            			and DischargeHospice.period ends during "Measurement Period"
-                )
-            	or exists ( [ServiceRequest: "Hospice care ambulatory"] HospiceOrder
-            			where HospiceOrder.intent= 'order'
-				and FHIRHelpers.ToDateTime(HospiceOrder.authoredOn) during "Measurement Period"
-            	)
-            	or exists ( [Procedure: "Hospice care ambulatory"] HospicePerformed
-            			where (HospicePerformed.performed as Period) overlaps "Measurement Period"
-            	)
 
 define function "ToDate"(Value DateTime ):
 	DateTime(year from Value, month from Value, day from Value, 0, 0, 0, 0, timezone from Value)

@@ -38,7 +38,7 @@ define "Face to Face Encounter During Measurement Period":
 		union [Encounter: "Outpatient Consultation"]
 		union [Encounter: "Nursing Facility Visit"]
 		union [Encounter: "Care Services in Long-Term Residential Facility"] ) FaceToFaceEncounter
-		where (FaceToFaceEncounter.status='in-progress' or FaceToFaceEncounter.status='finished')
+		where (FaceToFaceEncounter.status.value='in-progress' or FaceToFaceEncounter.status.value='finished')
 		    and FaceToFaceEncounter.period during "Measurement Period"
 
 define "Numerator":
@@ -52,14 +52,14 @@ define "Medical Reason for Not Performing Cup to Disc Ratio":
 	[ServiceRequest: "Cup to Disc Ratio"] CupToDiscExamNotPerformed
 		with "Primary Open Angle Glaucoma Encounter" EncounterWithPOAG
 			such that FHIRHelpers.ToDateTime(CupToDiscExamNotPerformed.authoredOn) during EncounterWithPOAG.period
-		where (CupToDiscExamNotPerformed.status='revoked' or CupToDiscExamNotPerformed.status='entered-in-error')
+		where (CupToDiscExamNotPerformed.status.value='revoked' or CupToDiscExamNotPerformed.status.value='entered-in-error')
 		    and "NoSR"(CupToDiscExamNotPerformed) in "Medical Reason"
 
 define "Cup to Disc Ratio Performed with Result":
 	[DiagnosticReport: "Cup to Disc Ratio"] CupToDiscExamPerformed
 		with "Primary Open Angle Glaucoma Encounter" EncounterWithPOAG
 			such that (CupToDiscExamPerformed.effective as Period) during EncounterWithPOAG.period
-				and (CupToDiscExamPerformed.status='final' or CupToDiscExamPerformed.status='amended' or CupToDiscExamPerformed.status='corrected' or CupToDiscExamPerformed.status='appended')
+				and (CupToDiscExamPerformed.status.value='final' or CupToDiscExamPerformed.status.value='amended' or CupToDiscExamPerformed.status.value='corrected' or CupToDiscExamPerformed.status.value='appended')
 		    and CupToDiscExamPerformed.result is not null
 
 define "Primary Open Angle Glaucoma Encounter":
@@ -72,14 +72,14 @@ define "Optic Disc Exam Performed with Result":
 	[DiagnosticReport: "Optic Disc Exam for Structural Abnormalities"] OpticDiscExamPerformed
 		with "Primary Open Angle Glaucoma Encounter" EncounterWithPOAG
 			such that (OpticDiscExamPerformed.effective as Period) during EncounterWithPOAG.period
-				and (OpticDiscExamPerformed.status='final' or OpticDiscExamPerformed.status='amended' or OpticDiscExamPerformed.status='corrected' or OpticDiscExamPerformed.status='appended')
+				and (OpticDiscExamPerformed.status.value='final' or OpticDiscExamPerformed.status.value='amended' or OpticDiscExamPerformed.status.value='corrected' or OpticDiscExamPerformed.status.value='appended')
 		    and OpticDiscExamPerformed.result is not null
 
 define "Medical Reason for Not Performing Optic Disc Exam":
 	[ServiceRequest: "Optic Disc Exam for Structural Abnormalities"] OpticDiscExamNotPerformed
 		with "Primary Open Angle Glaucoma Encounter" EncounterWithPOAG
 			such that FHIRHelpers.ToDateTime(OpticDiscExamNotPerformed.authoredOn) during EncounterWithPOAG.period
-		where (OpticDiscExamNotPerformed.status='revoked' or OpticDiscExamNotPerformed.status='entered-in-error')
+		where (OpticDiscExamNotPerformed.status.value='revoked' or OpticDiscExamNotPerformed.status.value='entered-in-error')
 		    and "NoSR"(OpticDiscExamNotPerformed) in "Medical Reason"
 
 define "Denominator Exceptions":

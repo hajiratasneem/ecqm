@@ -155,7 +155,7 @@ define "Medical Reason for Not Counseling Tobacco User":
 			such that FHIRHelpers.ToDateTime(NoTobaccoCessationCounseling.performed as dateTime) same or after FHIRHelpers.ToDateTime(ScreenedTobaccoUser.issued)
 				and FHIRHelpers.ToDateTime(NoTobaccoCessationCounseling.performed as dateTime) before 
 				end of "Measurement Period"
-		where NoTobaccoCessationCounseling.statusReason in "Medical Reason"
+		where NoTobaccoCessationCounseling.status.valueReason in "Medical Reason"
 
 define "Medical Reason for Not Ordering Tobacco Cessation Pharmacotherapy":
 	[MedicationRequest: "Tobacco Use Cessation Pharmacotherapy"] NoPharmacotherapyOrdered
@@ -163,7 +163,7 @@ define "Medical Reason for Not Ordering Tobacco Cessation Pharmacotherapy":
 			such that FHIRHelpers.ToDateTime(NoPharmacotherapyOrdered.authoredOn) same or after FHIRHelpers.ToDateTime(ScreenedTobaccoUser.issued)
 				and FHIRHelpers.ToDateTime(NoPharmacotherapyOrdered.authoredOn) before 
 				end of "Measurement Period"
-		where NoPharmacotherapyOrdered.statusReason in "Medical Reason"
+		where NoPharmacotherapyOrdered.status.valueReason in "Medical Reason"
 
 define "Medical Reason for Not Screening for Tobacco Use":
 	[Observation: "Tobacco Use Screening"] NoTobaccoUseScreening

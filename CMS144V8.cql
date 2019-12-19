@@ -237,7 +237,7 @@ define "Atrioventricular Block without Cardiac Pacer Outpatient":
 define "Beta Blocker Therapy for LVSD at Inpatient Discharge":
 	[MedicationRequest: "Beta Blocker Therapy for LVSD"] BetaBlockerAtDischarge
 		with "Heart Failure Inpatient Encounter with Moderate or Severe LVSD" ModerateOrSevereLVSDHFInpatientEncounter
-			such that BetaBlockerAtDischarge.intent = 'plan'
+			such that BetaBlockerAtDischarge.intent.value = 'plan'
 				and BetaBlockerAtDischarge.authoredOn during ModerateOrSevereLVSDHFInpatientEncounter.period
 
 define "Diagnosis of Cardiac Pacer in Situ Inpatient":
@@ -314,7 +314,7 @@ define "Medical Patient or System Reason for No Beta Blocker for LVSD at Inpatie
 		with "Heart Failure Inpatient Encounter with Moderate or Severe LVSD" ModerateOrSevereLVSDHFInpatientEncounter
 			such that NoBetaBlockerAtDischarge.doNotPerform = "true"
 				and NoBetaBlockerAtDischarge.authoredOn during ModerateOrSevereLVSDHFInpatientEncounter.period
-		where ( NoBetaBlockerAtDischarge.status ="not-taken"
+		where ( NoBetaBlockerAtDischarge.status.value ="not-taken"
 			and ( NoBetaBlockerAtDischarge.in "Medical Reason"
 				or NoBetaBlockerAtDischarge.negationRationale in "Patient Reason"
 				or NoBetaBlockerAtDischarge.negationRationale in "System Reason")

@@ -4,6 +4,7 @@ using FHIR version '4.0.0'
 
 include FHIRHelpers version '4.0.0' called FHIRHelpers
 include AdvancedIllnessandFrailtyExclusionECQM version '4.0.000' called FrailtyLTI
+include Hospice_FHIR4 version '1.0.000' called Hospice
 
 codesystem "ICD-10-CM": 'http://hl7.org/fhir/sid/icd-10-cm'
 codesystem "LOINC": 'http://loinc.org'
@@ -62,14 +63,14 @@ define "Denominator":
 
 define "End Stage Renal Disease Encounter":
 	[Encounter: "ESRD Monthly Outpatient Services"] ESRDEncounter
-		where (ESRDEncounter.status='in-progress' or ESRDEncounter.status='finished')
+		where (ESRDEncounter.status.value='in-progress' or ESRDEncounter.status.value='finished')
 		            and ESRDEncounter.period starts before end of "Measurement Period"
 
 define "End Stage Renal Disease Procedures":
 	( [Procedure: "Vascular Access for Dialysis"]
 		union [Procedure: "Kidney Transplant"]
 		union [Procedure: "Dialysis Services"] ) ESRDProcedure
-		where ESRDProcedure.status='completed'
+		where ESRDProcedure.status.value='completed'
 			and (ESRDProcedure.performed as Period) starts before end of "Measurement Period"
 
 define "Essential Hypertension Diagnosis":
@@ -119,7 +120,7 @@ define "Qualifying Diastolic Blood Pressure Reading":
 	[Observation: "Diastolic blood pressure"] DiastolicBP
 		without ( [Encounter: "Encounter Inpatient"]
 			union [Encounter: "ED"] ) DisqualifyingEncounter
-			such that (DisqualifyingEncounter.status='in-progress' or DisqualifyingEncounter.status='finished')
+			such that (DisqualifyingEncounter.status.value='in-progress' or DisqualifyingEncounter.status.value='finished')
 		            and FHIRHelpers.ToDateTime(DiastolicBP.issued) during DisqualifyingEncounter.period
 		where DiastolicBP.value.unit = 'mm[Hg]'
 			and FHIRHelpers.ToDateTime(DiastolicBP.issued) during "Measurement Period"
@@ -128,13 +129,13 @@ define "Qualifying Systolic Blood Pressure Reading":
 	[Observation: "Systolic blood pressure"] SystolicBP
 		without ( [Encounter: "Encounter Inpatient"]
 			union [Encounter: "ED"] ) DisqualifyingEncounter
-			such that (DisqualifyingEncounter.status='in-progress' or DisqualifyingEncounter.status='finished')
+			such that (DisqualifyingEncounter.status.value='in-progress' or DisqualifyingEncounter.status.value='finished')
 		            and  FHIRHelpers.ToDateTime(SystolicBP.issued) during DisqualifyingEncounter.period
 		where SystolicBP.value.unit = 'mm[Hg]'
 			and FHIRHelpers.ToDateTime(SystolicBP.issued) during "Measurement Period"
 
 define "Denominator Exclusions":
-	"Has Hospice"
+	Hospice."Has Hospice"
 		or exists "Pregnancy Or Renal Diagnosis Exclusions"
 		or ( exists "End Stage Renal Disease Procedures"
 				or exists "End Stage Renal Disease Encounter"
@@ -144,23 +145,6 @@ define "Denominator Exclusions":
 		)
 		or FrailtyLTI."Advanced Illness and Frailty Exclusion Including Over Age 80"
 
-define "Has Hospice":
-
-            exists ( [Encounter: "Encounter Inpatient"] DischargeHospice
-            		where (DischargeHospice.status='in-progress' or DischargeHospice.status='finished')
-            		    and (
-			        FHIRHelpers.ToConcept(DischargeHospice.hospitalization.dischargeDisposition).codes[0] ~ "Discharge to home for hospice care (procedure)"
-					    or FHIRHelpers.ToConcept(DischargeHospice.hospitalization.dischargeDisposition).codes[0] ~ "Discharge to healthcare facility for hospice care (procedure)"
-			    )
-            			and DischargeHospice.period ends during "Measurement Period"
-                )
-            	or exists ( [ServiceRequest: "Hospice care ambulatory"] HospiceOrder
-            			where HospiceOrder.intent= 'order'
-				and FHIRHelpers.ToDateTime(HospiceOrder.authoredOn) during "Measurement Period"
-            	)
-            	or exists ( [Procedure: "Hospice care ambulatory"] HospicePerformed
-            			where (HospicePerformed.performed as Period) overlaps "Measurement Period"
-            	)
 
 define "Qualifying Encounters":
 	( [Encounter: "Office Visit"]
@@ -168,5 +152,5 @@ define "Qualifying Encounters":
 		union [Encounter: "Preventive Care Services - Established Office Visit, 18 and Up"]
 		union [Encounter: "Preventive Care Services-Initial Office Visit, 18 and Up"]
 		union [Encounter: "Home Healthcare Services"] ) ValidEncounter
-		where (ValidEncounter.status='in-progress' or ValidEncounter.status='finished')
+		where (ValidEncounter.status.value='in-progress' or ValidEncounter.status.value='finished')
 		            and ValidEncounter.period during "Measurement Period"

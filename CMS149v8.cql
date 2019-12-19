@@ -39,7 +39,7 @@ define "Patient Reason for Not Performing Assessment of Cognition Using Standard
 	[Observation: "Standardized Tools for Assessment of Cognition"] NoCognitiveAssessmentUsingTools
 		with "Dementia Encounter" EncounterDementia
 			such that FHIRHelpers.ToDateTime(NoCognitiveAssessmentUsingTools.issued) during EncounterDementia.period
-		where (NoCognitiveAssessmentUsingTools.status = 'cancelled' or NoCognitiveAssessmentUsingTools.status = 'entered-in-error')
+		where (NoCognitiveAssessmentUsingTools.status.value = 'cancelled' or NoCognitiveAssessmentUsingTools.status.value = 'entered-in-error')
 					and NoCognitiveAssessmentUsingTools.dataAbsentReason in "Patient Reason"
 
 define "Assessment of Cognition Using Standardized Tools":
@@ -72,7 +72,7 @@ define "Face to Face Encounter During Measurement Period":
 		union [Encounter: "Occupational Therapy Evaluation"]
 		union [Encounter: "Office Visit"]
 		union [Encounter: "Outpatient Consultation"] ) FaceToFaceEncounter
-		where (FaceToFaceEncounter.status='in-progress' or FaceToFaceEncounter.status='finished')
+		where (FaceToFaceEncounter.status.value='in-progress' or FaceToFaceEncounter.status.value='finished')
 		            and FaceToFaceEncounter.period during "Measurement Period"
 
 define "Numerator":
@@ -83,8 +83,8 @@ define "Patient Reason for Not Performing Cognitive Assessment Using Alternate M
 	[Procedure: "Cognitive Assessment"] NoCognitiveAssessmentUsingAlternateMethods
 		with "Dementia Encounter" EncounterDementia
 			such that start of (NoCognitiveAssessmentUsingAlternateMethods.performed as Period) during EncounterDementia.period
-		where NoCognitiveAssessmentUsingAlternateMethods.status='not-done'
-			    and NoCognitiveAssessmentUsingAlternateMethods.statusReason in "Patient Reason"
+		where NoCognitiveAssessmentUsingAlternateMethods.status.value='not-done'
+			    and NoCognitiveAssessmentUsingAlternateMethods.status.valueReason in "Patient Reason"
 
 define "Qualifying Encounter":
 	( [Encounter: "Psych Visit - Diagnostic Evaluation"]
@@ -97,7 +97,7 @@ define "Qualifying Encounter":
 		union [Encounter: "Occupational Therapy Evaluation"]
 		union [Encounter: "Office Visit"]
 		union [Encounter: "Outpatient Consultation"] ) ValidEncounter
-		where (ValidEncounter.status='in-progress' or ValidEncounter.status='finished')
+		where (ValidEncounter.status.value='in-progress' or ValidEncounter.status.value='finished')
 		            and ValidEncounter.period during "Measurement Period"
 
 define "Initial Population":

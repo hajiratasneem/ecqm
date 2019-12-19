@@ -3,6 +3,7 @@ library AntidepressantMedicationManagement version '8.3.000'
 using FHIR version '4.0.0'
 
 include FHIRHelpers version '4.0.0' called FHIRHelpers
+include Hospice_FHIR4 version '1.0.000' called Hospice
 
 codesystem "ICD-10-CM": 'http://hl7.org/fhir/sid/icd-10-cm'
 codesystem "LOINC": 'http://loinc.org'
@@ -68,7 +69,7 @@ define "Qualifying Encounters":
 		union [Encounter: "Psych Visit - Diagnostic Evaluation"]
 		union [Encounter: "Psych Visit - Psychotherapy"] ) ValidEncounter
 		let AntidepressantDispensed: "Antidepressant Dispensed 245 Days Before or 120 Days After Start of Measurement Period"
-		where (ValidEncounter.status='in-progress' or ValidEncounter.status='finished')
+		where (ValidEncounter.status.value='in-progress' or ValidEncounter.status.value='finished')
 		    and start of ValidEncounter.period within 60 days of FHIRHelpers.ToDateTime(AntidepressantDispensed.whenHandedOver)
 
 define "Has Initial Major Depression Diagnosis":
@@ -83,17 +84,17 @@ define "Initial Population":
 		and exists "Qualifying Encounters"
 
 define "Denominator Exclusions":
-	"Has Hospice"
+	Hospice."Has Hospice"
 		or exists ( [MedicationStatement: "Antidepressant Medication"] OnAntiDepressant
 				let AntidepressantDispensed: "Antidepressant Dispensed 245 Days Before or 120 Days After Start of Measurement Period"
-				where OnAntiDepressant.status='active'
+				where OnAntiDepressant.status.value='active'
 					and (OnAntiDepressant.effective as Period) overlaps Interval[FHIRHelpers.ToDateTime(AntidepressantDispensed.whenHandedOver) - 105 days, FHIRHelpers.ToDateTime(AntidepressantDispensed.whenHandedOver) )
 		)
 
 define "Antidepressant Taken In 231 Days After Initial Dispense":
 	[MedicationStatement: "Antidepressant Medication"] ActiveAntidepressant
 		let InitialAntidepressantDispensed: "Antidepressant Dispensed 245 Days Before or 120 Days After Start of Measurement Period"
-		where ActiveAntidepressant.status='active'
+		where ActiveAntidepressant.status.value='active'
 					and (ActiveAntidepressant.effective as Period) starts 231 days or less on or after day of FHIRHelpers.ToDateTime(InitialAntidepressantDispensed.whenHandedOver)
 		return (ActiveAntidepressant.effective as Period)
 			intersect Interval[FHIRHelpers.ToDateTime(InitialAntidepressantDispensed.whenHandedOver), FHIRHelpers.ToDateTime(InitialAntidepressantDispensed.whenHandedOver) + 231 days]
@@ -107,7 +108,7 @@ define "Cumulative Medication Duration Greater Than or Equal to 84 Days":
 define "Antidepressant Taken In 114 Days After Initial Dispense":
 	[MedicationStatement: "Antidepressant Medication"] ActiveAntidepressant
 		let AntidepressantDispensed: "Antidepressant Dispensed 245 Days Before or 120 Days After Start of Measurement Period"
-		where ActiveAntidepressant.status='active'
+		where ActiveAntidepressant.status.value='active'
 					and (ActiveAntidepressant.effective as Period) starts 114 days or less on or after day of FHIRHelpers.ToDateTime(AntidepressantDispensed.whenHandedOver)
 		return (ActiveAntidepressant.effective as Period)
 			intersect Interval[FHIRHelpers.ToDateTime(AntidepressantDispensed.whenHandedOver), FHIRHelpers.ToDateTime(AntidepressantDispensed.whenHandedOver) + 114 days]
@@ -116,21 +117,3 @@ define function "Cumulative Medication Duration"(Medication List<Interval<DateTi
 	Sum((collapse(Medication))CumulativeAntidepressant
 			return all duration in days of CumulativeAntidepressant
 	)
-
-define "Has Hospice":
-
-            exists ( [Encounter: "Encounter Inpatient"] DischargeHospice
-            		where (DischargeHospice.status='in-progress' or DischargeHospice.status='finished')
-            		    and (
-			        FHIRHelpers.ToConcept(DischargeHospice.hospitalization.dischargeDisposition).codes[0] ~ "Discharge to home for hospice care (procedure)"
-					    or FHIRHelpers.ToConcept(DischargeHospice.hospitalization.dischargeDisposition).codes[0] ~ "Discharge to healthcare facility for hospice care (procedure)"
-			    )
-            			and DischargeHospice.period ends during "Measurement Period"
-                )
-            	or exists ( [ServiceRequest: "Hospice care ambulatory"] HospiceOrder
-            			where HospiceOrder.intent= 'order'
-				and FHIRHelpers.ToDateTime(HospiceOrder.authoredOn) during "Measurement Period"
-            	)
-            	or exists ( [Procedure: "Hospice care ambulatory"] HospicePerformed
-            			where (HospicePerformed.performed as Period) overlaps "Measurement Period"
-            	)

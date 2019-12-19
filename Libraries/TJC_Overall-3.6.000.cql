@@ -30,10 +30,10 @@ context Patient
 
 define "Intervention Comfort Measures":
 	(["ServiceRequest": "Comfort Measures"] P
-		where P.intent = 'order')
+		where P.intent.value = 'order')
 		union
 		(["Procedure": "Comfort Measures"] InterventionPerformed
-		where InterventionPerformed.status = 'completed')
+		where InterventionPerformed.status.value = 'completed')
 
 define "All Stroke Encounter":
 	"Non Elective Inpatient Encounter" NonElectiveEncounter

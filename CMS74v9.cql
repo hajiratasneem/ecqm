@@ -3,6 +3,7 @@ library PrimaryCariesPreventionInterventionasOfferedbyPrimaryCareProvidersinclud
 using FHIR version '4.0.0'
 
 include FHIRHelpers version '4.0.0' called FHIRHelpers
+include Hospice_FHIR4 version '1.0.000' called Hospice
 
 codesystem "ICD-10-CM": 'http://hl7.org/fhir/sid/icd-10-cm'
 codesystem "LOINC": 'http://loinc.org'
@@ -35,7 +36,7 @@ context Patient
 
 define "Numerator":
 	exists [Procedure: "Fluoride Varnish Application for Children"] FluorideApplication
-		where FluorideApplication.status='completed' and (FluorideApplication.performed as Period) during "Measurement Period"
+		where FluorideApplication.status.value='completed' and (FluorideApplication.performed as Period) during "Measurement Period"
 
 define "Denominator":
 	"Initial Population"
@@ -47,11 +48,11 @@ define "Qualifying Encounters":
 		union [Encounter: "Preventive Care Services - Established Office Visit, 18 and Up"]
 		union [Encounter: "Preventive Care Services-Initial Office Visit, 18 and Up"]
 		union [Encounter: "Clinical Oral Evaluation"] ) ValidEncounter
-		where (ValidEncounter.status='in-progress' or ValidEncounter.status='finished')
+		where (ValidEncounter.status.value='in-progress' or ValidEncounter.status.value='finished')
 		            and ValidEncounter.period during "Measurement Period"
 
 define "Denominator Exclusions":
-	"Has Hospice"
+	Hospice."Has Hospice"
 
 define "Initial Population":
 	AgeInYearsAt(start of "Measurement Period")< 20
@@ -68,20 +69,3 @@ define "Stratification 3":
 	AgeInYearsAt(start of "Measurement Period")>= 12
 			and AgeInYearsAt(start of "Measurement Period")< 20
 
-define "Has Hospice":
-
-            exists ( [Encounter: "Encounter Inpatient"] DischargeHospice
-            		where (DischargeHospice.status='in-progress' or DischargeHospice.status='finished')
-            		    and (
-			        FHIRHelpers.ToConcept(DischargeHospice.hospitalization.dischargeDisposition).codes[0] ~ "Discharge to home for hospice care (procedure)"
-					    or FHIRHelpers.ToConcept(DischargeHospice.hospitalization.dischargeDisposition).codes[0] ~ "Discharge to healthcare facility for hospice care (procedure)"
-			    )
-            			and DischargeHospice.period ends during "Measurement Period"
-                )
-            	or exists ( [ServiceRequest: "Hospice care ambulatory"] HospiceOrder
-            			where HospiceOrder.intent= 'order'
-				and FHIRHelpers.ToDateTime(HospiceOrder.authoredOn) during "Measurement Period"
-            	)
-            	or exists ( [Procedure: "Hospice care ambulatory"] HospicePerformed
-            			where (HospicePerformed.performed as Period) overlaps "Measurement Period"
-            	)

@@ -51,7 +51,7 @@ define "Major Depressive Disorder Encounter":
 		union [Encounter: "Psychoanalysis"]
 		union [Encounter: "Telehealth Services"] ) ValidEncounter
 		with ([Condition:"Major Depressive Disorder-Active"]C where C.clinicalStatus.coding[0].code='active')Condition
-		such that (ValidEncounter.status='in-progress' or ValidEncounter.status='finished')
+		such that (ValidEncounter.status.value='in-progress' or ValidEncounter.status.value='finished')
 		    and exists (
                 ValidEncounter.diagnosis.condition Condition
                     where EndsWith(Condition.reference, Condition.id)

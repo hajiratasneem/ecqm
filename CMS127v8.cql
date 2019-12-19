@@ -3,6 +3,7 @@ library PneumococcalVaccinationStatusforOlderAdults version '8.1.000'
 using FHIR version '4.0.0'
 
 include FHIRHelpers version '4.0.0' called FHIRHelpers
+include Hospice_FHIR4 version '1.0.000' called Hospice
 
 codesystem "ICD-10-CM": 'http://hl7.org/fhir/sid/icd-10-cm'
 codesystem "LOINC": 'http://loinc.org'
@@ -49,7 +50,7 @@ define "Qualifying Encounters":
 		union [Encounter: "Care Services in Long-Term Residential Facility"]
 		union [Encounter: "Nursing Facility Visit"]
 		union [Encounter: "Discharge Services - Nursing Facility"] ) ValidEncounter
-		where (ValidEncounter.status='in-progress' or ValidEncounter.status='finished')
+		where (ValidEncounter.status.value='in-progress' or ValidEncounter.status.value='finished')
 		            and ValidEncounter.period during "Measurement Period"
 
 define "Numerator":
@@ -58,33 +59,16 @@ define "Numerator":
 			end of "Measurement Period"
 	)
 		or exists ( [Procedure: "Pneumococcal Vaccine Administered"] PneumococcalVaccineGiven
-				where PneumococcalVaccineGiven.status='completed'
+				where PneumococcalVaccineGiven.status.value='completed'
 			    and (PneumococcalVaccineGiven.performed as Period) starts on or before
 				end of "Measurement Period"
 		)
 
 define "Denominator Exclusions":
-	"Has Hospice"
+	Hospice."Has Hospice"
 
 define "Initial Population":
 	AgeInYearsAt(start of "Measurement Period")>= 65
 		and exists "Qualifying Encounters"
 
 
-define "Has Hospice":
-
-            exists ( [Encounter: "Encounter Inpatient"] DischargeHospice
-            		where (DischargeHospice.status='in-progress' or DischargeHospice.status='finished')
-            		    and (
-			        FHIRHelpers.ToConcept(DischargeHospice.hospitalization.dischargeDisposition).codes[0] ~ "Discharge to home for hospice care (procedure)"
-					    or FHIRHelpers.ToConcept(DischargeHospice.hospitalization.dischargeDisposition).codes[0] ~ "Discharge to healthcare facility for hospice care (procedure)"
-			    )
-            			and DischargeHospice.period ends during "Measurement Period"
-                )
-            	or exists ( [ServiceRequest: "Hospice care ambulatory"] HospiceOrder
-            			where HospiceOrder.intent= 'order'
-				and FHIRHelpers.ToDateTime(HospiceOrder.authoredOn) during "Measurement Period"
-            	)
-            	or exists ( [Procedure: "Hospice care ambulatory"] HospicePerformed
-            			where (HospicePerformed.performed as Period) overlaps "Measurement Period"
-            	)

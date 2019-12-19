@@ -49,7 +49,7 @@ define "Major Depressive Disorder Encounter":
                 ValidEncounter.diagnosis.condition Condition
                     where EndsWith(Condition.reference, "GetCondition".id)
             )
-			and (ValidEncounter.status='in-progress' or ValidEncounter.status='finished')
+			and (ValidEncounter.status.value='in-progress' or ValidEncounter.status.value='finished')
 		    and ValidEncounter.period during "Measurement Period"
 
 define "Numerator":

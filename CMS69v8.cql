@@ -66,14 +66,14 @@ define "Has Normal BMI":
 define "Palliative Care Encounter Performed":
 	[Encounter: "Palliative care encounter"] PalliativeCareEncounter
 		with "Qualifying Encounters During the Measurement Period" QualifyingEncounter
-			such that (PalliativeCareEncounter.status='in-progress' or PalliativeCareEncounter.status='finished')
+			such that (PalliativeCareEncounter.status.value='in-progress' or PalliativeCareEncounter.status.value='finished')
 		            and PalliativeCareEncounter.period starts on or before
 			end of QualifyingEncounter.period
 
 define "No BMI Due to Patient Refusal":
 	[Observation: "Body mass index (BMI) [Ratio]"] NoBMI
 		with "Qualifying Encounters During the Measurement Period" QualifyingEncounter
-			such that (NoBMI.status = 'cancelled' or NoBMI.status = 'entered-in-error')
+			such that (NoBMI.status.value = 'cancelled' or NoBMI.status.value = 'entered-in-error')
 					and NoBMI.dataAbsentReason in "Patient Reason refused"
 				and FHIRHelpers.ToDateTime(NoBMI.issued) during QualifyingEncounter.period
 
@@ -96,14 +96,14 @@ define "Has Low BMI with Follow Up":
 define "No BMI Due to Medical Reason":
 	[Observation: "Body mass index (BMI) [Ratio]"] NoBMI
 		with "Qualifying Encounters During the Measurement Period" QualifyingEncounter
-			such that (NoBMI.status = 'cancelled' or NoBMI.status = 'entered-in-error')
+			such that (NoBMI.status.value = 'cancelled' or NoBMI.status.value = 'entered-in-error')
 					and NoBMI.dataAbsentReason in "Medical or Other reason not done"
 				and FHIRHelpers.ToDateTime(NoBMI.issued) 12 months or less on or before day of start of QualifyingEncounter.period
 
 define "No BMI Referral Due to Medical Reason":
 	[ServiceRequest: "Referrals where weight assessment may occur"] NoReferral
 		with "Qualifying Encounters During the Measurement Period" QualifyingEncounter
-			such that NoReferral.intent!='order'
+			such that NoReferral.intent.value!='order'
 				and FHIRHelpers.ToBoolean(NoReferral.doNotPerform) =true
 				and "NoSR"(NoReferral) in "Medical or Other reason not done"
 				and FHIRHelpers.ToDateTime(NoReferral.authoredOn) 12 months or less on or before day of start of QualifyingEncounter.period
@@ -111,7 +111,7 @@ define "No BMI Referral Due to Medical Reason":
 define "No Medication Order For High BMI Due to Medical Reason":
 	[MedicationRequest: "Above Normal Medications"] HighBMINoMedications
 		with "Qualifying Encounters During the Measurement Period" QualifyingEncounter
-			such that HighBMINoMedications.intent!='order'
+			such that HighBMINoMedications.intent.value!='order'
 				and FHIRHelpers.ToBoolean(HighBMINoMedications.doNotPerform) =true
 				and HighBMINoMedications.reasonCode in "Medical or Other reason not done"
 				and FHIRHelpers.ToDateTime(HighBMINoMedications.authoredOn) 12 months or less on or before day of start of QualifyingEncounter.period
@@ -119,7 +119,7 @@ define "No Medication Order For High BMI Due to Medical Reason":
 define "No Medication Order For Low BMI Due to Medical Reason":
 	[MedicationRequest: "Below Normal Medications"] LowBMINoMedications
 		with "Qualifying Encounters During the Measurement Period" QualifyingEncounter
-			such that LowBMINoMedications.intent!='order'
+			such that LowBMINoMedications.intent.value!='order'
 				and FHIRHelpers.ToBoolean(LowBMINoMedications.doNotPerform) =true
 				and LowBMINoMedications.reasonCode in "Medical or Other reason not done"
 				and FHIRHelpers.ToDateTime(LowBMINoMedications.authoredOn) 12 months or less on or before day of start of QualifyingEncounter.period
@@ -139,29 +139,29 @@ define "Initial Population":
 
 define "High BMI Follow Up Encounters":
 	"Qualifying Encounters During the Measurement Period" QualifyingEncounter
-		with ( ([ServiceRequest: "Above Normal Follow-up"]SR where SR.intent='order')
+		with ( ([ServiceRequest: "Above Normal Follow-up"]SR where SR.intent.value='order')
 			union [Procedure: "Above Normal Follow-up"]
 			union ( [ServiceRequest: "Referrals where weight assessment may occur"] Referral
-					where Referral.intent='order' and Referral.reasonCode in "Overweight or Obese"
+					where Referral.intent.value='order' and Referral.reasonCode in "Overweight or Obese"
 			)
-			union ([MedicationRequest: "Above Normal Medications"] MR where MR.intent='order')) HighBMIInterventions
+			union ([MedicationRequest: "Above Normal Medications"] MR where MR.intent.value='order')) HighBMIInterventions
 			such that Coalesce(start of (HighBMIInterventions.occurrence as Period), FHIRHelpers.ToDateTime(HighBMIInterventions.authoredOn))12 months or less on or before
 			end of QualifyingEncounter.period
 
 define "Low BMI Follow Up Encounters":
 	"Qualifying Encounters During the Measurement Period" QualifyingEncounter
-		with (([ServiceRequest: "Below Normal Follow up"]SR where SR.intent='order')
+		with (([ServiceRequest: "Below Normal Follow up"]SR where SR.intent.value='order')
 			union [Procedure: "Below Normal Follow up"]
 			union ( [ServiceRequest: "Referrals where weight assessment may occur"] Referral
-					where Referral.intent='order' and Referral.reasonCode in "Underweight")
-			union ([MedicationRequest: "Below Normal Medications"]MR where MR.intent='order')
+					where Referral.intent.value='order' and Referral.reasonCode in "Underweight")
+			union ([MedicationRequest: "Below Normal Medications"]MR where MR.intent.value='order')
 			) LowBMIInterventions
 			such that Coalesce(start of (LowBMIInterventions.occurrence as Period), FHIRHelpers.ToDateTime(LowBMIInterventions.authoredOn))12 months or less on or before
 			end of QualifyingEncounter.period
 
 define "No Follow Up For High BMI Due to Medical Reason":
-	( ([ServiceRequest: "Above Normal Follow-up"]SR where SR.intent!='order' and FHIRHelpers.ToBoolean(SR.doNotPerform) =true)
-		union ([Procedure: "Above Normal Follow-up"]P where P.status!='in-progress' and P.status!='completed') ) HighBMINoFollowup
+	( ([ServiceRequest: "Above Normal Follow-up"]SR where SR.intent.value!='order' and FHIRHelpers.ToBoolean(SR.doNotPerform) =true)
+		union ([Procedure: "Above Normal Follow-up"]P where P.status.value!='in-progress' and P.status.value!='completed') ) HighBMINoFollowup
 		with "Qualifying Encounters During the Measurement Period" QualifyingEncounter
 			such that "NoSR"(HighBMINoFollowup) in "Medical or Other reason not done"
 				and FHIRHelpers.ToDateTime(HighBMINoFollowup.authoredOn) 12 months or less on or before day of start of QualifyingEncounter.period
@@ -177,14 +177,14 @@ define "Palliative or Hospice Care Order or Encounter":
 
 define "Qualifying Encounters During the Measurement Period":
 	[Encounter: "BMI Encounter Code Set"] BMIEncounter
-		 where (BMIEncounter.status='in-progress' or BMIEncounter.status='finished')
+		 where (BMIEncounter.status.value='in-progress' or BMIEncounter.status.value='finished')
 		            and AgeInYearsAt(start of BMIEncounter.period)>= 18
 		and BMIEncounter.period during "Measurement Period"
 		sort by start of period
 
 define "No Follow Up For Low BMI Due to Medical Reason":
-	( ([ServiceRequest: "Below Normal Follow up"]SR where SR.intent!='order' and FHIRHelpers.ToBoolean(SR.doNotPerform) =true)
-		union [Procedure: "Below Normal Follow up"]P where P.status='not-done' ) LowBMINoFollowUp
+	( ([ServiceRequest: "Below Normal Follow up"]SR where SR.intent.value!='order' and FHIRHelpers.ToBoolean(SR.doNotPerform) =true)
+		union [Procedure: "Below Normal Follow up"]P where P.status.value='not-done' ) LowBMINoFollowUp
 		with "Qualifying Encounters During the Measurement Period" QualifyingEncounter
 			such that "NoSR"(LowBMINoFollowUp) in "Medical or Other reason not done"
 				and FHIRHelpers.ToDateTime(LowBMINoFollowUp.authoredOn) 12 months or less on or before day of start of QualifyingEncounter.period
@@ -192,7 +192,7 @@ define "No Follow Up For Low BMI Due to Medical Reason":
 define "Palliative or Hospice Care Ordered":
 	[ServiceRequest: "Palliative or Hospice Care"] PalliativeOrHospiceCareOrder
 		with "Qualifying Encounters During the Measurement Period" QualifyingEncounter
-			such that PalliativeOrHospiceCareOrder.intent='order' 
+			such that PalliativeOrHospiceCareOrder.intent.value='order'
 				and FHIRHelpers.ToDateTime(PalliativeOrHospiceCareOrder.authoredOn) on or before
 			end of QualifyingEncounter.period
 
