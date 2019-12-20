@@ -16,7 +16,7 @@
         "value": "CMS349v2"
       }
     ],
-    "version": "8.2.000",
+    "version": "2.9.000",
     "name": "HIVScreening",
     "title": "HIV Screening",
     "status": "active",
@@ -46,7 +46,8 @@
     ],
     "relatedArtifact": [
       {
-        "type": "depends-on"
+        "type": "depends-on",
+        "resource": "Library/41151"
       }
     ],
     "dataRequirement": [    
