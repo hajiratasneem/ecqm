@@ -208,7 +208,7 @@ define "LDL Greater Than or Equal to 190 in Patient History":
 define "LDL Test Result In Past 2 Years":
 	[Observation: "LDL-c"] LDL
 		where LDL.effective as Period starts 3 years or less before 
-		end "Measurement Period"
+		end of "Measurement Period"
 			and LDL.value as Integer is not null
 		
 
@@ -248,7 +248,7 @@ define "Has Diabetes":
 define "LDL 70 to 189 During or 2 Years Before Start of Measurement Period":
 	"LDL Between 70 and 189" LDLRange
 		where LDLRange.effective as Period starts 3 years or less before 
-		end "Measurement Period"
+		end of "Measurement Period"
 
 define "Adverse Reaction to Statins":
 	["Adverse Event": "Statin Allergen"] StatinReaction

@@ -57,7 +57,7 @@ define "Bilateral Mastectomy Procedure":
 define "Numerator":
 	exists ( [DiagnosticReport: "Mammography"] Mammogram
 			where (Mammogram.status.value='final' or Mammogram.status.value='amended' or Mammogram.status.value='corrected' or Mammogram.status.value='appended')
-		    and ( (Mammogram.effective as Period) ends 27 months or less before day of end "Measurement Period")
+		    and ( (Mammogram.effective as Period) ends 27 months or less before day of end of "Measurement Period")
 	)
 
 define "Left Mastectomy Procedure":

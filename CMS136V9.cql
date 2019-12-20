@@ -85,12 +85,12 @@ define "Qualifying Numerator Encounter":
 define "Narcolepsy Exclusion":
 	[Condition: "Narcolepsy"] Narcolepsy
 		where Narcolepsy.onset as Period starts before 
-		end "Measurement Period"
+		end of "Measurement Period"
 
 define "First ADHD Medication Dispensed":
 	First([MedicationDispense: "ADHD Medications"] FirstADHDMedication
-			where FHIRHelpers.ToDateTime(FirstADHDMedication.whenPrepared) 60 days or less after start "Measurement Period"
-				or FHIRHelpers.ToDateTime(FirstADHDMedication.whenPrepared) 90 days or less on or before start "Measurement Period"
+			where FHIRHelpers.ToDateTime(FirstADHDMedication.whenPrepared) 60 days or less after start  of "Measurement Period"
+				or FHIRHelpers.ToDateTime(FirstADHDMedication.whenPrepared) 90 days or less on or before start of "Measurement Period"
 	)
 
 define "Inpatient Stay with Qualifying Diagnosis within 30 Days of Initial ADHD Dispense":

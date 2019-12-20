@@ -79,7 +79,7 @@ define "Assessed as Not Ambulatory During Measurement Period":
 define "Assessed as Not Ambulatory Prior to Measurement Period":
 	Last([Observation: "Ambulatory Status"] PriorAmbulatoryStatus
 			where (PriorAmbulatoryStatus.status.value = 'final' or PriorAmbulatoryStatus.status.value = 'amended' or PriorAmbulatoryStatus.status.value = 'corrected')
-			and FHIRHelpers.ToDateTime(PriorAmbulatoryStatus.issued) before start "Measurement Period"
+			and FHIRHelpers.ToDateTime(PriorAmbulatoryStatus.issued) before start of "Measurement Period"
 			sort by FHIRHelpers.ToDateTime(issued)
 	).value in "Patient not ambulatory"
 
