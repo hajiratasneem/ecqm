@@ -16,7 +16,7 @@
         "value": "CMS50v8"
       }
     ],
-    "version": "8.2.000",
+    "version": "8.0.000",
     "name": "ClosingtheReferralLoop",
     "title": "Closing the Referral Loop",
     "status": "active",
@@ -46,8 +46,9 @@
     ],
     "relatedArtifact": [
       {
-        "type": "depends-on"
-      }
+        "type": "depends-on",
+        "resource": "Library/41151"
+    }
     ],
     "dataRequirement": [
       {

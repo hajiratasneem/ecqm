@@ -16,7 +16,7 @@
         "value": "CMS74v9"
       }
     ],
-    "version": "8.2.000",
+    "version": "9.1.000",
     "name": "PrimaryCariesPreventionInterventionasOfferedbyPrimaryCareProvidersincludingDentists",
     "title": "Primary Caries Prevention Intervention as Offered by Primary Care Providers including Dentists",
     "status": "active",
@@ -46,8 +46,13 @@
     ],
     "relatedArtifact": [
       {
-        "type": "depends-on"
-      }
+        "type": "depends-on",
+        "resource": "Library/41151"
+    },
+    {
+      "type": "depends-on",
+      "resource": "Library/76896"
+  }
     ],
     "dataRequirement": [
       {

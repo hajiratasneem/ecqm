@@ -16,7 +16,7 @@
         "value": "CMS144v8"
       }
     ],
-    "version": "8.2.000",
+    "version": "8.1.000",
     "name": "HeartFailureHFBetaBlockerTherapyforLeftVentricularSystolicDysfunctionLVSD",
     "title": "Heart Failure HF Beta Blocker Therapy for Left Ventricular Systolic Dysfunction LVSD",
     "status": "active",
@@ -46,7 +46,8 @@
     ],
     "relatedArtifact": [
       {
-        "type": "depends-on"
+        "type": "depends-on",
+        "resource": "Library/41151"
       }
     ],
     "dataRequirement": [

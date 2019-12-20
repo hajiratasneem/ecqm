@@ -16,7 +16,7 @@
             "value": "CMS133v8"
         }
     ],
-    "version": "8.2.000",
+    "version": "8.1.000",
     "name": "Cataracts2040orBetterVisualAcuitywithin90DaysFollowingCataractSurgery",
     "title": "Cataracts 2040 or Better Visual Acuity with in 90 Days Following Cataract Surgery",
     "status": "active",
@@ -46,8 +46,10 @@
     ],
     "relatedArtifact": [
         {
-            "type": "depends-on"
-        }
+            "type": "depends-on",
+            "resource": "Library/41151"
+          }
+          
     ],
     "dataRequirement": [
         {

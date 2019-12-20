@@ -46,8 +46,9 @@
     ],
     "relatedArtifact": [
       {
-        "type": "depends-on"
-      }
+        "type": "depends-on",
+        "resource": "Library/41151"
+    }
     ],
     "dataRequirement": [
       {

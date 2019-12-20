@@ -16,7 +16,7 @@
         "value": "CMS127v8"
       }
     ],
-    "version": "8.2.000",
+    "version": "8.1.000",
     "name": "PneumococcalVaccinationStatusforOlderAdults",
     "title": "Pneumococcal Vaccination Status for Older Adults",
     "status": "active",
@@ -46,10 +46,12 @@
     ],
     "relatedArtifact": [
       {
-        "type": "depends-on"
+        "type": "depends-on",
+        "resource": "Library/41151"
       },
       {
-        "type": "depends-on"
+        "type": "depends-on",
+        "resource": "Library/76896"
       }
     ],
     "dataRequirement": [
