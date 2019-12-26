@@ -16,7 +16,7 @@
         "value": "CMS161v8"
       }
     ],
-    "version": "8.2.000",
+    "version": "8.1.000",
     "name": "AdultMajorDepressiveDisorderMDDSuicideRiskAssessment",
     "title": "Adult Major Depressive Disorder MDD Suicide Risk Assessment",
     "status": "active",
@@ -46,7 +46,8 @@
     ],
     "relatedArtifact": [
       {
-        "type": "depends-on"
+        "type": "depends-on",
+        "resource": "Library/41151"
       }
     ],
     "dataRequirement": [    

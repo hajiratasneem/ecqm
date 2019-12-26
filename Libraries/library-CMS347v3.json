@@ -16,7 +16,7 @@
         "value": "CMS347v3"
       }
     ],
-    "version": "8.2.000",
+    "version": "3.1.000",
     "name": "StatinTherapyforthePreventionandTreatmentofCardiovascularDisease",
     "title": "Statin Therapy for the Prevention and Treatment of Cardiovascular Disease",
     "status": "active",
@@ -46,7 +46,8 @@
     ],
     "relatedArtifact": [
       {
-        "type": "depends-on"
+        "type": "depends-on",
+        "resource": "Library/41151"
       }
     ],
     "dataRequirement": [    

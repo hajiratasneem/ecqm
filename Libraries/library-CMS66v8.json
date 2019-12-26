@@ -16,7 +16,7 @@
         "value": "CMS66v8"
       }
     ],
-    "version": "8.2.000",
+    "version": "8.3.000",
     "name": "FunctionalStatusAssessmentforTotalKneeReplacement",
     "title": "Functional Status Assessment for Total Knee Replacement",
     "status": "active",
@@ -46,8 +46,13 @@
     ],
     "relatedArtifact": [
       {
-        "type": "depends-on"
-      }
+        "type": "depends-on",
+        "resource": "Library/41151"
+    },
+    {
+      "type": "depends-on",
+      "resource": "Library/76896"
+  }
     ],
     "dataRequirement": [
       {

@@ -16,7 +16,7 @@
         "value": "CMS159v8"
       }
     ],
-    "version": "8.2.000",
+    "version": "8.6.000",
     "name": "DepressionRemissionatTwelveMonths",
     "title": "Depression Remission at Twelve Months",
     "status": "active",
@@ -46,7 +46,16 @@
     ],
     "relatedArtifact": [
       {
-        "type": "depends-on"
+        "type": "depends-on",
+        "resource": "Library/41151"
+      },
+      {
+        "type": "depends-on",
+        "resource": "Library/76896"
+      },
+      {
+        "type": "depends-on",
+        "resource": "Library/41153"
       }
     ],
     "dataRequirement": [   

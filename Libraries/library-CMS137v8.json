@@ -16,7 +16,7 @@
         "value": "CMS137v8"
       }
     ],
-    "version": "8.2.000",
+    "version": "8.5.000",
     "name": "InitiationandEngagementofAlcoholandOtherDrugDependenceTreatment",
     "title": "Initiation and Engagement of Alcohol and Other Drug Dependence Treatment",
     "status": "active",
@@ -46,7 +46,8 @@
     ],
     "relatedArtifact": [
       {
-        "type": "depends-on"
+        "type": "depends-on",
+        "resource": "Library/41151"
       }
     ],
     "dataRequirement": [

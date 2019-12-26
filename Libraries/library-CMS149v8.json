@@ -16,7 +16,7 @@
         "value": "CMS149v8"
       }
     ],
-    "version": "8.2.000",
+    "version": "8.0.000",
     "name": "DementiaCognitiveAssessment",
     "title": "Dementia Cognitive Assessment",
     "status": "active",
@@ -46,7 +46,8 @@
     ],
     "relatedArtifact": [
       {
-        "type": "depends-on"
+        "type": "depends-on",
+        "resource": "Library/41151"
       }
     ],
     "dataRequirement": [

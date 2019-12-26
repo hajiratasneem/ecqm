@@ -16,7 +16,7 @@
         "value": "CMS157v8"
       }
     ],
-    "version": "8.2.000",
+    "version": "8.1.000",
     "name": "OncologyMedicalandRadiationPainIntensityQuantified",
     "title": "Oncology Medical and Radiation Pain Intensity Quantified",
     "status": "active",
@@ -46,7 +46,8 @@
     ],
     "relatedArtifact": [
       {
-        "type": "depends-on"
+        "type": "depends-on",
+        "resource": "Library/41151"
       }
     ],
     "dataRequirement": [  

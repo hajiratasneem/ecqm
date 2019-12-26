@@ -16,7 +16,7 @@
         "value": "CMS128v8"
       }
     ],
-    "version": "8.2.000",
+    "version": "8.3.000",
     "name": "AntidepressantMedicationManagement",
     "title": "Antidepressant Medication Management",
     "status": "active",
@@ -46,7 +46,12 @@
     ],
     "relatedArtifact": [
       {
-        "type": "depends-on"
+        "type": "depends-on",
+        "resource": "Library/41151"
+      },
+      {
+        "type": "depends-on",
+        "resource": "Library/76896"
       }
     ],
     "dataRequirement": [

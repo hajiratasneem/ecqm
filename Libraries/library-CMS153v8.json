@@ -16,7 +16,7 @@
         "value": "CMS153v8"
       }
     ],
-    "version": "8.2.000",
+    "version": "8.1.000",
     "name": "ChlamydiaScreeningforWomen",
     "title": "Chlamydia Screening for Women",
     "status": "active",
@@ -46,7 +46,8 @@
     ],
     "relatedArtifact": [
       {
-        "type": "depends-on"
+        "type": "depends-on",
+        "resource": "Library/41151"
       }
     ],
     "dataRequirement": [ 

@@ -16,7 +16,7 @@
         "value": "CMS68v9"
       }
     ],
-    "version": "8.2.000",
+    "version": "9.1.000",
     "name": "DocumentationofCurrentMedicationsintheMedicalRecord",
     "title": "Documentation of Current Medications in the Medical Record",
     "status": "active",
@@ -46,8 +46,9 @@
     ],
     "relatedArtifact": [
       {
-        "type": "depends-on"
-      }
+        "type": "depends-on",
+        "resource": "Library/41151"
+    }
     ],
     "dataRequirement": [
       {
