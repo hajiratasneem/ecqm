@@ -1,343 +1,171 @@
-library HeartFailureHFBetaBlockerTherapyforLeftVentricularSystolicDysfunctionLVSD version '8.1.000'
+library ChlamydiaScreeningforWomen version '8.1.000'
 
 using FHIR version '4.0.0'
 
 include FHIRHelpers version '4.0.0' called FHIRHelpers
+include MATGlobalCommonFunctions_FHIR4 version '4.0.000' called Global
+include Hospice_FHIR4 version '1.0.000' called Hospice
 
 codesystem "LOINC": 'urn:oid:2.16.840.1.113883.6.1'
+codesystem "SNOMEDCT": 'urn:oid:2.16.840.1.113883.6.96'
 
-valueset "Allergy to Beta Blocker Therapy": 'urn:oid:2.16.840.1.113883.3.526.3.1177'
-valueset "Arrhythmia": 'urn:oid:2.16.840.1.113883.3.526.3.366'
-valueset "Asthma": 'urn:oid:2.16.840.1.113883.3.526.3.362'
-valueset "Atrioventricular Block": 'urn:oid:2.16.840.1.113883.3.526.3.367'
-valueset "Beta Blocker Therapy for LVSD": 'urn:oid:2.16.840.1.113883.3.526.3.1184'
-valueset "Beta Blocker Therapy Ingredient": 'urn:oid:2.16.840.1.113883.3.526.3.1493'
-valueset "Bradycardia": 'urn:oid:2.16.840.1.113883.3.526.3.412'
-valueset "Cardiac Pacer": 'urn:oid:2.16.840.1.113883.3.526.3.1193'
-valueset "Cardiac Pacer in Situ": 'urn:oid:2.16.840.1.113883.3.526.3.368'
-valueset "Care Services in Long-Term Residential Facility": 'urn:oid:2.16.840.1.113883.3.464.1003.101.12.1014'
-valueset "Discharge Services - Hospital Inpatient": 'urn:oid:2.16.840.1.113883.3.464.1003.101.12.1007'
-valueset "Ejection Fraction": 'urn:oid:2.16.840.1.113883.3.526.3.1134'
+valueset "Carrier of Predominantly Sexually Transmitted Infection": 'urn:oid:2.16.840.1.113883.3.464.1003.112.11.1023'
+valueset "Chlamydia": 'urn:oid:2.16.840.1.113883.3.464.1003.112.12.1003'
+valueset "Chlamydia Screening": 'urn:oid:2.16.840.1.113883.3.464.1003.110.12.1052'
+valueset "Complications of Pregnancy, Childbirth and the Puerperium": 'urn:oid:2.16.840.1.113883.3.464.1003.111.12.1012'
+valueset "Contraceptive Medications": 'urn:oid:2.16.840.1.113883.3.464.1003.196.12.1080'
+valueset "Delivery Live Births": 'urn:oid:2.16.840.1.113883.3.464.1003.111.12.1015'
+valueset "Diagnostic Studies During Pregnancy": 'urn:oid:2.16.840.1.113883.3.464.1003.111.12.1008'
 valueset "Ethnicity": 'urn:oid:2.16.840.1.114222.4.11.837'
-valueset "Heart Failure": 'urn:oid:2.16.840.1.113883.3.526.3.376'
-valueset "Heart Rate": 'urn:oid:2.16.840.1.113883.3.526.3.1176'
+valueset "Female": 'urn:oid:2.16.840.1.113883.3.560.100.2'
+valueset "Genital Herpes": 'urn:oid:2.16.840.1.113883.3.464.1003.110.12.1049'
+valueset "Gonococcal Infections and Venereal Diseases": 'urn:oid:2.16.840.1.113883.3.464.1003.112.12.1001'
+valueset "HIV": 'urn:oid:2.16.840.1.113883.3.464.1003.120.12.1003'
 valueset "Home Healthcare Services": 'urn:oid:2.16.840.1.113883.3.464.1003.101.12.1016'
-valueset "Hypotension": 'urn:oid:2.16.840.1.113883.3.526.3.370'
-valueset "Intolerance to Beta Blocker Therapy": 'urn:oid:2.16.840.1.113883.3.526.3.1178'
-valueset "Left Ventricular Systolic Dysfunction": 'urn:oid:2.16.840.1.113883.3.526.3.1091'
-valueset "Medical Reason": 'urn:oid:2.16.840.1.113883.3.526.3.1007'
-valueset "Moderate or Severe": 'urn:oid:2.16.840.1.113883.3.526.3.1092'
-valueset "Moderate or Severe LVSD": 'urn:oid:2.16.840.1.113883.3.526.3.1090'
-valueset "Nursing Facility Visit": 'urn:oid:2.16.840.1.113883.3.464.1003.101.12.1012'
+valueset "Inflammatory Diseases of Female Reproductive Organs": 'urn:oid:2.16.840.1.113883.3.464.1003.112.12.1004'
+valueset "Isotretinoin": 'urn:oid:2.16.840.1.113883.3.464.1003.196.12.1143'
+valueset "Lab Tests During Pregnancy": 'urn:oid:2.16.840.1.113883.3.464.1003.111.12.1007'
+valueset "Lab Tests for Sexually Transmitted Infections": 'urn:oid:2.16.840.1.113883.3.464.1003.110.12.1051'
 valueset "Office Visit": 'urn:oid:2.16.840.1.113883.3.464.1003.101.12.1001'
 valueset "ONC Administrative Sex": 'urn:oid:2.16.840.1.113762.1.4.1'
-valueset "Outpatient Consultation": 'urn:oid:2.16.840.1.113883.3.464.1003.101.12.1008'
-valueset "Patient Provider Interaction": 'urn:oid:2.16.840.1.113883.3.526.3.1012'
-valueset "Patient Reason": 'urn:oid:2.16.840.1.113883.3.526.3.1008'
+valueset "Other Female Reproductive Conditions": 'urn:oid:2.16.840.1.113883.3.464.1003.111.12.1006'
+valueset "Pap Test": 'urn:oid:2.16.840.1.113883.3.464.1003.108.12.1017'
 valueset "Payer": 'urn:oid:2.16.840.1.114222.4.11.3591'
+valueset "Pregnancy Test": 'urn:oid:2.16.840.1.113883.3.464.1003.111.12.1011'
+valueset "Preventive Care - Established Office Visit, 0 to 17": 'urn:oid:2.16.840.1.113883.3.464.1003.101.12.1024'
+valueset "Preventive Care Services - Established Office Visit, 18 and Up": 'urn:oid:2.16.840.1.113883.3.464.1003.101.12.1025'
+valueset "Preventive Care Services-Initial Office Visit, 18 and Up": 'urn:oid:2.16.840.1.113883.3.464.1003.101.12.1023'
+valueset "Preventive Care- Initial Office Visit, 0 to 17": 'urn:oid:2.16.840.1.113883.3.464.1003.101.12.1022'
+valueset "Procedures During Pregnancy": 'urn:oid:2.16.840.1.113883.3.464.1003.111.12.1009'
+valueset "Procedures Involving Contraceptive Devices": 'urn:oid:2.16.840.1.113883.3.464.1003.111.12.1010'
 valueset "Race": 'urn:oid:2.16.840.1.114222.4.11.836'
-valueset "System Reason": 'urn:oid:2.16.840.1.113883.3.526.3.1009'
+valueset "Sexually Active": '2.16.840.1.113883.3.464.1003.121.12.1040'
+valueset "Syphilis": 'urn:oid:2.16.840.1.113883.3.464.1003.112.12.1002'
+valueset "X-Ray Study (all inclusive)": 'urn:oid:2.16.840.1.113883.3.464.1003.198.12.1034'
 
 code "Birth date": '21112-8' from "LOINC" display 'Birth date'
+code "Yes (qualifier value)": '373066001' from "SNOMEDCT" display 'Yes (qualifier value)'
 
 parameter "Measurement Period" Interval<DateTime>
 
 context Patient
 
-define "SDE Ethnicity":
-	["Patient Characteristic Ethnicity": "Ethnicity"]
-
-define "SDE Payer":
-	["Patient Characteristic Payer": "Payer"]
-
-define "SDE Race":
-	["Patient Characteristic Race": "Race"]
-
-define "SDE Sex":
-	["Patient Characteristic Sex": "ONC Administrative Sex"]
-
-define "Moderate or Severe LVSD Findings":
-	( [ DiagnosticReport: "Ejection Fraction"] EjectionFraction
-			where EjectionFraction.result < 40 '%'
-	)
-		union [ Condition: "Moderate or Severe LVSD"]
-		union ( [ Condition: "Left Ventricular Systolic Dysfunction"] LVSD
-				where LVSD.severity in "Moderate or Severe"
+define "Initial Population":
+	exists ("PatientAge")
+		and exists ( "Qualifying Encounters" )
+		and ( exists ( "Assessments Identifying Sexual Activity" )
+				or exists ( "Diagnoses Identifying Sexual Activity" )
+				or exists ( "Active Contraceptive Medications" )
+				or exists ( "Ordered Contraceptive Medications" )
+				or exists ( "Laboratory Tests Identifying Sexual Activity" )
+				or exists ( "Diagnostic Studies Identifying Sexual Activity" )
+				or exists ( "Procedures  Identifying Sexual Activity" )
 		)
 
-define "Inpatient Discharge During Measurement Period":
-	[ Encounter : "Discharge Services - Hospital Inpatient"] InpatientEncounter
-		where InpatientEncounter.period during "Measurement Period"
+define "PatientAge":
+	["Patient"]Patient
+			where (Global."CalendarAgeInYearsAt"(FHIRHelpers.ToDate(Patient.birthDate), start of "Measurement Period")>= 16
+				and Global."CalendarAgeInYearsAt"(FHIRHelpers.ToDate(Patient.birthDate), start of "Measurement Period")< 24)
+					and Patient.gender = 'female'
+		
+define "Stratification 2":
+	exists(["Patient"]Patient
+		where(Global."CalendarAgeInYearsAt"(FHIRHelpers.ToDate(Patient.birthDate), start of "Measurement Period")>= 20
+			and Global."CalendarAgeInYearsAt"(FHIRHelpers.ToDate(Patient.birthDate), start of "Measurement Period")< 24))
 
-define "Face to Face Encounter During Measurement Period":
-	( [ Encounter : "Care Services in Long-Term Residential Facility"]
-		union [Encounter : "Home Healthcare Services"]
-		union [Encounter : "Nursing Facility Visit"]
-		union [Encounter : "Office Visit"]
-		union [Encounter : "Outpatient Consultation"] ) FaceToFaceEncounter
-		where FaceToFaceEncounter.period during "Measurement Period"
+define "Stratification 1":
+	exists(["Patient"]Patient
+		where (Global."CalendarAgeInYearsAt"(FHIRHelpers.ToDate(Patient.birthDate), start of "Measurement Period")>= 16
+			and Global."CalendarAgeInYearsAt"(FHIRHelpers.ToDate(Patient.birthDate), start of "Measurement Period")< 20))
 
-define "Heart Failure Inpatient Encounter":
-	"Inpatient Discharge During Measurement Period" InpatientEncounter
-		with [Condition: "Heart Failure"] HeartFailure
-			such that (HeartFailure.onset as Period) overlaps InpatientEncounter.period
+define "Pregnancy Test Exclusion":
+	( [ServiceRequest: "Pregnancy Test"] PregnancyTest
+			with [ServiceRequest: "X-Ray Study (all inclusive)"] XrayOrder
+				such that duration in days of Interval[FHIRHelpers.ToDateTime(XrayOrder.authoredOn) , FHIRHelpers.ToDateTime(PregnancyTest.authoredOn)] < 7 
+					where FHIRHelpers.ToDateTime(PregnancyTest.authoredOn) during "Measurement Period"
+	)
+		//union ( [ServiceRequest: "Pregnancy Test"] PregnancyTestOrder
+				//with [MedicationRequest: "Isotretinoin"] AccutaneOrder
+					//such that AccutaneOrder.authoredOn occurs 7 days or less on or after day of PregnancyTestOrder.authoredOn
+				//where PregnancyTestOrder.authoredOn during "Measurement Period"
+		//)
+define "Procedures  Identifying Sexual Activity":
+	[Procedure: "Delivery Live Births"]
+		union [Procedure: "Procedures During Pregnancy"]
+		union [Procedure: "Procedures Involving Contraceptive Devices"]ProceduresForSexualActivity
+			where (ProceduresForSexualActivity.performed as Period) during "Measurement Period"
+			
+define "Denominator":
+	"Initial Population"
 
-define "Heart Failure Inpatient Encounter with Moderate or Severe LVSD":
-	"Heart Failure Inpatient Encounter" HFInpatientEncounter
-		with "Moderate or Severe LVSD Findings" InpatientLVSDFindings
-			such that (InpatientLVSDFindings.onset as Period) starts before 
-			end of HFInpatientEncounter.period
-				or (InpatientLVSDFindings.onset as Period) starts before 
-				end of HFInpatientEncounter.period
+define "Valid Encounters":
+	 [Encounter: "Office Visit"]
+		union [Encounter: "Preventive Care Services - Established Office Visit, 18 and Up"]
+		union [Encounter: "Preventive Care Services-Initial Office Visit, 18 and Up"]
+		union [Encounter: "Preventive Care- Initial Office Visit, 0 to 17"]
+		union [Encounter: "Preventive Care - Established Office Visit, 0 to 17"]
+		union [Encounter: "Home Healthcare Services"] 
 
-define "Heart Failure Outpatient Encounter with Moderate or Severe LVSD":
-	"Heart Failure Outpatient Encounter" HFOutpatientEncounter
-		with "Moderate or Severe LVSD Findings" OutpatientLVSDFindings
-			such that (OutpatientLVSDFindings.onset as Period) starts before 
-			end of HFOutpatientEncounter.period
-				or (OutpatientLVSDFindings.onset as Period) starts before 
-				end of HFOutpatientEncounter.period
-
-define "Allergy or Intolerance to Beta Blocker Therapy Ingredient Outpatient":
-	[AllergyIntolerance: "Beta Blocker Therapy Ingredient"] BetaBlockerAllergyIntolerance
-		with "Heart Failure Outpatient Encounter with Moderate or Severe LVSD" ModerateOrSevereLVSDHFOutpatientEncounter
-			such that (BetaBlockerAllergyIntolerance.onset as Period) overlaps after ModerateOrSevereLVSDHFOutpatientEncounter.period
-
-define "Allergy or Intolerance to Beta Blocker Therapy Ingredient Inpatient":
-	[AllergyIntolerance: "Beta Blocker Therapy Ingredient"] BetaBlockerAllergyIntolerance
-		with "Heart Failure Inpatient Encounter with Moderate or Severe LVSD" ModerateOrSevereLVSDHFInpatientEncounter
-			such that (BetaBlockerAllergyIntolerance.onset as Period) overlaps after ModerateOrSevereLVSDHFInpatientEncounter.period
-
-define "Arrhythmia Diagnosis Outpatient":
-	[Condition: "Arrhythmia"] Arrhythmia
-		with "Heart Failure Outpatient Encounter with Moderate or Severe LVSD" ModerateOrSevereLVSDHFOutpatientEncounter
-			such that (Arrhythmia.onset as Period) overlaps (ModerateOrSevereLVSDHFOutpatientEncounter.period)
-
-define "Arrhythmia Diagnosis Inpatient":
-	[Condition: "Arrhythmia"] Arrhythmia
-		with "Heart Failure Inpatient Encounter with Moderate or Severe LVSD" ModerateOrSevereLVSDHFInpatientEncounter
-			such that (Arrhythmia.onset as Period) overlaps (ModerateOrSevereLVSDHFInpatientEncounter.period)
-
-define "Asthma Diagnosis Outpatient":
-	[Condition: "Asthma"] Asthma
-		with "Heart Failure Outpatient Encounter with Moderate or Severe LVSD" ModerateOrSevereLVSDHFOutpatientEncounter
-			such that (Asthma.onset as Period) overlaps ModerateOrSevereLVSDHFOutpatientEncounter.period
-
-define "Asthma Diagnosis Inpatient":
-	[Condition: "Asthma"] Asthma
-		with "Heart Failure Inpatient Encounter with Moderate or Severe LVSD" ModerateOrSevereLVSDHFInpatientEncounter
-			such that (Asthma.onset as Period) overlaps ModerateOrSevereLVSDHFInpatientEncounter.period
-
-define "Atrioventricular Block Diagnosis Outpatient":
-	[Condition: "Atrioventricular Block"] AtrioventricularBlock
-		with "Heart Failure Outpatient Encounter with Moderate or Severe LVSD" ModerateOrSevereLVSDHFOutpatientEncounter
-			such that (AtrioventricularBlock.onset as Period) overlaps ModerateOrSevereLVSDHFOutpatientEncounter.period
-
-define "Atrioventricular Block Diagnosis Inpatient":
-	[Condition: "Atrioventricular Block"] AtrioventricularBlock
-		with "Heart Failure Inpatient Encounter with Moderate or Severe LVSD" ModerateOrSevereLVSDHFInpatientEncounter
-			such that (AtrioventricularBlock.onset as Period) overlaps ModerateOrSevereLVSDHFInpatientEncounter.period
-
-define "Beta Blocker Therapy for LVSD Ordered Outpatient":
-	[MedicationRequest: "Beta Blocker Therapy for LVSD"] BetaBlockerOrdered
-		with "Heart Failure Outpatient Encounter with Moderate or Severe LVSD" ModerateOrSevereLVSDHFOutpatientEncounter
-			such that BetaBlockerOrdered.authoredOn during ModerateOrSevereLVSDHFOutpatientEncounter.period
-
-define "Bradycardia Diagnosis Outpatient":
-	[Condition: "Bradycardia"] Bradycardia
-		with "Heart Failure Outpatient Encounter with Moderate or Severe LVSD" ModerateOrSevereLVSDHFOutpatientEncounter
-			such that Bradycardia.onset as Period overlaps ModerateOrSevereLVSDHFOutpatientEncounter.relevantPeriod
-
-define "Bradycardia Diagnosis Inpatient":
-	[Condition: "Bradycardia"] Bradycardia
-		with "Heart Failure Inpatient Encounter with Moderate or Severe LVSD" ModerateOrSevereLVSDHFInpatientEncounter
-			such that Bradycardia.onset as Period overlaps ModerateOrSevereLVSDHFInpatientEncounter.period
-
-define "Cardiac Pacer Device Implanted Outpatient":
-	[DeviceUseStatement : "Cardiac Pacer"] ImplantedCardiacPacer
-		with "Heart Failure Outpatient Encounter with Moderate or Severe LVSD" ModerateOrSevereLVSDHFOutpatientEncounter
-			such that (ImplantedCardiacPacer.timing as Period) overlaps after ModerateOrSevereLVSDHFOutpatientEncounter.period
-
-define "Cardiac Pacer Device Implanted Inpatient":
-	[DeviceUseStatement : "Cardiac Pacer"] ImplantedCardiacPacer
-		with "Heart Failure Inpatient Encounter with Moderate or Severe LVSD" ModerateOrSevereLVSDHFInpatientEncounter
-			such that (ImplantedCardiacPacer.timing as Period) overlaps after ModerateOrSevereLVSDHFInpatientEncounter.period
-
-define "Currently Taking Beta Blocker Therapy for LVSD Outpatient":
-	[MedicationStatement : "Beta Blocker Therapy for LVSD"] ActiveBetaBlocker
-		with "Heart Failure Outpatient Encounter with Moderate or Severe LVSD" ModerateOrSevereLVSDHFOutpatientEncounter
-			such that (ActiveBetaBlocker.effective as Period) overlaps after ModerateOrSevereLVSDHFOutpatientEncounter.period
-
-define "Currently Taking Beta Blocker Therapy for LVSD Inpatient":
-	[MedicationStatement : "Beta Blocker Therapy for LVSD"] ActiveBetaBlocker
-		with "Heart Failure Inpatient Encounter with Moderate or Severe LVSD" ModerateOrSevereLVSDHFInpatientEncounter
-			such that (ActiveBetaBlocker.effective as Period) overlaps after ModerateOrSevereLVSDHFInpatientEncounter.period
-
-define "Denominator 1":
-	"Initial Population 1"
-		and exists "Heart Failure Outpatient Encounter with Moderate or Severe LVSD"
-
-define "Denominator 2":
-	"Initial Population 2"
-		and exists "Heart Failure Inpatient Encounter with Moderate or Severe LVSD"
-
-define "Diagnosis of Allergy to Beta Blocker Therapy Outpatient":
-	[Condition: "Allergy to Beta Blocker Therapy"] BetaBlockerAllergyDiagnosis
-		with "Heart Failure Outpatient Encounter with Moderate or Severe LVSD" ModerateOrSevereLVSDHFOutpatientEncounter
-			such that (BetaBlockerAllergyDiagnosis.onset as Period) overlaps after ModerateOrSevereLVSDHFOutpatientEncounter.period
-
-define "Diagnosis of Allergy to Beta Blocker Therapy Inpatient":
-	[Condition: "Allergy to Beta Blocker Therapy"] BetaBlockerAllergyDiagnosis
-		with "Heart Failure Inpatient Encounter with Moderate or Severe LVSD" ModerateOrSevereLVSDHFInpatientEncounter
-			such that (BetaBlockerAllergyDiagnosis.onset as Period) overlaps after ModerateOrSevereLVSDHFInpatientEncounter.period
-
-define "Diagnosis of Intolerance to Beta Blocker Therapy Outpatient":
-	[Condition: "Intolerance to Beta Blocker Therapy"] BetaBlockerIntoleranceDiagnosis
-		with "Heart Failure Outpatient Encounter with Moderate or Severe LVSD" ModerateOrSevereLVSDHFOutpatientEncounter
-			such that (BetaBlockerIntoleranceDiagnosis.onset as Period) overlaps after ModerateOrSevereLVSDHFOutpatientEncounter.period
-
-define "Diagnosis of Intolerance to Beta Blocker Therapy Inpatient":
-	[Condition: "Intolerance to Beta Blocker Therapy"] BetaBlockerIntoleranceDiagnosis
-		with "Heart Failure Inpatient Encounter with Moderate or Severe LVSD" ModerateOrSevereLVSDHFInpatientEncounter
-			such that BetaBlockerIntoleranceDiagnosis.onset as Period) overlaps after ModerateOrSevereLVSDHFInpatientEncounter.period
-
-define "Hypotension Diagnosis Outpatient":
-	[Condition: "Hypotension"] Hypotension
-		with "Heart Failure Outpatient Encounter with Moderate or Severe LVSD" ModerateOrSevereLVSDHFOutpatientEncounter
-			such that (Hypotension.onset as Period) overlaps ModerateOrSevereLVSDHFOutpatientEncounter.period
-
-define "Hypotension Diagnosis Inpatient":
-	[Condition: "Hypotension"] Hypotension
-		with "Heart Failure Inpatient Encounter with Moderate or Severe LVSD" ModerateOrSevereLVSDHFInpatientEncounter
-			such that (Hypotension.onset as Period) overlaps ModerateOrSevereLVSDHFInpatientEncounter.period
-
-define "Numerator 1":
-	exists "Beta Blocker Therapy for LVSD Ordered Outpatient"
-		or exists "Currently Taking Beta Blocker Therapy for LVSD Outpatient"
-
-define "Qualifying Encounter":
-	( ["Encounter, Performed": "Care Services in Long-Term Residential Facility"]
-		union ["Encounter, Performed": "Home Healthcare Services"]
-		union ["Encounter, Performed": "Nursing Facility Visit"]
-		union ["Encounter, Performed": "Office Visit"]
-		union ["Encounter, Performed": "Outpatient Consultation"]
-		union ["Encounter, Performed": "Patient Provider Interaction"] ) ValidEncounter
+define "Qualifying Encounters":
+	"Valid Encounters"ValidEncounter
 		where ValidEncounter.period during "Measurement Period"
 
-define "Atrioventricular Block without Cardiac Pacer Inpatient":
-	exists "Atrioventricular Block Diagnosis Inpatient"
-		and not exists "Diagnosis of Cardiac Pacer in Situ Inpatient"
-		and not exists "Cardiac Pacer Device Implanted Inpatient"
+define "Laboratory Tests Identifying Sexual Activity But Not Pregnancy":
+	( [ServiceRequest: "Pap Test"]
+		union [ServiceRequest: "Lab Tests During Pregnancy"]
+		union [ServiceRequest: "Lab Tests for Sexually Transmitted Infections"] ) LabOrders
+		where FHIRHelpers.ToDateTime(LabOrders.authoredOn) during "Measurement Period"
+		
+define "Assessments Identifying Sexual Activity":
+	 [Observation: "Sexually Active"]SexualActivityAssessment
+			where FHIRHelpers.ToConcept(SexualActivityAssessment.value) = "Yes (qualifier value)"
+				and FHIRHelpers.ToDateTime(SexualActivityAssessment.issued) before end of "Measurement Period"
 
-define "Atrioventricular Block without Cardiac Pacer Outpatient":
-	exists "Atrioventricular Block Diagnosis Outpatient"
-		and not exists "Diagnosis of Cardiac Pacer in Situ Outpatient"
-		and not exists "Cardiac Pacer Device Implanted Outpatient"
+define "Diagnostic Studies Identifying Sexual Activity":
+	[ServiceRequest: "Diagnostic Studies During Pregnancy"] SexualActivityDiagnostics
+		where (SexualActivityDiagnostics.occurrence as Period) during "Measurement Period"
+		
 
-define "Beta Blocker Therapy for LVSD at Inpatient Discharge":
-	[MedicationRequest: "Beta Blocker Therapy for LVSD"] BetaBlockerAtDischarge
-		with "Heart Failure Inpatient Encounter with Moderate or Severe LVSD" ModerateOrSevereLVSDHFInpatientEncounter
-			such that BetaBlockerAtDischarge.intent.value = 'plan'
-				and BetaBlockerAtDischarge.authoredOn during ModerateOrSevereLVSDHFInpatientEncounter.period
-
-define "Diagnosis of Cardiac Pacer in Situ Inpatient":
-	[Condition: "Cardiac Pacer in Situ"] CardiacPacerDiagnosis
-		with "Heart Failure Inpatient Encounter with Moderate or Severe LVSD" ModerateOrSevereLVSDHFInpatientEncounter
-			such that (CardiacPacerDiagnosis.onset as Period) overlaps after ModerateOrSevereLVSDHFInpatientEncounter.period
-
-define "Diagnosis of Cardiac Pacer in Situ Outpatient":
-	[Condition: "Cardiac Pacer in Situ"] CardiacPacerDiagnosis
-		with "Heart Failure Outpatient Encounter with Moderate or Severe LVSD" ModerateOrSevereLVSDHFOutpatientEncounter
-			such that (CardiacPacerDiagnosis.onset as Period) overlaps after ModerateOrSevereLVSDHFOutpatientEncounter.period
-
-define "Heart Failure Outpatient Encounter":
-	"Face to Face Encounter During Measurement Period" ValidFaceToFaceEncounter
-		with [Condition: "Heart Failure"] HeartFailure
-			such that (HeartFailure.onset as Period) overlaps ValidFaceToFaceEncounter.period
-
-define "Denominator Exceptions 1":
-	exists "Consecutive Heart Rates Less than 50 Outpatient"
-		or exists "Medical Patient or System Reason for Not Ordering Beta Blocker for LVSD Outpatient"
-		or exists "Arrhythmia Diagnosis Outpatient"
-		or exists "Hypotension Diagnosis Outpatient"
-		or exists "Asthma Diagnosis Outpatient"
-		or exists "Diagnosis of Allergy to Beta Blocker Therapy Outpatient"
-		or exists "Diagnosis of Intolerance to Beta Blocker Therapy Outpatient"
-		or exists "Bradycardia Diagnosis Outpatient"
-		or exists "Allergy or Intolerance to Beta Blocker Therapy Ingredient Outpatient"
-		or "Atrioventricular Block without Cardiac Pacer Outpatient"
-
-define "Denominator Exceptions 2":
-	exists "Consecutive Heart Rates Less than 50 Inpatient"
-		or exists "Medical Patient or System Reason for No Beta Blocker for LVSD at Inpatient Discharge"
-		or exists "Arrhythmia Diagnosis Inpatient"
-		or exists "Hypotension Diagnosis Inpatient"
-		or exists "Asthma Diagnosis Inpatient"
-		or exists "Diagnosis of Allergy to Beta Blocker Therapy Inpatient"
-		or exists "Diagnosis of Intolerance to Beta Blocker Therapy Inpatient"
-		or exists "Bradycardia Diagnosis Inpatient"
-		or exists "Allergy or Intolerance to Beta Blocker Therapy Ingredient Inpatient"
-		or "Atrioventricular Block without Cardiac Pacer Inpatient"
-
-define "Numerator 2":
-	exists "Beta Blocker Therapy for LVSD at Inpatient Discharge"
-		or exists "Currently Taking Beta Blocker Therapy for LVSD Inpatient"
-
-define "Consecutive Heart Rates Less than 50 Inpatient":
-	from
-		[Observation: "Heart Rate"] HeartRate,
-		"Heart Failure Inpatient Encounter with Moderate or Severe LVSD" ModerateOrSevereLVSDHFInpatientEncounter
-		let PriorHeartRate: Last([Observation: "Heart Rate"] MostRecentPriorHeartRate
-				where (MostRecentPriorHeartRate.effective as Period) during ModerateOrSevereLVSDHFInpatientEncounter.period
-					and (MostRecentPriorHeartRate.effective as Period) starts before start of HeartRate.period
-				sort by start of (effective as Period)
-		)
-		where (HeartRate.effective as Period) during ModerateOrSevereLVSDHFInpatientEncounter.period
-			and (HeartRate.value as Integer) < 50 '{Beats}/min'
-			and (PriorHeartRate.value as Integer) < 50 '{Beats}/min'
-
-define "Consecutive Heart Rates Less than 50 Outpatient":
-	from
-		[Observation: "Heart Rate"] HeartRate,
-		"Heart Failure Outpatient Encounter with Moderate or Severe LVSD" ModerateOrSevereLVSDHFOutpatientEncounter
-		let PriorHeartRate: Last([Observation: "Heart Rate"] MostRecentPriorHeartRate
-				where (MostRecentPriorHeartRate.effective as Period) during ModerateOrSevereLVSDHFOutpatientEncounter.period
-					and (MostRecentPriorHeartRate.effective as Period) starts before start of (HeartRate.effective as Period)
-				sort by start of (effective as Period)
-		)
-		where HeartRate.relevantPeriod during ModerateOrSevereLVSDHFOutpatientEncounter.relevantPeriod
-			and HeartRate.value as Integer < 50 '{Beats}/min'
-			and PriorHeartRate.value as Integer < 50 '{Beats}/min'
-
-define "Medical Patient or System Reason for No Beta Blocker for LVSD at Inpatient Discharge":
-	[MedicationStatement: "Beta Blocker Therapy for LVSD"] NoBetaBlockerAtDischarge
-		with "Heart Failure Inpatient Encounter with Moderate or Severe LVSD" ModerateOrSevereLVSDHFInpatientEncounter
-			such that NoBetaBlockerAtDischarge.doNotPerform = "true"
-				and NoBetaBlockerAtDischarge.authoredOn during ModerateOrSevereLVSDHFInpatientEncounter.period
-		where ( NoBetaBlockerAtDischarge.status.value ="not-taken"
-			and ( NoBetaBlockerAtDischarge.in "Medical Reason"
-				or NoBetaBlockerAtDischarge.negationRationale in "Patient Reason"
-				or NoBetaBlockerAtDischarge.negationRationale in "System Reason")
-		)
-
-define "Medical Patient or System Reason for Not Ordering Beta Blocker for LVSD Outpatient":
-	["Medication, Not Ordered": "Beta Blocker Therapy for LVSD"] NoBetaBlockerOrdered
-		with "Heart Failure Outpatient Encounter with Moderate or Severe LVSD" ModerateOrSevereLVSDHFOutpatientEncounter
-			such that NoBetaBlockerOrdered.authoredOn during ModerateOrSevereLVSDHFOutpatientEncounter.period
-		where ( NoBetaBlockerOrdered.negationRationale in "Medical Reason"
-				or NoBetaBlockerOrdered.negationRationale in "Patient Reason"
-				or NoBetaBlockerOrdered.negationRationale in "System Reason"
-		)
-
-define "Initial Population 1":
-	exists ( ["Patient Characteristic Birthdate": "Birth date"] BirthDate
-			where Global."CalendarAgeInYearsAt"(BirthDate.birthDatetime, start of "Measurement Period")>= 18
+define "Numerator":
+	exists ( [Observation: "Chlamydia Screening"] ChlamydiaTest
+			where ChlamydiaTest.value is not null
+				and ChlamydiaTest.effective as Period during "Measurement Period"
 	)
-		and Count("Qualifying Encounter")>= 2
-		and exists "Heart Failure Outpatient Encounter"
 
-define "Initial Population 2":
-	exists ( ["Patient Characteristic Birthdate": "Birth date"] BirthDate
-			where Global."CalendarAgeInYearsAt"(BirthDate.birthDatetime, start of "Measurement Period")>= 18
-	)
-		and exists "Heart Failure Inpatient Encounter"
+define "Laboratory Tests Identifying Sexual Activity":
+	( [ServiceRequest: "Pregnancy Test"]
+		union "Laboratory Tests Identifying Sexual Activity But Not Pregnancy" ) AllLabOrders
+		where FHIRHelpers.ToDateTime(AllLabOrders.authoredOn) during "Measurement Period"
+
+define "Denominator Exclusions":
+	Hospice."Has Hospice"
+		or ( exists ( "Pregnancy Test Exclusion" )
+				and not exists ( "Diagnoses Identifying Sexual Activity" )
+				and not exists ( "Active Contraceptive Medications" )
+				and not exists ( "Laboratory Tests Identifying Sexual Activity But Not Pregnancy" )
+				and not exists ( "Procedures  Identifying Sexual Activity" )
+				and not exists ( "Assessments Identifying Sexual Activity" )
+				and not exists ( "Ordered Contraceptive Medications" )
+				and not exists ( "Diagnostic Studies Identifying Sexual Activity" )
+		)
+
+define "Active Contraceptive Medications":
+	[MedicationStatement: "Contraceptive Medications"] ActiveContraceptives
+		where ActiveContraceptives.effective overlaps "Measurement Period"
+
+define "Ordered Contraceptive Medications":
+	[MedicationRequest: "Contraceptive Medications"] OrderedContraceptives
+		where FHIRHelpers.ToDateTime(OrderedContraceptives.authoredOn) during "Measurement Period"
+
+define "Diagnoses Identifying Sexual Activity":
+	( [Condition: "Other Female Reproductive Conditions"]
+		union [Condition: "Genital Herpes"]
+		union [Condition: "Gonococcal Infections and Venereal Diseases"]
+		union [Condition: "Inflammatory Diseases of Female Reproductive Organs"]
+		union [Condition: "Chlamydia"]
+		union [Condition: "HIV"]
+		union [Condition: "Syphilis"]
+		union [Condition: "Carrier of Predominantly Sexually Transmitted Infection"]
+		union [Condition: "Complications of Pregnancy, Childbirth and the Puerperium"] ) SexualActivityDiagnosis
+		where (SexualActivityDiagnosis.onset as Period) overlaps "Measurement Period"
+

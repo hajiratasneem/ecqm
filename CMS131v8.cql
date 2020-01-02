@@ -3,8 +3,8 @@ library DiabetesEyeExam version '8.4.000'
 using FHIR version '4.0.0'
 
 include FHIRHelpers version '4.0.0' called FHIRHelpers
-include Hospice version '2.0.000' called Hospice
 include AdvancedIllnessandFrailtyExclusionECQM version '4.0.000' called FrailtyLTI
+include Hospice_FHIR4 version '1.0.000' called Hospice
 
 codesystem "LOINC": 'urn:oid:2.16.840.1.113883.6.1'
 codesystem "SNOMEDCT": 'http://snomed.info/sct'
@@ -52,6 +52,7 @@ define "Qualifying Encounters":
 		union [Encounter: "Preventive Care Services-Initial Office Visit, 18 and Up"]
 		union [Encounter: "Ophthalmological Services"] ) Encounter
 		where Encounter.period during "Measurement Period"
+			and Encounter.status = 'finished'
 
 define "Retinal Exam in Measurement Period or Year Prior":
 	[Procedure: "Retinal or Dilated Eye Exam"] RetinalExam
@@ -61,10 +62,10 @@ define "Retinal Exam in Measurement Period or Year Prior":
 
 define "Denominator Exclusions":
 	(AgeInYearsAt(start of "Measurement Period") >= 65
-				and FrailtyLTI.Has Spent More Than 90 Days in Long Term Care
+				and FrailtyLTI."Has Spent More Than 90 Days in Long Term Care"
 	)
-		or FrailtyLTI.Advanced Illness and Frailty Exclusion Including Under Age 80
-		or Hospice.Has Hospice
+		or FrailtyLTI."Advanced Illness and Frailty Exclusion Including Under Age 80"
+		or Hospice."Has Hospice"("Measurement Period")
 
 define "Diabetic Retinopathy Overlapping Measurement Period":
 	exists ( [Condition: "Diabetic Retinopathy"] Retinopathy

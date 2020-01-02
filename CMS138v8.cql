@@ -5,6 +5,7 @@ using FHIR version '4.0.0'
 include FHIRHelpers version '4.0.0' called FHIRHelpers
 
 //include MATGlobalCommonFunctions version '4.0.000' called Global
+include Hospice_FHIR4 version '1.0.000' called Hospice
 
 codesystem "LOINC": 'urn:oid:2.16.840.1.113883.6.1'
 
@@ -155,7 +156,7 @@ define "Medical Reason for Not Counseling Tobacco User":
 			such that FHIRHelpers.ToDateTime(NoTobaccoCessationCounseling.performed as dateTime) same or after FHIRHelpers.ToDateTime(ScreenedTobaccoUser.issued)
 				and FHIRHelpers.ToDateTime(NoTobaccoCessationCounseling.performed as dateTime) before 
 				end of "Measurement Period"
-		where NoTobaccoCessationCounseling.status.valueReason in "Medical Reason"
+		where NoTobaccoCessationCounseling.statusReason in "Medical Reason"
 
 define "Medical Reason for Not Ordering Tobacco Cessation Pharmacotherapy":
 	[MedicationRequest: "Tobacco Use Cessation Pharmacotherapy"] NoPharmacotherapyOrdered
@@ -163,7 +164,7 @@ define "Medical Reason for Not Ordering Tobacco Cessation Pharmacotherapy":
 			such that FHIRHelpers.ToDateTime(NoPharmacotherapyOrdered.authoredOn) same or after FHIRHelpers.ToDateTime(ScreenedTobaccoUser.issued)
 				and FHIRHelpers.ToDateTime(NoPharmacotherapyOrdered.authoredOn) before 
 				end of "Measurement Period"
-		where NoPharmacotherapyOrdered.status.valueReason in "Medical Reason"
+		where NoPharmacotherapyOrdered.statusReason in "Medical Reason"
 
 define "Medical Reason for Not Screening for Tobacco Use":
 	[Observation: "Tobacco Use Screening"] NoTobaccoUseScreening
@@ -172,8 +173,8 @@ define "Medical Reason for Not Screening for Tobacco Use":
 			and NoTobaccoUseScreening.dataAbsentReason in "Medical Reason"
 
 define "Initial Population":
-	exists(AgeInYearsAt(start of "Measurement Period") >= 18
+	AgeInYearsAt(start of "Measurement Period") >= 18
 		and ( Count("Office Based Visit During Measurement Period")>= 2
 				or exists "Preventive Visit During Measurement Period"
 		)
-		)
+		

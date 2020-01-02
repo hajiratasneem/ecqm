@@ -3,6 +3,7 @@ library HeartFailureHFBetaBlockerTherapyforLeftVentricularSystolicDysfunctionLVS
 using FHIR version '4.0.0'
 
 include FHIRHelpers version '4.0.0' called FHIRHelpers
+include MATGlobalCommonFunctions_FHIR4 version '4.0.000' called Global
 
 codesystem "LOINC": 'urn:oid:2.16.840.1.113883.6.1'
 
@@ -44,18 +45,6 @@ parameter "Measurement Period" Interval<DateTime>
 
 context Patient
 
-define "SDE Ethnicity":
-	["Patient Characteristic Ethnicity": "Ethnicity"]
-
-define "SDE Payer":
-	["Patient Characteristic Payer": "Payer"]
-
-define "SDE Race":
-	["Patient Characteristic Race": "Race"]
-
-define "SDE Sex":
-	["Patient Characteristic Sex": "ONC Administrative Sex"]
-
 define "Moderate or Severe LVSD Findings":
 	( [ DiagnosticReport: "Ejection Fraction"] EjectionFraction
 			where EjectionFraction.result < 40 '%'
@@ -77,6 +66,11 @@ define "Face to Face Encounter During Measurement Period":
 		union [Encounter : "Outpatient Consultation"] ) FaceToFaceEncounter
 		where FaceToFaceEncounter.period during "Measurement Period"
 
+define "Heart Failure Outpatient Encounter":
+	"Face to Face Encounter During Measurement Period" ValidFaceToFaceEncounter
+		with [Condition: "Heart Failure"] HeartFailure
+			such that (HeartFailure.onset as Period) overlaps ValidFaceToFaceEncounter.period
+			
 define "Heart Failure Inpatient Encounter":
 	"Inpatient Discharge During Measurement Period" InpatientEncounter
 		with [Condition: "Heart Failure"] HeartFailure
@@ -141,12 +135,12 @@ define "Atrioventricular Block Diagnosis Inpatient":
 define "Beta Blocker Therapy for LVSD Ordered Outpatient":
 	[MedicationRequest: "Beta Blocker Therapy for LVSD"] BetaBlockerOrdered
 		with "Heart Failure Outpatient Encounter with Moderate or Severe LVSD" ModerateOrSevereLVSDHFOutpatientEncounter
-			such that BetaBlockerOrdered.authoredOn during ModerateOrSevereLVSDHFOutpatientEncounter.period
+			such that BetaBlockerOrdered.authoredOn ends before ModerateOrSevereLVSDHFOutpatientEncounter.period
 
 define "Bradycardia Diagnosis Outpatient":
 	[Condition: "Bradycardia"] Bradycardia
 		with "Heart Failure Outpatient Encounter with Moderate or Severe LVSD" ModerateOrSevereLVSDHFOutpatientEncounter
-			such that Bradycardia.onset as Period overlaps ModerateOrSevereLVSDHFOutpatientEncounter.relevantPeriod
+			such that (Bradycardia.onset as Period) overlaps ModerateOrSevereLVSDHFOutpatientEncounter.period
 
 define "Bradycardia Diagnosis Inpatient":
 	[Condition: "Bradycardia"] Bradycardia
@@ -199,7 +193,7 @@ define "Diagnosis of Intolerance to Beta Blocker Therapy Outpatient":
 define "Diagnosis of Intolerance to Beta Blocker Therapy Inpatient":
 	[Condition: "Intolerance to Beta Blocker Therapy"] BetaBlockerIntoleranceDiagnosis
 		with "Heart Failure Inpatient Encounter with Moderate or Severe LVSD" ModerateOrSevereLVSDHFInpatientEncounter
-			such that BetaBlockerIntoleranceDiagnosis.onset as Period) overlaps after ModerateOrSevereLVSDHFInpatientEncounter.period
+			such that BetaBlockerIntoleranceDiagnosis.onset as Period overlaps after ModerateOrSevereLVSDHFInpatientEncounter.period
 
 define "Hypotension Diagnosis Outpatient":
 	[Condition: "Hypotension"] Hypotension
@@ -216,12 +210,12 @@ define "Numerator 1":
 		or exists "Currently Taking Beta Blocker Therapy for LVSD Outpatient"
 
 define "Qualifying Encounter":
-	( ["Encounter, Performed": "Care Services in Long-Term Residential Facility"]
-		union ["Encounter, Performed": "Home Healthcare Services"]
-		union ["Encounter, Performed": "Nursing Facility Visit"]
-		union ["Encounter, Performed": "Office Visit"]
-		union ["Encounter, Performed": "Outpatient Consultation"]
-		union ["Encounter, Performed": "Patient Provider Interaction"] ) ValidEncounter
+	( [Encounter: "Care Services in Long-Term Residential Facility"]
+		union [Encounter: "Home Healthcare Services"]
+		union [Encounter: "Nursing Facility Visit"]
+		union [Encounter: "Office Visit"]
+		union [Encounter: "Outpatient Consultation"]
+		union [Encounter: "Patient Provider Interaction"] ) ValidEncounter
 		where ValidEncounter.period during "Measurement Period"
 
 define "Atrioventricular Block without Cardiac Pacer Inpatient":
@@ -237,7 +231,7 @@ define "Atrioventricular Block without Cardiac Pacer Outpatient":
 define "Beta Blocker Therapy for LVSD at Inpatient Discharge":
 	[MedicationRequest: "Beta Blocker Therapy for LVSD"] BetaBlockerAtDischarge
 		with "Heart Failure Inpatient Encounter with Moderate or Severe LVSD" ModerateOrSevereLVSDHFInpatientEncounter
-			such that BetaBlockerAtDischarge.intent.value = 'plan'
+			such that BetaBlockerAtDischarge.intent = 'plan'
 				and BetaBlockerAtDischarge.authoredOn during ModerateOrSevereLVSDHFInpatientEncounter.period
 
 define "Diagnosis of Cardiac Pacer in Situ Inpatient":
@@ -249,11 +243,6 @@ define "Diagnosis of Cardiac Pacer in Situ Outpatient":
 	[Condition: "Cardiac Pacer in Situ"] CardiacPacerDiagnosis
 		with "Heart Failure Outpatient Encounter with Moderate or Severe LVSD" ModerateOrSevereLVSDHFOutpatientEncounter
 			such that (CardiacPacerDiagnosis.onset as Period) overlaps after ModerateOrSevereLVSDHFOutpatientEncounter.period
-
-define "Heart Failure Outpatient Encounter":
-	"Face to Face Encounter During Measurement Period" ValidFaceToFaceEncounter
-		with [Condition: "Heart Failure"] HeartFailure
-			such that (HeartFailure.onset as Period) overlaps ValidFaceToFaceEncounter.period
 
 define "Denominator Exceptions 1":
 	exists "Consecutive Heart Rates Less than 50 Outpatient"
@@ -314,30 +303,28 @@ define "Medical Patient or System Reason for No Beta Blocker for LVSD at Inpatie
 		with "Heart Failure Inpatient Encounter with Moderate or Severe LVSD" ModerateOrSevereLVSDHFInpatientEncounter
 			such that NoBetaBlockerAtDischarge.doNotPerform = "true"
 				and NoBetaBlockerAtDischarge.authoredOn during ModerateOrSevereLVSDHFInpatientEncounter.period
-		where ( NoBetaBlockerAtDischarge.status.value ="not-taken"
-			and ( NoBetaBlockerAtDischarge.in "Medical Reason"
-				or NoBetaBlockerAtDischarge.negationRationale in "Patient Reason"
-				or NoBetaBlockerAtDischarge.negationRationale in "System Reason")
+		where ( NoBetaBlockerAtDischarge.status ="not-taken"
+			and ( NoBetaBlockerAtDischarge.statusReason in "Medical Reason"
+				or NoBetaBlockerAtDischarge.statusReason in "Patient Reason"
+				or NoBetaBlockerAtDischarge.statusReason in "System Reason")
 		)
 
 define "Medical Patient or System Reason for Not Ordering Beta Blocker for LVSD Outpatient":
-	["Medication, Not Ordered": "Beta Blocker Therapy for LVSD"] NoBetaBlockerOrdered
+	[MedicationRequest: "Beta Blocker Therapy for LVSD"] NoBetaBlockerOrdered
 		with "Heart Failure Outpatient Encounter with Moderate or Severe LVSD" ModerateOrSevereLVSDHFOutpatientEncounter
 			such that NoBetaBlockerOrdered.authoredOn during ModerateOrSevereLVSDHFOutpatientEncounter.period
-		where ( NoBetaBlockerOrdered.negationRationale in "Medical Reason"
-				or NoBetaBlockerOrdered.negationRationale in "Patient Reason"
-				or NoBetaBlockerOrdered.negationRationale in "System Reason"
-		)
+		where NoBetaBlockerOrdered.intent = 'order'
+			and NoBetaBlockerOrdered.doNotPerform is true
+		         and (NoBetaBlockerOrdered.statusReason in "Medical Reason"
+				or NoBetaBlockerOrdered.statusReason in "Patient Reason"
+				or NoBetaBlockerOrdered.statusReason in "System Reason")
+		
 
 define "Initial Population 1":
-	exists ( ["Patient Characteristic Birthdate": "Birth date"] BirthDate
-			where Global."CalendarAgeInYearsAt"(BirthDate.birthDatetime, start of "Measurement Period")>= 18
-	)
+	exists(Global."CalendarAgeInYearsAt"(FHIRHelpers.ToDate(Patient.birthDate), start of "Measurement Period")>= 18)
 		and Count("Qualifying Encounter")>= 2
 		and exists "Heart Failure Outpatient Encounter"
 
 define "Initial Population 2":
-	exists ( ["Patient Characteristic Birthdate": "Birth date"] BirthDate
-			where Global."CalendarAgeInYearsAt"(BirthDate.birthDatetime, start of "Measurement Period")>= 18
-	)
+	exists(Global."CalendarAgeInYearsAt"(FHIRHelpers.ToDate(Patient.birthDate), start of "Measurement Period")>= 18)
 		and exists "Heart Failure Inpatient Encounter"

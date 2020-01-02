@@ -3,8 +3,9 @@ library WeightAssessmentandCounselingforNutritionandPhysicalActivityforChildrena
 using FHIR version '4.0.0'
 
 include FHIRHelpers version '4.0.0' called FHIRHelpers
-include Hospice_FHIR4 version '1.0.000' called Hospice
+
 include MATGlobalCommonFunctions_FHIR4 version '4.0.000' called Global
+include Hospice_FHIR4 version '1.0.000' called Hospice
 
 codesystem "LOINC": 'urn:oid:2.16.840.1.113883.6.1'
 codesystem "SNOMEDCT": 'http://snomed.info/sct'
@@ -84,9 +85,7 @@ define "BMI Percentile in Measurement Period":
 		where (BMIPercentile.effective as Period) during "Measurement Period"
 			and BMIPercentile.value is not null
 
-define "Numerator":
-	"Numerator 1" and "Numerator 2" and "Numerator 3"
-	
 define "Initial Population":
 	AgeInYearsAt(start of "Measurement Period") >= 3 and AgeInYearsAt(start of "Measurement Period") < 17
+
 

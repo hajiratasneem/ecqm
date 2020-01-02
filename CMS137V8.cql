@@ -5,7 +5,7 @@ using FHIR version '4.0.0'
 include FHIRHelpers version '4.0.0' called FHIRHelpers
 
 //include MATGlobalCommonFunctions version '4.0.000' called Global
-//include Hospice version '2.0.000' called Hospice
+include Hospice_FHIR4 version '1.0.000' called Hospice
 
 codesystem "LOINC": 'urn:oid:2.16.840.1.113883.6.1'
 codesystem "SNOMEDCT": 'http://snomed.info/sct'
