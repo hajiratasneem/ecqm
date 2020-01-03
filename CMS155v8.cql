@@ -87,5 +87,8 @@ define "BMI Percentile in Measurement Period":
 
 define "Initial Population":
 	AgeInYearsAt(start of "Measurement Period") >= 3 and AgeInYearsAt(start of "Measurement Period") < 17
+	
+define "Numerator":
+"Numerator 1" and "Numerator 2" and "Numerator 3"
 
 
