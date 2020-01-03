@@ -3,8 +3,7 @@ library InitiationandEngagementofAlcoholandOtherDrugDependenceTreatment version 
 using FHIR version '4.0.0'
 
 include FHIRHelpers version '4.0.0' called FHIRHelpers
-
-//include MATGlobalCommonFunctions version '4.0.000' called Global
+include MATGlobalCommonFunctions_FHIR4 version '4.0.000' called Global
 include Hospice_FHIR4 version '1.0.000' called Hospice
 
 codesystem "LOINC": 'urn:oid:2.16.840.1.113883.6.1'
@@ -59,87 +58,85 @@ define "Numerator":
 		or exists "Treatment Initiation With Medication Order"
 
 define "Stratification 1":
-	exists (  AgeInYearsAt(start of "Measurement Period") >= 13 and AgeInYearsAt(start of "Measurement Period") < 18)
+	 AgeInYearsAt(start of "Measurement Period") >= 13 and AgeInYearsAt(start of "Measurement Period") < 18
 	
 
 define "Stratification 2":
-	exists (  AgeInYearsAt(start of "Measurement Period") >= 18
-	)
+	AgeInYearsAt(start of "Measurement Period") >= 18
+	
 
 define "Initial Population":
-	exists  AgeInYearsAt(start of "Measurement Period") >= 13
-			and "First Dependence Diagnosis" is not null
+	AgeInYearsAt(start of "Measurement Period") >= 13
+		and "First Dependence Diagnosis" is not null
 
 define "First Dependence Diagnosis":
 	First([Condition: "Alcohol and Drug Dependence"] InitialDependenceDiagnosis
 			with("Qualifying Encounters")ValidEncounter
-				such that InitialDependenceDiagnosis.onset as Period starts during ValidEncounter.relevantPeriod
+				such that InitialDependenceDiagnosis.onset as Period starts during ValidEncounter.period
 					and InitialDependenceDiagnosis.onset as Period starts 47 days or more before day of 
 					end of "Measurement Period"
 	)
 
 define "Treatment Initiation With Medication Order":
-	( ( [MedicationRequest: "Opiate Antagonists"] ) InitiatedMedicationTreatment
-			with ( "First Dependence Diagnosis" ) FirstDiagnosed
-				such that InitiatedMedicationTreatment.relevantPeriod starts 14 days or less after day of start of FirstDiagnosed.onset as Period
-	)
+	[MedicationRequest: "Opiate Antagonists"] InitiatedMedicationTreatment
+		with "First Dependence Diagnosis" FirstDiagnosed
+				such that duration in days of Interval[start of (FirstDiagnosed.onset as Period),FHIRHelpers.ToDateTime(InitiatedMedicationTreatment.authoredOn)] < 14 days
 
 define "Qualifying Encounters":
-	( ["Encounter, Performed": "Office Visit"]
-		union ["Encounter, Performed": "Emergency Department Visit"]
-		union ["Encounter, Performed": "Detoxification Visit"]
-		union ["Encounter, Performed": "Hospital Observation Care - Initial"]
-		union ["Encounter, Performed": "Hospital Inpatient Visit - Initial"]
-		union ["Encounter, Performed": "Discharge Services - Hospital Inpatient Same Day Discharge"]
-		union ["Encounter, Performed": "Discharge Services - Hospital Inpatient"]
-		union ["Encounter, Performed": "Telehealth Services"] ) ValidEncounters
-		where ValidEncounters.relevantPeriod during "Measurement Period"
+	( [Encounter: "Office Visit"]
+		union [Encounter: "Emergency Department Visit"]
+		union [Encounter: "Detoxification Visit"]
+		union [Encounter: "Hospital Observation Care - Initial"]
+		union [Encounter: "Hospital Inpatient Visit - Initial"]
+		union [Encounter: "Discharge Services - Hospital Inpatient Same Day Discharge"]
+		union [Encounter: "Discharge Services - Hospital Inpatient"]
+		union [Encounter: "Telehealth Services"] ) ValidEncounters
+		where ValidEncounters.period during "Measurement Period"
 
 define "Treatment with Single Medication Order":
-	["Medication, Order": "Opiate Antagonists"] MedicationOrderOpiate
-		where MedicationOrderOpiate.authorDatetime during "Measurement Period"
+	[MedicationRequest: "Opiate Antagonists"] MedicationOrderOpiate
+		where FHIRHelpers.ToDateTime(MedicationOrderOpiate.authoredOn) during "Measurement Period"
 
 define "Continuation of Treatment Event":
-	( ["Intervention, Performed": "Alcohol and Drug Dependence Treatment"]
-		union ["Intervention, Performed": "Psych Visit - Psychotherapy"]
-		union ["Encounter, Performed": "Telehealth Services"] ) ContinuedTreatment
-		with ( "Treatment Initiation With Medication Order" ) TreatmentEvent
-			such that ContinuedTreatment.relevantPeriod starts 34 days or less after start of TreatmentEvent.relevantPeriod
+	( [Procedure: "Alcohol and Drug Dependence Treatment"]
+		union [Procedure: "Psych Visit - Psychotherapy"]
+		union [Encounter: "Telehealth Services"] ) ContinuedTreatment
+			with ( "Treatment Initiation With Medication Order" ) TreatmentEvent
+				such that duration in days of Interval[FHIRHelpers.ToDateTime(TreatmentEvent.authoredOn),start of (ContinuedTreatment.period)] < 34 days
 
 define "Dependence Treatment Intervention Continued":
-	Count((["Intervention, Performed": "Alcohol and Drug Dependence Treatment"]
-			union ["Intervention, Performed": "Psych Visit - Psychotherapy"]
-			union ["Encounter, Performed": "Telehealth Services"])ContinuedTreatment
+	Count(([Procedure: "Alcohol and Drug Dependence Treatment"]
+			union [Procedure: "Psych Visit - Psychotherapy"]
+			union [Encounter: "Telehealth Services"])ContinuedTreatment
 			with("Dependence Treatment Intervention Initiated")InitiatedTreatment
-				such that ContinuedTreatment.relevantPeriod starts 34 days or less after start of InitiatedTreatment.relevantPeriod
+				such that duration in days of Interval[start of (InitiatedTreatment.performed as Period),start of (ContinuedTreatment.period)] < 34 days
 	)>= 2
 
 define "Treatment Initiation With Medication and Continuation of Treatment with Encounters":
-	Count((["Intervention, Performed": "Alcohol and Drug Dependence Treatment"]
-			union ["Intervention, Performed": "Psych Visit - Psychotherapy"]
-			union ["Encounter, Performed": "Telehealth Services"])ContinuedTreatment
+	Count(([Procedure: "Alcohol and Drug Dependence Treatment"]
+			union [Procedure: "Psych Visit - Psychotherapy"]
+			union [Encounter: "Telehealth Services"])ContinuedTreatment
 			with("Treatment Initiation With Medication Order")InitiatedTreatment
-				such that ContinuedTreatment.relevantPeriod starts 34 days or less after start of InitiatedTreatment.relevantPeriod
-	)>= 2
+				such that duration in days of Interval[FHIRHelpers.ToDateTime(InitiatedTreatment.authoredOn), start of (ContinuedTreatment.period)] < 34 days)>= 2
 
 define "Numerator 2":
 	"Dependence Treatment Intervention Continued"
 		or exists ( "Treatment with Single Medication Order" ContinuedTreatment
 				with "Dependence Treatment Intervention Initiated" InitiatedMedicationTreatment
-					such that ContinuedTreatment.authorDatetime 34 days or less after start of InitiatedMedicationTreatment.relevantPeriod
+					such that duration in days of Interval[start of (InitiatedMedicationTreatment.performed as Period),FHIRHelpers.ToDateTime(ContinuedTreatment.authoredOn)] < 34 days
 		)
 		or "Treatment Initiation With Medication and Continuation of Treatment with Encounters"
 		or ( exists "Continuation of Treatment Event"
 				and exists ( "Treatment with Single Medication Order" ContinuedTreatment
 						with ( "Treatment Initiation With Medication Order" ) InitiatedTreatment
-							such that ContinuedTreatment.authorDatetime 34 days or less after start of InitiatedTreatment.relevantPeriod
+							such that duration in days of Interval[ FHIRHelpers.ToDateTime(InitiatedTreatment.authoredOn),FHIRHelpers.ToDateTime(ContinuedTreatment.authoredOn)] < 34 days
 				)
 		)
 
 define "Dependence Treatment Intervention Initiated":
-	( ( ["Intervention, Performed": "Alcohol and Drug Dependence Treatment"]
-			union ["Intervention, Performed": "Psych Visit - Psychotherapy"]
-			union ["Encounter, Performed": "Telehealth Services"] ) InitiatedTreatment
+	( ( [Procedure: "Alcohol and Drug Dependence Treatment"]
+			union [Procedure: "Psych Visit - Psychotherapy"]
+			union [Encounter: "Telehealth Services"] ) InitiatedTreatment
 			with ( "First Dependence Diagnosis" ) FirstDiagnosed
-				such that InitiatedTreatment.relevantPeriod starts 14 days or less after start of FirstDiagnosed.prevalencePeriod
+				such that InitiatedTreatment.period starts 14 days or less after start of (FirstDiagnosed.onset as Period)
 	)
