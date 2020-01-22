@@ -35,5 +35,5 @@ and DischargeHospice.period ends during MeasurementPeriod
     or exists (
         [Procedure: "Hospice care ambulatory"] HospicePerformed
             where HospicePerformed.status.value = 'completed'
-                and Global."Normalize Interval"(HospicePerformed.performed) overlaps MeasurementPeriod
+                and Global."Normalize Interval"(HospicePerformed.performed as Period) overlaps MeasurementPeriod
     )
