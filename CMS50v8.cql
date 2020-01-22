@@ -34,7 +34,7 @@ define "Initial Population":
 
         exists "Face to Face Encounter During Measurement Period"
             	and "First Referral During Measurement Period" is not null
-
+		and exists(Patient.name)
 
 define "Numerator":
 	exists "Referring Provider Communicated Consultant Report to Close Referral Loop"
@@ -71,8 +71,8 @@ define "Referring Provider Communicated Consultant Report to Close Referral Loop
             [Communication: "Consultant Report"] ConsultantReportCommunicated
             	with "First Referral During Measurement Period" FirstReferralPerformed
             		such that (ConsultantReportCommunicated.status.value='in-progress' or ConsultantReportCommunicated.status.value='completed') 
-            		and 'Procedure/'+FirstReferralPerformed.id = "ConsultantReportCommunication"(ConsultantReportCommunicated)
+            		and 'Procedure/'+FirstReferralPerformed.id.value = "ConsultantReportCommunication"(ConsultantReportCommunicated)
             			and FHIRHelpers.ToDateTime(ConsultantReportCommunicated.sent) after start of (FirstReferralPerformed.performed as Period)
 
 define function "ConsultantReportCommunication"(C Communication):
-	(singleton from (C."basedOn" b where 'Procedure'=Split(b.reference.value,'/')[1])).reference.value
+	(singleton from (C."basedOn" b where 'Procedure'=Split(b.reference.value,'/')[0])).reference.value

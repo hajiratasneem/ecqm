@@ -12,9 +12,9 @@ codesystem "RequestIntent": 'http://terminology.hl7.org/CodeSystem/request-inten
 codesystem "MedicationRequestCategory": 'http://terminology.hl7.org/CodeSystem/medicationrequest-category'
 codesystem "ConditionClinicalStatusCodes": 'http://terminology.hl7.org/CodeSystem/condition-clinical'
 
-valueset "Encounter Inpatient": 'urn:oid:2.16.840.1.113883.3.666.5.307'
-valueset "Emergency Department Visit": 'urn:oid:2.16.840.1.113883.3.117.1.7.1.292'
-valueset "Observation Services": 'urn:oid:2.16.840.1.113762.1.4.1111.143'
+valueset "Encounter Inpatient": '2.16.840.1.113883.3.666.5.307'
+valueset "Emergency Department Visit": '2.16.840.1.113883.3.117.1.7.1.292'
+valueset "Observation Services": '2.16.840.1.113762.1.4.1111.143'
 
 code "Birthdate": '21112-8' from "LOINC" display 'Birth date'
 code "Dead": '419099009' from "SNOMEDCT" display 'Dead'

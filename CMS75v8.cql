@@ -24,8 +24,6 @@ valueset "Preventive Care, Established Office Visit, 0 to 17":'2.16.840.1.113883
 valueset "Race":'2.16.840.1.114222.4.11.836'
 valueset "Clinical Oral Evaluation":'2.16.840.1.113883.3.464.1003.125.12.1003'
 valueset "Dental Caries":'2.16.840.1.113883.3.464.1003.125.12.1004'
-valueset "Encounter Inpatient":'2.16.840.1.113883.3.666.5.307'
-valueset "Hospice care ambulatory":'2.16.840.1.113762.1.4.1108.15'
 
 code "Birth date":'21112-8' from "LOINC" display 'Birth date'
 code "Discharge to healthcare facility for hospice care (procedure)":'428371000124100' from "SNOMEDCT" display 'Discharge to healthcare facility for hospice care (procedure)'
@@ -40,12 +38,12 @@ define "Denominator":
 
 define "Numerator":
 	exists ( [Condition: "Dental Caries"] DentalCaries
-			where DentalCaries.clinicalStatus.coding[0].code='active'
+			where DentalCaries.clinicalStatus.coding[0].code.value='active'
 				and Interval[FHIRHelpers.ToDateTime(DentalCaries.onset),FHIRHelpers.ToDateTime(DentalCaries.abatement)] overlaps "Measurement Period"
 	)
 
 define "Denominator Exclusions":
-	Hospice."Has Hospice"
+	Hospice."Has Hospice"("Measurement Period")
 
 define "Qualifying Encounters":
 	( [Encounter: "Office Visit"]
