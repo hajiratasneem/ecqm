@@ -4,6 +4,7 @@ using FHIR version '4.0.0'
 
 include FHIRHelpers version '4.0.0' called FHIRHelpers
 include Hospice_FHIR4 version '1.0.000' called Hospice
+include MATGlobalCommonFunctions_FHIR4 version '4.0.000' called Global
 
 codesystem "ICD-10-CM": 'http://hl7.org/fhir/sid/icd-10-cm'
 codesystem "LOINC": 'http://loinc.org'
@@ -50,8 +51,8 @@ define "Qualifying Encounters":
 define "Congenital Absence of Cervix":
 	[Condition] NoCervixBirth
 		where FHIRHelpers.ToConcept(NoCervixBirth.code).codes[0] ~ "Congenital absence of cervix (disorder)"
-			and NoCervixBirth.clinicalStatus.coding[0].code='active'
-			and Interval[FHIRHelpers.ToDateTime(NoCervixBirth.onset),FHIRHelpers.ToDateTime(NoCervixBirth.abatement)]  starts before end of "Measurement Period"
+			and NoCervixBirth.clinicalStatus.coding[0].code.value='active'
+			and Global."Normalize Onset"(NoCervixBirth.onset) starts before end of "Measurement Period"
 
 define "Pap Test with Results":
 	[Observation: "Pap Test"] PapTestWithResult
