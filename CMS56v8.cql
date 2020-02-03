@@ -62,7 +62,7 @@ define "Total Hip Arthroplasty with 2 or More Lower Body Fractures":
 		)>= 2
 
 define "Denominator Exclusions":
-	Hospice."Has Hospice"
+	Hospice."Has Hospice"("Measurement Period")
 		or exists ( "Total Hip Arthroplasty with 2 or More Lower Body Fractures" )
 		or exists ( "Dementia Diagnosis" )
 

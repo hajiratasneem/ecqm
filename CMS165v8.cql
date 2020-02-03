@@ -135,7 +135,7 @@ define "Qualifying Systolic Blood Pressure Reading":
 			and FHIRHelpers.ToDateTime(SystolicBP.issued) during "Measurement Period"
 
 define "Denominator Exclusions":
-	Hospice."Has Hospice"
+	Hospice."Has Hospice"("Measurement Period")
 		or exists "Pregnancy Or Renal Diagnosis Exclusions"
 		or ( exists "End Stage Renal Disease Procedures"
 				or exists "End Stage Renal Disease Encounter"

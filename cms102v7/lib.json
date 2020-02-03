@@ -1,0 +1,113 @@
+{
+  "resourceType": "Library",
+  "meta": {
+    "versionId": "27",
+    "lastUpdated": "2020-01-21T16:43:21.649+05:30",
+    "profile": [
+      "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/library-cqfm"
+    ]
+  },
+  "url": "http://hl7.org/fhir/us/cqfmeasures/Library/library-CMS102v7",
+  "identifier": [
+    {
+      "use": "official",
+      "system": "http://example.org/fhir/cqi/ecqm/Library/Identifier",
+      "value": "CMS102v7"
+    }
+  ],
+  "version": "7.1.000",
+  "name": "AssessedforRehabilitation",
+  "title": "Assessed for Rehabilitation",
+  "status": "active",
+  "experimental": true,
+  "type": {
+    "coding": [
+      {
+        "system": "http://hl7.org/fhir/library-type",
+        "code": "logic-library"
+      }
+    ]
+  },
+  "date": "2019-12-03",
+  "publisher": "The Joint Commission",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.hl7.org/Special/committees/cqi/index.cfm"
+        }
+      ]
+    }
+  ],
+  "description": "Ischemic or hemorrhagic stroke patients who were assessed for rehabilitation services",
+  "approvalDate": "2019-08-03",
+  "lastReviewDate": "2019-08-03",
+  "relatedArtifact": [
+    {
+      "type": "depends-on",
+      "resource": "Library/4952"
+    },
+	{
+      "type": "depends-on",
+      "resource": "Library/4953"
+    },
+	{
+      "type": "depends-on",
+      "resource": "Library/20052"
+    }
+  ],
+  "dataRequirement": [
+    {
+      "type": "Procedure",
+      "codeFilter": [
+        {
+          "path": "code",
+          "valueSet": "urn:oid:2.16.840.1.113762.1.4.1045.18"
+        }
+      ]
+    },
+    {
+      "type": "Encounter",
+      "codeFilter": [
+        {
+          "path": "code",
+          "valueSet": "urn:oid:2.16.840.1.113883.3.526.3.1285"
+        }
+      ]
+    },
+    {
+      "type": "Encounter",
+      "codeFilter": [
+        {
+          "path": "code",
+          "valueSet": "urn:oid:2.16.840.1.113883.3.464.1003.101.12.1025"
+        }
+      ]
+    },
+    {
+      "type": "Encounter",
+      "codeFilter": [
+        {
+          "path": "code",
+          "valueSet": "urn:oid:2.16.840.1.113883.3.464.1003.101.12.1022"
+        }
+      ]
+    },
+    {
+      "type": "Procedure",
+      "codeFilter": [
+        {
+          "path": "code",
+          "valueSet": "urn:oid:2.16.840.1.113762.1.4.1045.19"
+        }
+      ]
+    }
+  ],
+  "content": [
+    {
+      "contentType": "text/cql",
+      "data": "bGlicmFyeSBDbG9zaW5ndGhlUmVmZXJyYWxMb29wIHZlcnNpb24gJzguMC4wMDAnCgp1c2luZyBGSElSIHZlcnNpb24gJzQuMC4wJwoKaW5jbHVkZSBGSElSSGVscGVycyB2ZXJzaW9uICc0LjAuMCcgY2FsbGVkIEZISVJIZWxwZXJzCgpjb2Rlc3lzdGVtICJJQ0QtMTAtQ00iOiAnaHR0cDovL2hsNy5vcmcvZmhpci9zaWQvaWNkLTEwLWNtJwpjb2Rlc3lzdGVtICJMT0lOQyI6ICdodHRwOi8vbG9pbmMub3JnJwpjb2Rlc3lzdGVtICJIQ1BDUyI6ICdodHRwczovL2hjcGNzLmNvZGVzLycKY29kZXN5c3RlbSAiU05PTUVELUNUIjogJ2h0dHA6Ly9zbm9tZWQuaW5mby9zY3QnCmNvZGVzeXN0ZW0gIkNQVCI6ICdodHRwczovL3d3dy5hYXBjLmNvbS9yZXNvdXJjZXMvbWVkaWNhbC1jb2RpbmcvY3B0LmFzcHgnCmNvZGVzeXN0ZW0gIk5VQ0NQVCI6J2h0dHBzOi8vd3d3Lm5sbS5uaWguZ292L3Jlc2VhcmNoL3VtbHMvc291cmNlcmVsZWFzZWRvY3MvY3VycmVudC9OVUNDUFQvc291cmNlcmVwcmVzZW50YXRpb24uaHRtbCcKY29kZXN5c3RlbSAiUlhOT1JNIiA6ICcyLjE2Ljg0MC4xLjExMzg4My42Ljg4JyB2ZXJzaW9uICcyMDE4LTAxJwoKdmFsdWVzZXQgIkNvbnN1bHRhbnQgUmVwb3J0IjonMi4xNi44NDAuMS4xMTM4ODMuMy40NjQuMTAwMy4xMjEuMTIuMTAwNicKdmFsdWVzZXQgIkV0aG5pY2l0eSI6JzIuMTYuODQwLjEuMTE0MjIyLjQuMTEuODM3Jwp2YWx1ZXNldCAiT2ZmaWNlIFZpc2l0IjonMi4xNi44NDAuMS4xMTM4ODMuMy40NjQuMTAwMy4xMDEuMTIuMTAwMScKdmFsdWVzZXQgIk9OQyBBZG1pbmlzdHJhdGl2ZSBTZXgiOicyLjE2Ljg0MC4xLjExMzc2Mi4xLjQuMScKdmFsdWVzZXQgIk9waHRoYWxtb2xvZ2ljYWwgU2VydmljZXMiOicyLjE2Ljg0MC4xLjExMzg4My4zLjUyNi4zLjEyODUnCnZhbHVlc2V0ICJQYXllciI6JzIuMTYuODQwLjEuMTE0MjIyLjQuMTEuMzU5MScKdmFsdWVzZXQgIlByZXZlbnRpdmUgQ2FyZSBTZXJ2aWNlcyAtIEVzdGFibGlzaGVkIE9mZmljZSBWaXNpdCwgMTggYW5kIFVwIjonMi4xNi44NDAuMS4xMTM4ODMuMy40NjQuMTAwMy4xMDEuMTIuMTAyNScKdmFsdWVzZXQgIlByZXZlbnRpdmUgQ2FyZSBTZXJ2aWNlcywgSW5pdGlhbCBPZmZpY2UgVmlzaXQsIDAgdG8gMTciOicyLjE2Ljg0MC4xLjExMzg4My4zLjQ2NC4xMDAzLjEwMS4xMi4xMDIyJwp2YWx1ZXNldCAiUHJldmVudGl2ZSBDYXJlIFNlcnZpY2VzLUluaXRpYWwgT2ZmaWNlIFZpc2l0LCAxOCBhbmQgVXAiOicyLjE2Ljg0MC4xLjExMzg4My4zLjQ2NC4xMDAzLjEwMS4xMi4xMDIzJwp2YWx1ZXNldCAiUHJldmVudGl2ZSBDYXJlLCBFc3RhYmxpc2hlZCBPZmZpY2UgVmlzaXQsIDAgdG8gMTciOicyLjE2Ljg0MC4xLjExMzg4My4zLjQ2NC4xMDAzLjEwMS4xMi4xMDI0Jwp2YWx1ZXNldCAiUmFjZSI6JzIuMTYuODQwLjEuMTE0MjIyLjQuMTEuODM2Jwp2YWx1ZXNldCAiUmVmZXJyYWwiOicyLjE2Ljg0MC4xLjExMzg4My4zLjQ2NC4xMDAzLjEwMS4xMi4xMDQ2JwoKcGFyYW1ldGVyICJNZWFzdXJlbWVudCBQZXJpb2QiIEludGVydmFsPERhdGVUaW1lPgoKY29udGV4dCBQYXRpZW50CgoKZGVmaW5lICJJbml0aWFsIFBvcHVsYXRpb24iOgoKICAgICAgICBleGlzdHMgIkZhY2UgdG8gRmFjZSBFbmNvdW50ZXIgRHVyaW5nIE1lYXN1cmVtZW50IFBlcmlvZCIKICAgICAgICAgICAgCWFuZCAiRmlyc3QgUmVmZXJyYWwgRHVyaW5nIE1lYXN1cmVtZW50IFBlcmlvZCIgaXMgbm90IG51bGwKCQlhbmQgZXhpc3RzKFBhdGllbnQubmFtZSkKCmRlZmluZSAiTnVtZXJhdG9yIjoKCWV4aXN0cyAiUmVmZXJyaW5nIFByb3ZpZGVyIENvbW11bmljYXRlZCBDb25zdWx0YW50IFJlcG9ydCB0byBDbG9zZSBSZWZlcnJhbCBMb29wIgoKCmRlZmluZSAiRGVub21pbmF0b3IiOgoJIkluaXRpYWwgUG9wdWxhdGlvbiIKCgoKZGVmaW5lICJGYWNlIHRvIEZhY2UgRW5jb3VudGVyIER1cmluZyBNZWFzdXJlbWVudCBQZXJpb2QiOgoKICAgICAgICAgICAgKCBbRW5jb3VudGVyOiAiT2ZmaWNlIFZpc2l0Il0KICAgICAgICAgICAgCXVuaW9uIFtFbmNvdW50ZXI6ICJPcGh0aGFsbW9sb2dpY2FsIFNlcnZpY2VzIl0KICAgICAgICAgICAgCXVuaW9uIFtFbmNvdW50ZXI6ICJQcmV2ZW50aXZlIENhcmUgU2VydmljZXMgLSBFc3RhYmxpc2hlZCBPZmZpY2UgVmlzaXQsIDE4IGFuZCBVcCJdCiAgICAgICAgICAgIAl1bmlvbiBbRW5jb3VudGVyOiAiUHJldmVudGl2ZSBDYXJlIFNlcnZpY2VzLCBJbml0aWFsIE9mZmljZSBWaXNpdCwgMCB0byAxNyJdCiAgICAgICAgICAgIAl1bmlvbiBbRW5jb3VudGVyOiAiUHJldmVudGl2ZSBDYXJlIFNlcnZpY2VzLUluaXRpYWwgT2ZmaWNlIFZpc2l0LCAxOCBhbmQgVXAiXQogICAgICAgICAgICAJdW5pb24gW0VuY291bnRlcjogIlByZXZlbnRpdmUgQ2FyZSwgRXN0YWJsaXNoZWQgT2ZmaWNlIFZpc2l0LCAwIHRvIDE3Il0gKSBGYWNlVG9GYWNlRW5jb3VudGVyCiAgICAgICAgICAgIAl3aGVyZSAoRmFjZVRvRmFjZUVuY291bnRlci5zdGF0dXMudmFsdWU9J2luLXByb2dyZXNzJyBvciBGYWNlVG9GYWNlRW5jb3VudGVyLnN0YXR1cy52YWx1ZT0nZmluaXNoZWQnKSBhbmQgRmFjZVRvRmFjZUVuY291bnRlci5wZXJpb2QgZHVyaW5nICJNZWFzdXJlbWVudCBQZXJpb2QiCgoKCmRlZmluZSAiRmlyc3QgUmVmZXJyYWwgRHVyaW5nIE1lYXN1cmVtZW50IFBlcmlvZCI6CgogICAgICAgICAgICBGaXJzdChbUHJvY2VkdXJlOiAiUmVmZXJyYWwiXSBSZWZlcnJhbFBlcmZvcm1lZAogICAgICAgICAgICAJCXdoZXJlIChSZWZlcnJhbFBlcmZvcm1lZC5zdGF0dXMudmFsdWU9J2luLXByb2dyZXNzJyBvciBSZWZlcnJhbFBlcmZvcm1lZC5zdGF0dXMudmFsdWU9J2NvbXBsZXRlZCcpCiAgICAgICAgICAgIAkJIGFuZCAoUmVmZXJyYWxQZXJmb3JtZWQucGVyZm9ybWVkIGFzIFBlcmlvZCkgc3RhcnRzIGR1cmluZyAiTWVhc3VyZW1lbnQgUGVyaW9kIgogICAgICAgICAgICAJCXNvcnQgYnkgc3RhcnQgb2YgKHBlcmZvcm1lZCBhcyBQZXJpb2QpCiAgICAgICAgICAgICkKCgpkZWZpbmUgIlJlZmVycmluZyBQcm92aWRlciBDb21tdW5pY2F0ZWQgQ29uc3VsdGFudCBSZXBvcnQgdG8gQ2xvc2UgUmVmZXJyYWwgTG9vcCI6CgogICAgICAgICAgICBbQ29tbXVuaWNhdGlvbjogIkNvbnN1bHRhbnQgUmVwb3J0Il0gQ29uc3VsdGFudFJlcG9ydENvbW11bmljYXRlZAogICAgICAgICAgICAJd2l0aCAiRmlyc3QgUmVmZXJyYWwgRHVyaW5nIE1lYXN1cmVtZW50IFBlcmlvZCIgRmlyc3RSZWZlcnJhbFBlcmZvcm1lZAogICAgICAgICAgICAJCXN1Y2ggdGhhdCAoQ29uc3VsdGFudFJlcG9ydENvbW11bmljYXRlZC5zdGF0dXMudmFsdWU9J2luLXByb2dyZXNzJyBvciBDb25zdWx0YW50UmVwb3J0Q29tbXVuaWNhdGVkLnN0YXR1cy52YWx1ZT0nY29tcGxldGVkJykgCiAgICAgICAgICAgIAkJYW5kICdQcm9jZWR1cmUvJytGaXJzdFJlZmVycmFsUGVyZm9ybWVkLmlkLnZhbHVlID0gIkNvbnN1bHRhbnRSZXBvcnRDb21tdW5pY2F0aW9uIihDb25zdWx0YW50UmVwb3J0Q29tbXVuaWNhdGVkKQogICAgICAgICAgICAJCQlhbmQgRkhJUkhlbHBlcnMuVG9EYXRlVGltZShDb25zdWx0YW50UmVwb3J0Q29tbXVuaWNhdGVkLnNlbnQpIGFmdGVyIHN0YXJ0IG9mIChGaXJzdFJlZmVycmFsUGVyZm9ybWVkLnBlcmZvcm1lZCBhcyBQZXJpb2QpCgpkZWZpbmUgZnVuY3Rpb24gIkNvbnN1bHRhbnRSZXBvcnRDb21tdW5pY2F0aW9uIihDIENvbW11bmljYXRpb24pOgoJKHNpbmdsZXRvbiBmcm9tIChDLiJiYXNlZE9uIiBiIHdoZXJlICdQcm9jZWR1cmUnPVNwbGl0KGIucmVmZXJlbmNlLnZhbHVlLCcvJylbMF0pKS5yZWZlcmVuY2UudmFsdWU="
+    }
+  ]
+}

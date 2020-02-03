@@ -94,7 +94,7 @@ define "Initial Population":
 			and exists "Qualifying Encounters"
 
 define "Denominator Exclusions":
-	Hospice."Has Hospice"
+	Hospice."Has Hospice"("Measurement Period")
 		or exists "Malignant Neoplasm"
 		or exists "Total Colectomy Performed"
 		or FrailtyLTI."Advanced Illness and Frailty Exclusion Including Under Age 80"

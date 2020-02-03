@@ -68,7 +68,7 @@ define "Surgical Absence of Cervix":
 		end of "Measurement Period"
 
 define "Denominator Exclusions":
-	Hospice."Has Hospice"
+	Hospice."Has Hospice"("Measurement Period")
 		or exists "Surgical Absence of Cervix"
 		or exists "Congenital Absence of Cervix"
 

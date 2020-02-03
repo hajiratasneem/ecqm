@@ -142,13 +142,13 @@ define "Two or More Followup Encounters":
 	Count("Encounters 300 Days after Initial ADHD Medication")>= 2
 
 define "Denominator Exclusions 1":
-	Hospice."Has Hospice"
+	Hospice."Has Hospice"("Measurement Period")
 		or exists ( "Narcolepsy Exclusion" )
 		or exists ( "Inpatient Stay with Qualifying Diagnosis within 30 Days of Initial ADHD Dispense" )
 		or exists ( "Previously on ADHD Medication Exclusion" )
 
 define "Denominator Exclusions 2":
-	Hospice."Has Hospice"
+	Hospice."Has Hospice"("Measurement Period")
 		or exists ( "Narcolepsy Exclusion" )
 		or exists ( "Inpatient Stay with Qualifying Diagnosis within 300 Days of Initial ADHD Dispense" )
 		or exists ( "Previously on ADHD Medication Exclusion" )

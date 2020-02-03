@@ -88,7 +88,7 @@ define "Denominator Exclusions":
 		or ( "Assessed as Not Ambulatory Prior to Measurement Period"
 				and not exists ( "Ambulatory Status Assessment During Measurement Period" )
 		)
-		or Hospice."Has Hospice"
+		or Hospice."Has Hospice"("Measurement Period")
 
 define "Initial Population":
 	AgeInYearsAt(start of "Measurement Period")>= 65

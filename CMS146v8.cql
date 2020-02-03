@@ -46,7 +46,7 @@ context Patient
 
 define "In Hospice":
 	"Initial Population" EligibleEncounters
-		where Hospice."Has Hospice"
+		where Hospice."Has Hospice"("Measurement Period")
 
 define "Encounter With Antibiotic Ordered Within Three Days":
 	"Qualifying Encounter" EDOrAmbulatoryVisit

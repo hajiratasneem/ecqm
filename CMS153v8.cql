@@ -138,7 +138,7 @@ define "Laboratory Tests Identifying Sexual Activity":
 		where FHIRHelpers.ToDateTime(AllLabOrders.authoredOn) during "Measurement Period"
 
 define "Denominator Exclusions":
-	Hospice."Has Hospice"
+	Hospice."Has Hospice"("Measurement Period")
 		or ( exists ( "Pregnancy Test Exclusion" )
 				and not exists ( "Diagnoses Identifying Sexual Activity" )
 				and not exists ( "Active Contraceptive Medications" )

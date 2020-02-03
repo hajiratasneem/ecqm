@@ -69,7 +69,7 @@ define "Height in Measurement Period":
 			and Height.value is not null
 
 define "Denominator Exclusions":
-	Hospice."Has Hospice"
+	Hospice."Has Hospice"("Measurement Period")
 		or exists ( "Pregnancy Diagnosis Which Overlaps Measurement Period" )
 
 define "Numerator 2":

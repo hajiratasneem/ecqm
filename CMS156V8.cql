@@ -148,7 +148,7 @@ define "Denominator":
 	"Initial Population"
 
 define "Denominator Exclusions":
-	Hospice."Has Hospice"
+	Hospice."Has Hospice"("Measurement Period")
 
 define "AntiInfectives During Measurement Period":
 	[MedicationRequest: "Anti Infectives, other"] AntiInfectives

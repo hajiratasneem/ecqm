@@ -50,13 +50,12 @@ define "Major Depressive Disorder Encounter":
 		union [Encounter: "Psych Visit - Psychotherapy"]
 		union [Encounter: "Psychoanalysis"]
 		union [Encounter: "Telehealth Services"] ) ValidEncounter
-		with ([Condition:"Major Depressive Disorder-Active"]C where C.clinicalStatus.coding[0].code='active')Condition
-		such that (ValidEncounter.status.value='in-progress' or ValidEncounter.status.value='finished')
-		    and exists (
-                ValidEncounter.diagnosis.condition Condition
-                    where EndsWith(Condition.reference, Condition.id)
+		where exists (
+                ValidEncounter.diagnosis diagnosis
+                    where diagnosis.condition.reference.value= 'Condition/'+"GetCondition".id.value
             )
-
+			and (ValidEncounter.status.value='in-progress' or ValidEncounter.status.value='finished')
+		    
 define "Numerator":
 	"New or Recurrent Major Depressive Disorder Encounter" NewOrRecurrentMDDEncounter
 		with ([Procedure]O where FHIRHelpers.ToConcept(O.code).codes[0] ~ "Suicide risk assessment (procedure)") SuicideRiskAssessment
@@ -65,4 +64,7 @@ define "Numerator":
 define "Initial Population":
 	"New or Recurrent Major Depressive Disorder Encounter" NewOrRecurrentMDDEncounter
 		where AgeInYearsAt(start of "Measurement Period")>= 17
+
+define "GetCondition":
+	singleton from ([Condition:"Major Depressive Disorder-Active"]C where C.clinicalStatus.coding[0].code='active')
 

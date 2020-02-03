@@ -114,7 +114,8 @@ define "Has Spent More Than 90 Days in Long Term Care":
 	"Days Spent in Long Term Care During Measurement Period" > 90
 
 define "Days Spent in Long Term Care During Measurement Period":
-	"CumulativeDays"("Long Term Care Periods During Measurement Period")
+	if exists("Long Term Care Periods During Measurement Period") then
+	"CumulativeDays"("Long Term Care Periods During Measurement Period") else 0
 
 define function "CumulativeDays"(Intervals List<Interval<DateTime>> ):
 	Sum((collapse Intervals)CollapsedInterval

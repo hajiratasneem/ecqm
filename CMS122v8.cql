@@ -13,19 +13,19 @@ codesystem "SNOMED-CT": 'http://snomed.info/sct'
 codesystem "CPT": 'https://www.aapc.com/resources/medical-coding/cpt.aspx'
 codesystem "NUCCPT":'https://www.nlm.nih.gov/research/umls/sourcereleasedocs/current/NUCCPT/sourcerepresentation.html'
 
-valueset "Diabetes": 'urn:oid:2.16.840.1.113883.3.464.1003.103.12.1001'
-valueset "Ethnicity": 'urn:oid:2.16.840.1.114222.4.11.837'
-valueset "HbA1c Laboratory Test": 'urn:oid:2.16.840.1.113883.3.464.1003.198.12.1013'
-valueset "ONC Administrative Sex": 'urn:oid:2.16.840.1.113762.1.4.1'
-valueset "Payer": 'urn:oid:2.16.840.1.114222.4.11.3591'
-valueset "Race": 'urn:oid:2.16.840.1.114222.4.11.836'
+valueset "Diabetes": '2.16.840.1.113883.3.464.1003.103.12.1001'
+valueset "Ethnicity": '2.16.840.1.114222.4.11.837'
+valueset "HbA1c Laboratory Test": '2.16.840.1.113883.3.464.1003.198.12.1013'
+valueset "ONC Administrative Sex": '2.16.840.1.113762.1.4.1'
+valueset "Payer": '2.16.840.1.114222.4.11.3591'
+valueset "Race": '2.16.840.1.114222.4.11.836'
 valueset "Encounter Inpatient":'2.16.840.1.113883.3.666.5.307'
 valueset "Hospice care ambulatory":'2.16.840.1.113762.1.4.1108.15'
-valueset "Annual Wellness Visit": 'urn:oid:2.16.840.1.113883.3.526.3.1240'
-valueset "Home Healthcare Services": 'urn:oid:2.16.840.1.113883.3.464.1003.101.12.1016'
-valueset "Office Visit": 'urn:oid:2.16.840.1.113883.3.464.1003.101.12.1001'
-valueset "Preventive Care Services - Established Office Visit, 18 and Up": 'urn:oid:2.16.840.1.113883.3.464.1003.101.12.1025'
-valueset "Preventive Care Services-Initial Office Visit, 18 and Up": 'urn:oid:2.16.840.1.113883.3.464.1003.101.12.1023'
+valueset "Annual Wellness Visit": '2.16.840.1.113883.3.526.3.1240'
+valueset "Home Healthcare Services": '2.16.840.1.113883.3.464.1003.101.12.1016'
+valueset "Office Visit": '2.16.840.1.113883.3.464.1003.101.12.1001'
+valueset "Preventive Care Services - Established Office Visit, 18 and Up": '2.16.840.1.113883.3.464.1003.101.12.1025'
+valueset "Preventive Care Services-Initial Office Visit, 18 and Up": '2.16.840.1.113883.3.464.1003.101.12.1023'
 
 code "Birth date": '21112-8' from "LOINC" display 'Birth date'
 code "Discharge to healthcare facility for hospice care (procedure)":'428371000124100' from "SNOMED-CT" display 'Discharge to healthcare facility for hospice care (procedure)'
@@ -45,7 +45,7 @@ define "Numerator":
 		or "Has No Record Of HbA1c"
 
 define "Has Most Recent Elevated HbA1c":
-	FHIRHelpers.ToInteger("Has Most Recent HbA1c".value) > 9 '%'
+	("Has Most Recent HbA1c".value as Quantity) > 9 '%{HemoglobinA1C}'
 
 define "Has No Record Of HbA1c":
 	not exists ( [Observation: "HbA1c Laboratory Test"] NoHbA1c
@@ -63,18 +63,18 @@ define "Initial Population":
 		and exists ( "Qualifying Encounters" )
 		and exists ( [Condition: "Diabetes"] Diabetes
 				where Diabetes.clinicalStatus.coding[0].code='active'
-					and Interval[FHIRHelpers.ToDateTime(Diabetes.onset),FHIRHelpers.ToDateTime(Diabetes.abatement)] overlaps "Measurement Period"
+					and FHIRHelpers.ToDateTime(Diabetes.onset) during "Measurement Period"
 		)
 
 define "Has Most Recent HbA1c Without Result":
 	"Has Most Recent HbA1c" is not null
-		and "Has Most Recent HbA1c".value is null
+		and ("Has Most Recent HbA1c".value as Quantity) is null
 
 define "Denominator Exclusions":
 	( (AgeInYearsAt(start of "Measurement Period")>= 65 )
 				and FrailtyLTI."Has Spent More Than 90 Days in Long Term Care"
 	)
-		or Hospice."Has Hospice"
+		or Hospice."Has Hospice"("Measurement Period")
 		or FrailtyLTI."Advanced Illness and Frailty Exclusion Including Under Age 80"
 
 define "Qualifying Encounters":

@@ -37,12 +37,14 @@ define "Intervention Comfort Measures":
 
 define "All Stroke Encounter":
 	"Non Elective Inpatient Encounter" NonElectiveEncounter
-    where Global.PrincipalDiagnosis(NonElectiveEncounter).code in "Hemorrhagic Stroke"
-      or Global.PrincipalDiagnosis(NonElectiveEncounter).code in "Ischemic Stroke"
+    where 
+    exists("Hemorrhagic Stroke" H where FHIRHelpers.ToString(Global.PrincipalDiagnosis(NonElectiveEncounter).code.coding[0].code) = H.code)
+    //FHIRHelpers.ToConcept(Global.PrincipalDiagnosis(NonElectiveEncounter).code).codes[0] in "Hemorrhagic Stroke"
+      //or FHIRHelpers.ToConcept(Global.PrincipalDiagnosis(NonElectiveEncounter).code).codes[0] in "Ischemic Stroke"
 
 define "Ischemic Stroke Encounter":
 	"Encounter with Principal Diagnosis and Age" EncounterWithAge
-		where Global.PrincipalDiagnosis(EncounterWithAge).code in "Ischemic Stroke"
+		where FHIRHelpers.ToConcept(Global.PrincipalDiagnosis(EncounterWithAge).code).codes[0] in "Ischemic Stroke"
 
 define "Non Elective Inpatient Encounter":
 	["Encounter": "Non-Elective Inpatient Encounter"] NonElectiveEncounter
@@ -59,15 +61,14 @@ define "Ischemic Stroke Encounters with Discharge Disposition":
 		)
 	)
 
-	define "Comfort Measures during Hospitalization":
+define "Comfort Measures during Hospitalization":
 		"Ischemic Stroke Encounter" IschemicStrokeEncounter
 	   	with "Intervention Comfort Measures" ComfortMeasure
 	    	such that FHIRHelpers.ToDateTime(Coalesce(ComfortMeasure.performed as dateTime,ComfortMeasure.authoredOn)) during Global."HospitalizationWithObservation"(IschemicStrokeEncounter)
 
 define "Encounter with Principal Diagnosis and Age":
 	"All Stroke Encounter" AllStrokeEncounter
-		with ["Patient"] BirthDate
-			such that Global."CalendarAgeInYearsAt"(FHIRHelpers.ToDate(BirthDate.birthDate), start of FHIRHelpers.ToInterval(AllStrokeEncounter.period)) >= 18
+		where AgeInYearsAt(start of FHIRHelpers.ToInterval(AllStrokeEncounter.period)) >= 18
 
 define function "CalendarDayOfOrDayAfter"(StartValue DateTime ):
 	Interval(Global."ToDate"(StartValue), Global."ToDate"(StartValue + 2 days))

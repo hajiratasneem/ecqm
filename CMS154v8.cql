@@ -49,7 +49,7 @@ define "Qualifying Encounter":
 
 define "In Hospice":
 	"Initial Population" InitialPopulation
-		where Hospice."Has Hospice"
+		where Hospice."Has Hospice"("Measurement Period")
 
 define "Encounter with Upper Respiratory Infection":
 	from

@@ -114,7 +114,7 @@ define "Four DTaP Vaccinations":
 		return DTaPVaccination1
 
 define "Denominator Exclusions":
-	Hospice."Has Hospice"
+	Hospice."Has Hospice"("Measurement Period")
 
 define "Four Pneumococcal Conjugate Vaccinations":
 	from

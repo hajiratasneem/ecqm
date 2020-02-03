@@ -53,7 +53,7 @@ define "Medications Documented During Qualifying Encounter":
 
             "Qualifying Encounters During Measurement Period" QualifyingEncounterDuringMeasurementPeriod
             	with [Procedure: "Current Medications Documented"] MedicationsDocumented
-            		such that (MedicationsDocumented.status.value='in-progress' and MedicationsDocumented.status.value='completed')
+            		such that (MedicationsDocumented.status.value='in-progress' or MedicationsDocumented.status.value='completed')
             		    and (MedicationsDocumented.performed as Period) during QualifyingEncounterDuringMeasurementPeriod.period
 
          
@@ -61,7 +61,8 @@ define "Medications Documented During Qualifying Encounter":
 define "Medications Not Documented for Medical Reason":
 
             [Procedure: "Current Medications Documented"] NotPerformed
-            	where (NotPerformed.status.value!='in-progress' and NotPerformed.status.value!='completed') and NotPerformed.statusReason in "Medical or Other reason not done"
+            	where (NotPerformed.status.value!='in-progress' and NotPerformed.status.value!='completed') 
+		and NotPerformed.statusReason in "Medical or Other reason not done"
          
 
 define "Patient Age 18 or Older at Start of Measurement Period":

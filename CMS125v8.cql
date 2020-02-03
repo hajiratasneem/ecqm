@@ -102,7 +102,7 @@ define "Initial Population":
 		and exists("Qualifying Encounters")
 
 define "Denominator Exclusions":
-	Hospice."Has Hospice"
+	Hospice."Has Hospice"("Measurement Period")
 		or ( Count("Unilateral Mastectomy Procedure")= 2 )
 		or ( ( exists ( "Right Mastectomy Diagnosis" )
 					or exists ( "Right Mastectomy Procedure" )

@@ -46,8 +46,8 @@ define "Major Depressive Disorder Encounter":
 		union [Encounter: "Group Psychotherapy"]
 		union [Encounter: "Telehealth Services"] ) ValidEncounter
 		where exists (
-                ValidEncounter.diagnosis.condition Condition
-                    where EndsWith(Condition.reference, "GetCondition".id)
+                ValidEncounter.diagnosis diagnosis
+                    where diagnosis.condition.reference.value= 'Condition/'+"GetCondition".id.value
             )
 			and (ValidEncounter.status.value='in-progress' or ValidEncounter.status.value='finished')
 		    and ValidEncounter.period during "Measurement Period"
@@ -64,3 +64,4 @@ define "Initial Population":
 
 define "GetCondition":
 	singleton from ([Condition:"Major Depressive Disorder-Active"]C where C.clinicalStatus.coding[0].code='active')
+

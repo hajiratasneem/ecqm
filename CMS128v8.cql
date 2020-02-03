@@ -84,7 +84,7 @@ define "Initial Population":
 		and exists "Qualifying Encounters"
 
 define "Denominator Exclusions":
-	Hospice."Has Hospice"
+	Hospice."Has Hospice"("Measurement Period")
 		or exists ( [MedicationStatement: "Antidepressant Medication"] OnAntiDepressant
 				let AntidepressantDispensed: "Antidepressant Dispensed 245 Days Before or 120 Days After Start of Measurement Period"
 				where OnAntiDepressant.status.value='active'

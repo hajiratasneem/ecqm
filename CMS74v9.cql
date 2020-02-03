@@ -52,7 +52,7 @@ define "Qualifying Encounters":
 		            and ValidEncounter.period during "Measurement Period"
 
 define "Denominator Exclusions":
-	Hospice."Has Hospice"
+	Hospice."Has Hospice"("Measurement Period")
 
 define "Initial Population":
 	AgeInYearsAt(start of "Measurement Period")< 20

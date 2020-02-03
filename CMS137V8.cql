@@ -50,7 +50,7 @@ define "Prior Diagnosis of Dependence":
 			such that (PriorDependenceDiagnosis.onset as Period) starts 60 days or less before start of (FirstDiagnosed.onset as Period)
 
 define "Denominator Exclusions":
-	Hospice."Has Hospice"
+	Hospice."Has Hospice"("Measurement Period")
 		or exists "Prior Diagnosis of Dependence"
 
 define "Numerator":

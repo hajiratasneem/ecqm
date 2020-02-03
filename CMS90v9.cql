@@ -67,7 +67,7 @@ define "Qualifying Encounters":
 		            and ValidEncounter.period during "Measurement Period"
 
 define "Denominator Exclusions":
-	Hospice."Has Hospice"
+	Hospice."Has Hospice"("Measurement Period")
 		or exists ( [Condition: "Severe Dementia"] Dementia
 				where Dementia.clinicalStatus.coding[0].code='active'
 			and Interval[FHIRHelpers.ToDateTime(Dementia.onset),FHIRHelpers.ToDateTime(Dementia.abatement)] overlaps "Measurement Period"

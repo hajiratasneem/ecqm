@@ -113,7 +113,7 @@ define "Denominator Exclusions":
 				and FrailtyLTI."Has Spent More Than 90 Days in Long Term Care"
 	)
 		or FrailtyLTI."Advanced Illness and Frailty Exclusion Including Under Age 80"
-		or Hospice."Has Hospice"
+		or Hospice."Has Hospice"("Measurement Period")
 		
 
             	

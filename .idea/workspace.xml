@@ -3,7 +3,33 @@
   <component name="ChangeListManager">
     <list default="true" id="5dbc261d-3ff9-4e9c-97b5-866167254321" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CMS117V8.cql" afterPath="$PROJECT_DIR$/CMS117V8.cql" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CMS122v8.cql" afterPath="$PROJECT_DIR$/CMS122v8.cql" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CMS124v8.cql" afterPath="$PROJECT_DIR$/CMS124v8.cql" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CMS125v8.cql" afterPath="$PROJECT_DIR$/CMS125v8.cql" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CMS127v8.cql" afterPath="$PROJECT_DIR$/CMS127v8.cql" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CMS128v8.cql" afterPath="$PROJECT_DIR$/CMS128v8.cql" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CMS130v8.cql" afterPath="$PROJECT_DIR$/CMS130v8.cql" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CMS134V8.cql" afterPath="$PROJECT_DIR$/CMS134V8.cql" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CMS136V9.cql" afterPath="$PROJECT_DIR$/CMS136V9.cql" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CMS137V8.cql" afterPath="$PROJECT_DIR$/CMS137V8.cql" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CMS139v8.cql" afterPath="$PROJECT_DIR$/CMS139v8.cql" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CMS146v8.cql" afterPath="$PROJECT_DIR$/CMS146v8.cql" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CMS153v8.cql" afterPath="$PROJECT_DIR$/CMS153v8.cql" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CMS154v8.cql" afterPath="$PROJECT_DIR$/CMS154v8.cql" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CMS155v8.cql" afterPath="$PROJECT_DIR$/CMS155v8.cql" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CMS156V8.cql" afterPath="$PROJECT_DIR$/CMS156V8.cql" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CMS161v8.cql" afterPath="$PROJECT_DIR$/CMS161v8.cql" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CMS165v8.cql" afterPath="$PROJECT_DIR$/CMS165v8.cql" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CMS177v8.cql" afterPath="$PROJECT_DIR$/CMS177v8.cql" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CMS56v8.cql" afterPath="$PROJECT_DIR$/CMS56v8.cql" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CMS66v8.cql" afterPath="$PROJECT_DIR$/CMS66v8.cql" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CMS68v9.cql" afterPath="$PROJECT_DIR$/CMS68v9.cql" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CMS74v9.cql" afterPath="$PROJECT_DIR$/CMS74v9.cql" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CMS90v9.cql" afterPath="$PROJECT_DIR$/CMS90v9.cql" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Libraries/AdvancedIllnessandFrailtyExclusionECQM-4.0.000.cql" afterPath="$PROJECT_DIR$/Libraries/AdvancedIllnessandFrailtyExclusionECQM-4.0.000.cql" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Libraries/MATGlobalCommonFunctions_FHIR4-4.0.000.cql" afterPath="$PROJECT_DIR$/Libraries/MATGlobalCommonFunctions_FHIR4-4.0.000.cql" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Libraries/TJC_Overall-3.6.000.cql" afterPath="$PROJECT_DIR$/Libraries/TJC_Overall-3.6.000.cql" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -15,7 +41,7 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="scratch_15.xml" pinned="false" current-in-tab="true">
+      <file leaf-file-name="scratch_15.xml" pinned="false" current-in-tab="false">
         <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_15.xml">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="0">
@@ -25,11 +51,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CMS56v8.cql" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/CMS56v8.cql">
+      <file leaf-file-name="CMS177v8.cql" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/CMS177v8.cql">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="108">
-              <caret line="171" column="26" lean-forward="false" selection-start-line="171" selection-start-column="26" selection-end-line="171" selection-end-column="26" />
+            <state relative-caret-position="234">
+              <caret line="13" column="0" lean-forward="true" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CMS50v8.cql" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/CMS50v8.cql">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1278">
+              <caret line="71" column="82" lean-forward="false" selection-start-line="71" selection-start-column="82" selection-end-line="71" selection-end-column="82" />
               <folding />
             </state>
           </provider>
@@ -39,11 +75,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>Last</find>
-      <find>Last(</find>
-      <find>start of</find>
-      <find>start o</find>
-      <find>start</find>
       <find>sta</find>
       <find>s</find>
       <find>has js</find>
@@ -69,6 +100,11 @@
       <find>Global</find>
       <find>hospice</find>
       <find>~</find>
+      <find>'/'</find>
+      <find>&quot;</find>
+      <find>&quot;has</find>
+      <find>&quot;has hospice</find>
+      <find>&quot;has hospice&quot;</find>
     </findStrings>
     <replaceStrings>
       <replace />
@@ -130,7 +166,6 @@
         <option value="$PROJECT_DIR$/CMS128v8.cql" />
         <option value="$PROJECT_DIR$/CMS22v8.cql" />
         <option value="$PROJECT_DIR$/CMS161v8.cql" />
-        <option value="$PROJECT_DIR$/CMS177v8.cql" />
         <option value="$PROJECT_DIR$/CMS50v8.cql" />
         <option value="$PROJECT_DIR$/CMS135v8.cql" />
         <option value="$PROJECT_DIR$/CMS145v8.cql" />
@@ -144,6 +179,7 @@
         <option value="$PROJECT_DIR$/CMS771v1.cql" />
         <option value="$PROJECT_DIR$/CMS133v8.cql" />
         <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch_15.json" />
+        <option value="$PROJECT_DIR$/CMS177v8.cql" />
       </list>
     </option>
   </component>
@@ -169,6 +205,7 @@
     </navigator>
     <panes>
       <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -183,7 +220,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -283,6 +319,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="67" y="25" width="1299" height="743" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
@@ -293,6 +330,7 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.108545035" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
       <window_info id="Graph Database Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32861635" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
@@ -302,7 +340,6 @@
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32861635" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -499,20 +536,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/CMS177v8.cql">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="484">
-          <caret line="65" column="113" lean-forward="false" selection-start-line="65" selection-start-column="113" selection-end-line="65" selection-end-column="113" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CMS50v8.cql">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="570">
-          <caret line="78" column="0" lean-forward="true" selection-start-line="78" selection-start-column="0" selection-end-line="78" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/CMS161v8.cql">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1098">
@@ -622,7 +645,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/CMS56v8.cql">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="108">
+        <state relative-caret-position="3078">
           <caret line="171" column="26" lean-forward="false" selection-start-line="171" selection-start-column="26" selection-end-line="171" selection-end-column="26" />
           <folding />
         </state>
@@ -632,7 +655,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="180">
           <caret line="10" column="18" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="10" selection-end-column="18" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -640,6 +662,22 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CMS50v8.cql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1278">
+          <caret line="71" column="82" lean-forward="false" selection-start-line="71" selection-start-column="82" selection-end-line="71" selection-end-column="82" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CMS177v8.cql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="234">
+          <caret line="13" column="0" lean-forward="true" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
           <folding />
         </state>
       </provider>
