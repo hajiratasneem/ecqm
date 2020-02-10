@@ -41,12 +41,13 @@ code "Diastolic blood pressure": '8462-4' from "LOINC" display 'Diastolic blood 
 code "Systolic blood pressure": '8480-6' from "LOINC" display 'Systolic blood pressure'
 code "Discharge to healthcare facility for hospice care (procedure)":'428371000124100' from "SNOMEDCT" display 'Discharge to healthcare facility for hospice care (procedure)'
 code "Discharge to home for hospice care (procedure)":'428361000124107' from "SNOMEDCT" display 'Discharge to home for hospice care (procedure)'
+code "Blood pressure": '85354-9' from "LOINC" display 'blood pressure'
 
 parameter "Measurement Period" Interval<DateTime>
 
 context Patient
 
-define "Numerator":
+define "Numerator": 
 	"Has Diastolic Blood Pressure Less Than 90"
 		and "Has Systolic Blood Pressure Less Than 140"
 
@@ -55,8 +56,8 @@ define "Pregnancy Or Renal Diagnosis Exclusions":
 		union [Condition: "End Stage Renal Disease"]
 		union [Condition: "Kidney Transplant Recipient"]
 		union [Condition: "Chronic Kidney Disease, Stage 5"] ) PregnancyESRDDiagnosis
-		where PregnancyESRDDiagnosis.clinicalStatus.coding[0].code='active'
-			and Interval[FHIRHelpers.ToDateTime(PregnancyESRDDiagnosis.onset),FHIRHelpers.ToDateTime(PregnancyESRDDiagnosis.abatement)] overlaps "Measurement Period"
+		where PregnancyESRDDiagnosis.clinicalStatus.coding[0].code.value='active'
+			and (PregnancyESRDDiagnosis.onset as Period) overlaps "Measurement Period"
 
 define "Denominator":
 	"Initial Population"
@@ -75,27 +76,47 @@ define "End Stage Renal Disease Procedures":
 
 define "Essential Hypertension Diagnosis":
 	[Condition: "Essential Hypertension"] Hypertension
-		where Hypertension.clinicalStatus.coding[0].code='active'
+		where Hypertension.clinicalStatus.coding[0].code.value='active'
 			and (Interval[FHIRHelpers.ToDateTime(Hypertension.onset),FHIRHelpers.ToDateTime(Hypertension.abatement)] starts 6 months or less on or after start of "Measurement Period"
-				or Interval[FHIRHelpers.ToDateTime(Hypertension.onset),FHIRHelpers.ToDateTime(Hypertension.abatement)] overlaps before "Measurement Period")
+				or Interval[FHIRHelpers.ToDateTime(Hypertension.onset),FHIRHelpers.ToDateTime(Hypertension.abatement)] overlaps "Measurement Period")
+
 
 define "Has Diastolic Blood Pressure Less Than 90":
-	FHIRHelpers.ToInteger("Lowest Diastolic Reading on Most Recent Blood Pressure Day".value) < 90 'mm[Hg]'
+	if "Lowest Diastolic Reading on Most Recent Blood Pressure Day"!= null then
+	("Lowest Diastolic Reading on Most Recent Blood Pressure Day".value.value < 90 'mm[Hg]') else false
 
 define "Has Systolic Blood Pressure Less Than 140":
-	FHIRHelpers.ToInteger("Lowest Systolic Reading on Most Recent Blood Pressure Day".value) < 140 'mm[Hg]'
+	if "Lowest Systolic Reading on Most Recent Blood Pressure Day"!= null then
+	("Lowest Systolic Reading on Most Recent Blood Pressure Day".value.value < 140 'mm[Hg]') else false
 
 define "Lowest Diastolic Reading on Most Recent Blood Pressure Day":
-	First("Qualifying Diastolic Blood Pressure Reading" DBPReading
-			where FHIRHelpers.ToDateTime(DBPReading.issued) same day as "Most Recent Blood Pressure Day"
-			sort by(value as Quantity)
+	if exists("Qualifying Diastolic Blood Pressure Reading") then
+	First(
+    "Qualifying Diastolic Blood Pressure Reading" DBPReading
+		  where FHIRHelpers.ToDateTime(DBPReading.effective as dateTime) same day as "Most Recent Blood Pressure Day"
+      return singleton from (
+        DBPReading.component C
+          where FHIRHelpers.ToConcept(C.code).codes[0] ~ "Diastolic blood pressure"
+          return C.value as Quantity
+      )
+			sort by value.value ascending
 	)
+	else null
 
 define "Lowest Systolic Reading on Most Recent Blood Pressure Day":
-	First("Qualifying Systolic Blood Pressure Reading" SBPReading
-			where FHIRHelpers.ToDateTime(SBPReading.issued) same day as "Most Recent Blood Pressure Day"
-			sort by(value as Quantity)
+	if exists("Qualifying Systolic Blood Pressure Reading") then
+	First(
+    "Qualifying Systolic Blood Pressure Reading" SBPReading
+		  where FHIRHelpers.ToDateTime(SBPReading.effective as dateTime) same day as "Most Recent Blood Pressure Day"
+      return singleton from (
+        SBPReading.component C
+          where FHIRHelpers.ToConcept(C.code).codes[0] ~ "Systolic blood pressure"
+          return C.value as Quantity 
+      )
+      sort by value.value ascending
 	)
+
+	else null
 
 define "Blood Pressure Days":
 	( ( "Qualifying Diastolic Blood Pressure Reading" DBPExam
@@ -107,32 +128,31 @@ define "Blood Pressure Days":
 	)
 
 define "Most Recent Blood Pressure Day":
-	Last("Blood Pressure Days" BPDays
-			sort by $this
-	)
+	Max("Blood Pressure Days")
 
 define "Initial Population":
-AgeInYearsAt(start of "Measurement Period")in Interval[18, 85 )
+	(AgeInYearsAt(start of "Measurement Period") in Interval[18, 85 ))
 			and exists "Essential Hypertension Diagnosis"
 			and exists "Qualifying Encounters"
 
 define "Qualifying Diastolic Blood Pressure Reading":
-	[Observation: "Diastolic blood pressure"] DiastolicBP
-		without ( [Encounter: "Encounter Inpatient"]
-			union [Encounter: "ED"] ) DisqualifyingEncounter
-			such that (DisqualifyingEncounter.status.value='in-progress' or DisqualifyingEncounter.status.value='finished')
-		            and FHIRHelpers.ToDateTime(DiastolicBP.issued) during DisqualifyingEncounter.period
-		where DiastolicBP.value.unit = 'mm[Hg]'
-			and FHIRHelpers.ToDateTime(DiastolicBP.issued) during "Measurement Period"
+	["Observation"]BloodPressure where FHIRHelpers.ToConcept(BloodPressure.code).codes[0] ~ "Blood pressure"
+	  and (BloodPressure.status.value='final' or  BloodPressure.status.value='amended')
+      and FHIRHelpers.ToDateTime(BloodPressure.effective as dateTime) during "Measurement Period"
+      and exists (
+        BloodPressure.component DiastolicBP
+          where FHIRHelpers.ToConcept(DiastolicBP.code).codes[0] ~ "Diastolic blood pressure"
+            and (DiastolicBP.value as Quantity).unit.value = 'mm[Hg]')
+            
 
 define "Qualifying Systolic Blood Pressure Reading":
-	[Observation: "Systolic blood pressure"] SystolicBP
-		without ( [Encounter: "Encounter Inpatient"]
-			union [Encounter: "ED"] ) DisqualifyingEncounter
-			such that (DisqualifyingEncounter.status.value='in-progress' or DisqualifyingEncounter.status.value='finished')
-		            and  FHIRHelpers.ToDateTime(SystolicBP.issued) during DisqualifyingEncounter.period
-		where SystolicBP.value.unit = 'mm[Hg]'
-			and FHIRHelpers.ToDateTime(SystolicBP.issued) during "Measurement Period"
+	["Observation"]BloodPressure where FHIRHelpers.ToConcept(BloodPressure.code).codes[0] ~ "Blood pressure"
+	  and (BloodPressure.status.value='final' or  BloodPressure.status.value='amended')
+      and FHIRHelpers.ToDateTime(BloodPressure.effective as dateTime) during "Measurement Period"
+      and exists (
+        BloodPressure.component SystolicBP
+          where FHIRHelpers.ToConcept(SystolicBP.code).codes[0] ~ "Systolic blood pressure"
+            and (SystolicBP.value as Quantity).unit.value = 'mm[Hg]')
 
 define "Denominator Exclusions":
 	Hospice."Has Hospice"("Measurement Period")

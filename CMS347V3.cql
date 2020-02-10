@@ -264,8 +264,3 @@ define "Patient Age 40 to 75 at Start of Measurement Period":
 define "Patients Age 21 or Over at Start of Measurement Period":
 	exists ( AgeInYearsAt(start of "Measurement Period") >= 21)
 
-		
-		
-		
-		
-

@@ -3,10 +3,6 @@ library DiabetesMedicalAttentionforNephropathy version '8.4.000'
 using FHIR version '4.0.0'
 
 include FHIRHelpers version '4.0.0' called FHIRHelpers
-
-
-//include Adult_Outpatient_Encounters version '1.2.000' called AdultOutpatientEncounters
-//include MATGlobalCommonFunctions version '4.0.000' called Global
 include Hospice_FHIR4 version '1.0.000' called Hospice
 include AdvancedIllnessandFrailtyExclusionECQM version '4.0.000' called FrailtyLTI
 
@@ -84,7 +80,7 @@ define "Numerator":
 		or exists ( "Nephropathy Screenings" )
 
 define "Active ACE or ARB Medications":
-	[MedicationAdministration: "ACE Inhibitor or ARB"] ACEorARBMedication
+	[MedicationAdministration: medication in "ACE Inhibitor or ARB"] ACEorARBMedication
 		where ACEorARBMedication.effective as Period overlaps "Measurement Period"
 
 define "Nephropathy Screenings":

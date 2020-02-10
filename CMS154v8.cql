@@ -55,14 +55,14 @@ define "Encounter with Upper Respiratory Infection":
 	from
 		"Qualifying Encounter" QualifyingEncounter,
 		[Condition: "Upper Respiratory Infection"] URI
-		where URI.clinicalStatus.coding[0].code='active'
+		where URI.clinicalStatus.coding[0].code.value='active'
 					and (Interval[FHIRHelpers.ToDateTime(URI.onset),FHIRHelpers.ToDateTime(URI.abatement)] starts during QualifyingEncounter.period
 			      or Interval[FHIRHelpers.ToDateTime(URI.onset),FHIRHelpers.ToDateTime(URI.abatement)] overlaps before QualifyingEncounter.period)
 
 define "Encounter with Competing Diagnosis for Upper Respiratory Infection":
 	( "Encounter with Upper Respiratory Infection" EncounterWithURI
 			with [Condition: "Competing Conditions for Respiratory Conditions"] CompetingCondition
-				such that CompetingCondition.clinicalStatus.coding[0].code='active'
+				such that CompetingCondition.clinicalStatus.coding[0].code.value='active'
 					and Interval[FHIRHelpers.ToDateTime(CompetingCondition.onset),FHIRHelpers.ToDateTime(CompetingCondition.abatement)] starts 3 days or less after day of start of EncounterWithURI.QualifyingEncounter.period
 			return EncounterWithURI.QualifyingEncounter
 	)

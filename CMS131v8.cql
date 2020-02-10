@@ -52,13 +52,11 @@ define "Qualifying Encounters":
 		union [Encounter: "Preventive Care Services-Initial Office Visit, 18 and Up"]
 		union [Encounter: "Ophthalmological Services"] ) Encounter
 		where Encounter.period during "Measurement Period"
-			and Encounter.status = 'finished'
+			and Encounter.status.value = 'finished'
 
 define "Retinal Exam in Measurement Period or Year Prior":
 	[Procedure: "Retinal or Dilated Eye Exam"] RetinalExam
-		where 
-		end of (RetinalExam.performed as Period) between start of "Measurement Period" - 1 year and 
-		end of "Measurement Period"
+		where  end of (RetinalExam.performed as Period) between (start of "Measurement Period" - 1 year) and end of "Measurement Period"
 
 define "Denominator Exclusions":
 	(AgeInYearsAt(start of "Measurement Period") >= 65

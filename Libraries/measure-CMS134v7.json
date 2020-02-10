@@ -1,0 +1,161 @@
+{
+  "resourceType": "Measure",
+  "meta": {
+    "versionId": "1",
+    "lastUpdated": "2020-01-03T09:28:22.234+00:00"
+  },
+  "identifier": [
+    {
+      "system": "http://hl7.org/fhir/cqi/ecqm/Measure/Identifier/cms",
+      "value": "134"
+    }
+  ],
+  "version": "8.4.000",
+    "name": "DiabetesMedicalAttentionforNephropathy",
+    "title": "Diabetes Medical Attention for Nephropathy",
+    "status": "active",
+  "status": "active",
+  "publisher": "National Committee for Quality Assurance",
+  "description": "The percentage of patients 18-75 years of age with diabetes who had a nephropathy screening test or evidence of nephropathy during the measurement period",
+  "purpose": "Patients 18-75 years of age with diabetes with a visit during the measurement period",
+  "copyright": "This Physician Performance Measure (Measure) and related data specifications are owned and were developed by the National Committee for Quality Assurance (NCQA). NCQA is not responsible for any use of the Measure. NCQA makes no representations, warranties, or endorsement about the quality of any organization or physician that uses or reports performance measures and NCQA has no liability to anyone who relies on such measures or specifications. NCQA holds a copyright in the Measure. The Measure can be reproduced and distributed, without modification, for noncommercial purposes (e.g., use by healthcare providers in connection with their practices) without obtaining approval from NCQA. Commercial use is defined as the sale, licensing, or distribution of the Measure for commercial gain, or incorporation of the Measure into a product or service that is sold, licensed or distributed for commercial gain. All commercial uses or requests for modification must be approved by NCQA and are subject to a license at the discretion of NCQA. (C) 2012-2019 National Committee for Quality Assurance. All Rights Reserved. Limited proprietary coding is contained in the Measure specifications for user convenience. Users of proprietary code sets should obtain all necessary licenses from the owners of the code sets. NCQA disclaims all liability for use or accuracy of any third party codes contained in the specifications. CPT(R) contained in the Measure specifications is copyright 2004-2018 American Medical Association. LOINC(R) copyright 2004-2018 Regenstrief Institute, Inc. This material contains SNOMED Clinical Terms(R) (SNOMED CT[R]) copyright 2004-2018 International Health Terminology Standards Development Organisation. ICD-10 copyright 2018 World Health Organization. All Rights Reserved.",
+  "author": [
+    {
+      "name": "National Committee for Quality Assurance"
+    }
+  ],
+  "relatedArtifact": [
+    {
+      "type": "citation",
+      "citation": "American Association of Clinical Endocrinologists & American College of Endocrinology. (2015). Clinical practice guidelines for developing a diabetes mellitus comprehensive care plan—2015. Endocrine Practice, 21(Suppl. 1). Retrieved from https://www.aace.com/files/dm-guidelines-ccp.pdf"
+    },
+    {
+      "type": "citation",
+      "citation": "American Diabetes Association. (2018a). Economic costs of diabetes in the U.S. in 2017. Diabetes Care, 41, 917-928. Retrieved from http://care.diabetesjournals.org/content/early/2018/03/20/dci18-0007"
+    },
+    {
+      "type": "citation",
+      "citation": "American Diabetes Association. (2018b). 10. Microvascular complications and foot care: Standards of Medical Care in Diabetes—2018. Diabetes Care, 41(Suppl. 1), S105-S118."
+    },
+    {
+      "type": "citation",
+      "citation": "Centers for Disease Control and Prevention. (2016). At a glance 2016: Diabetes—Working to reverse the U.S. epidemic. Atlanta, GA: Author."
+    },
+    {
+      "type": "citation",
+      "citation": "Centers for Disease Control and Prevention. (2017a). Health, United States, 2016: With chartbook on long-term trends in health. Retrieved from https://www.cdc.gov/nchs/data/hus/hus16.pdf"
+    },
+    {
+      "type": "citation",
+      "citation": "Centers for Disease Control and Prevention. (2017b). National diabetes statistics report, 2017. Atlanta, GA: U.S. Department of Health and Human Services, CDC. Retrieved from https://www.cdc.gov/diabetes/pdfs/data/statistics/national-diabetes-statistics-report.pdf"
+    },
+    {
+      "type": "citation",
+      "citation": "Centers for Disease Control and Prevention. (2017c). About diabetes. Retrieved from https://www.cdc.gov/diabetes/basics/diabetes.html"
+    },
+    {
+      "type": "citation",
+      "citation": "Centers for Disease Control and Prevention. (2017d). National chronic kidney disease fact sheet. Retrieved from https://www.cdc.gov/diabetes/pubs/pdf/kidney_factsheet.pdf"
+    },
+    {
+      "type": "citation",
+      "citation": "Murphy, D., McCulloch, C. E., Lin, F., et al. (2016). Trends in prevalence of chronic kidney disease in the United States. Annals of Internal Medicine, 165(7), 473-481."
+    },
+    {
+      "type": "citation",
+      "citation": "United States Renal Data System. (2016). 2016 USRDS annual data report: Epidemiology of kidney disease in the United States. Bethesda, MD: National Institute of Diabetes and Digestive and Kidney Diseases, National Institutes of Health."
+    }
+  ],
+  "library": [
+    "Library/80302"
+  ],
+  "disclaimer": "The performance Measure is not a clinical guideline and does not establish a standard of medical care, and has not been tested for all potential applications. THE MEASURE AND SPECIFICATIONS ARE PROVIDED \"AS IS\" WITHOUT WARRANTY OF ANY KIND.\n \nDue to technical limitations, registered trademarks are indicated by (R) or [R] and unregistered trademarks are indicated by (TM) or [TM].",
+  "scoring": {
+    "coding": [
+      {
+        "code": "proportion"
+      }
+    ]
+  },
+  "type": [
+    {
+      "coding": [
+        {
+          "code": "process"
+        }
+      ]
+    }
+  ],
+  "rationale": "As the seventh leading cause of death in the U.S., diabetes kills approximately 79,500 people a year and affects more than 30 million Americans (9.4 percent of the U.S. population) (CDC, 2017a, 2017b). Diabetes is a long-lasting disease marked by high blood glucose levels, resulting from the body's inability to produce or use insulin properly (CDC, 2017c). People with diabetes are at increased risk of serious health complications including vision loss, heart disease, stroke, kidney failure, amputation of toes, feet or legs, and premature death. (CDC, 2016). In 2017, diabetes cost the U.S. an estimated $327 billion: $237 billion in direct medical costs and $90 billion in reduced productivity. This is a 34 percent increase from the estimated $245 billion spent on diabetes in 2012 (American Diabetes Association, 2018a).  High blood sugar levels in patients with diabetes put them at a higher risk of damaging their kidneys and causing chronic kidney disease, which can lead to kidney failure (CDC, 2016, 2017d). During 2011-2012 there were 36.5% new cases of chronic kidney disease (stages 1-4) among 297,000 diabetic patients 20 years and older (Murphy et al., 2016). In 2014, diabetes accounted for 44% of 118,000 new cases of end stage renal disease (United States Renal Data System, 2016).",
+  "clinicalRecommendationStatement": "American Diabetes Association (2018b ): \nScreening- At least once a year, assess urinary albumin (e.g., spot urinary albumin-to-creatinine ratio [UACR]) and estimated glomerular filtration rate (eGFR) in patients with type 1 diabetes duration of greater than or equal to 5 years in all patients with type 2 diabetes, and in all patients with comorbid hypertension. (Level of evidence: B)\nTreatment- An angiotensin-converting enzyme (ACE) inhibitor or angiotensin  receptor blocker (ARB) is not recommended for the primary prevention of diabetic kidney disease in patients with diabetes who have normal blood pressure, normal UACR (<30 mg/g creatinine), and normal estimated glomerular filtration rate. (Level of evidence: B)- Either an ACE inhibitor or ARB is suggested for the treatment of the nonpregnant patient with modestly elevated UACR (30-299 mg/g creatinine) (Level of evidence: B) and is strongly recommended for those with urinary albumin to creatinine ratio >=300 mg/g creatinine and/or estimated glomerular filtration rate < 60 mL/min/1.73.m2. (Level of evidence: A)- Periodically monitor serum creatinine and potassium levels for the development of increased creatinine or changes in potassium when ACE inhibitors, angiotensin receptor blockers, or diuretics are used. (Level of evidence: B) - Continued monitoring of UACR in patients with albuminuria treated with an ACE inhibitor or ARBs is reasonable to assess the response to treatment and progression of diabetic kidney disease. (Level of evidence: E)- When estimated glomerular filtration rate is <60 mL/min/1.73 m2, evaluate and manage potential complications of chronic kidney disease. (Level of evidence: E) -Patients should be referred for evaluation for renal replacement treatment if they have an estimated glomerular filtration rate <30 mL/min/1.73 m2. (Level of evidence: A) -Promptly refer to a physician experienced in the care of kidney disease for uncertainty about the etiology of kidney disease, difficult management issues, and rapidly progressing kidney disease. (Level of evidence: B) American Association of Clinical Endocrinologists & American College of Endocrinology (2015): - Beginning 5 years after diagnosis in patients with type 1 diabetes (if diagnosed before age 30) or at diagnosis in patients with type 2 diabetes and those with type 1 diabetes diagnosed after age 30, annual assessment of serum creatinine to determine the estimated glomerular filtration rate (eGFR) and urine albumin excretion rate (AER) should be performed to identify, stage, and monitor progression of diabetic nephropathy (Grade C; best evidence level 3). - Patients with nephropathy should be counseled regarding the need for optimal glycemic control, blood pressure control, dyslipidemia control, and smoking cessation (Grade B; best evidence level 2). - In addition, they should have routine monitoring of albuminuria, kidney function electrolytes, and lipids (Grade B; best evidence level 2). - Associated conditions such as anemia and bone and mineral disorders should be assessed as kidney function declines (Grade D; best evidence level 4). - Referral to a nephrologist is recommended well before the need for renal replacement therapy (Grade D; best evidence level 4).",
+  "group": [
+    {
+      "population": [
+        {
+          "id": "initial-population-identifier",
+          "code": {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/measure-population",
+                "code": "initial-population",
+                "display": "Initial Population"
+              }
+            ]
+          },
+          "criteria": {
+            "language": "text/cql",
+            "expression": "Initial Population"
+          }
+        },
+        {
+          "id": "denominator-identifier",
+          "code": {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/measure-population",
+                "code": "denominator",
+                "display": "Denominator"
+              }
+            ]
+          },
+          "criteria": {
+            "language": "text/cql",
+            "expression": "Denominator"
+          }
+        },
+        {
+          "id": "denominator-exclusions-identifier",
+          "code": {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/measure-population",
+                "code": "denominator-exclusion",
+                "display": "Denominator Exclusions"
+              }
+            ]
+          },
+          "criteria": {
+            "language": "text/cql",
+            "expression": "Denominator Exclusions"
+          }
+        },
+        {
+          "id": "numerator-identifier",
+          "code": {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/measure-population",
+                "code": "numerator",
+                "display": "Numerator"
+              }
+            ]
+          },
+          "criteria": {
+            "language": "text/cql",
+            "expression": "Numerator"
+          }
+        }
+      ]
+    }
+  ]
+}
