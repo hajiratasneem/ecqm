@@ -51,7 +51,7 @@ parameter "Measurement Period" Interval<DateTime>
 context Patient
 
 define "Initial Population":
-	exists ("PatientAge")
+	"PatientAge"
 		and exists ( "Qualifying Encounters" )
 		and ( exists ( "Assessments Identifying Sexual Activity" )
 				or exists ( "Diagnoses Identifying Sexual Activity" )
@@ -63,20 +63,17 @@ define "Initial Population":
 		)
 
 define "PatientAge":
-	["Patient"]Patient
-			where (Global."CalendarAgeInYearsAt"(FHIRHelpers.ToDate(Patient.birthDate), start of "Measurement Period")>= 16
-				and Global."CalendarAgeInYearsAt"(FHIRHelpers.ToDate(Patient.birthDate), start of "Measurement Period")< 24)
-					and Patient.gender = 'female'
+	AgeInYearsAt(start of "Measurement Period")>= 16
+				and AgeInYearsAt(start of "Measurement Period")< 24
+					and Patient.gender.value = 'female'
 		
 define "Stratification 2":
-	exists(["Patient"]Patient
-		where(Global."CalendarAgeInYearsAt"(FHIRHelpers.ToDate(Patient.birthDate), start of "Measurement Period")>= 20
-			and Global."CalendarAgeInYearsAt"(FHIRHelpers.ToDate(Patient.birthDate), start of "Measurement Period")< 24))
+	AgeInYearsAt(start of "Measurement Period")>= 20
+			and AgeInYearsAt(start of "Measurement Period")< 24
 
 define "Stratification 1":
-	exists(["Patient"]Patient
-		where (Global."CalendarAgeInYearsAt"(FHIRHelpers.ToDate(Patient.birthDate), start of "Measurement Period")>= 16
-			and Global."CalendarAgeInYearsAt"(FHIRHelpers.ToDate(Patient.birthDate), start of "Measurement Period")< 20))
+	AgeInYearsAt(start of "Measurement Period")>= 16
+			and AgeInYearsAt(start of "Measurement Period")< 20
 
 define "Pregnancy Test Exclusion":
 	( [ServiceRequest: "Pregnancy Test"] PregnancyTest
@@ -90,9 +87,9 @@ define "Pregnancy Test Exclusion":
 				//where PregnancyTestOrder.authoredOn during "Measurement Period"
 		//)
 define "Procedures  Identifying Sexual Activity":
-	[Procedure: "Delivery Live Births"]
+	([Procedure: "Delivery Live Births"]
 		union [Procedure: "Procedures During Pregnancy"]
-		union [Procedure: "Procedures Involving Contraceptive Devices"]ProceduresForSexualActivity
+		union [Procedure: "Procedures Involving Contraceptive Devices"])ProceduresForSexualActivity
 			where (ProceduresForSexualActivity.performed as Period) during "Measurement Period"
 			
 define "Denominator":

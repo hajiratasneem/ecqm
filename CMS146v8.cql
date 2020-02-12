@@ -62,8 +62,8 @@ define "Encounter With Pharyngitis or Tonsillitis":
 		where Interval[FHIRHelpers.ToDateTime(AcutePharyngitisTonsillitis.onset),FHIRHelpers.ToDateTime(AcutePharyngitisTonsillitis.abatement)] starts during VisitWithAntibiotic.period
 
 define "Pharyngitis or Tonsillitis":
-	( ([Condition: "Acute Pharyngitis"]C where C.clinicalStatus.coding[0].code='active')
-			union ([Condition: "Acute Tonsillitis"]C where C.clinicalStatus.coding[0].code='active')
+	( ([Condition: "Acute Pharyngitis"]C where C.clinicalStatus.coding[0].code.value='active')
+			union ([Condition: "Acute Tonsillitis"]C where C.clinicalStatus.coding[0].code.value ='active')
 	)
 
 define "Denominator":
@@ -122,7 +122,7 @@ define "Numerator":
 define "Competing Diagnosis for Upper Respiratory Infection":
 	"Encounter With Pharyngitis or Tonsillitis" EncounterWithPharyngitis
 		with [Condition: "Competing Conditions for Respiratory Conditions"] CompetingCondition
-			such that CompetingCondition.clinicalStatus.coding[0].code='active'
+			such that CompetingCondition.clinicalStatus.coding[0].code.value='active'
         and EncounterWithPharyngitis.AcutePharyngitisTonsillitis !~ CompetingCondition
 				and Interval[FHIRHelpers.ToDateTime(CompetingCondition.onset),FHIRHelpers.ToDateTime(CompetingCondition.abatement)] starts 3 days or less after FHIRHelpers.ToDateTime(EncounterWithPharyngitis.AcutePharyngitisTonsillitis.onset)
 		return EncounterWithPharyngitis.VisitWithAntibiotic

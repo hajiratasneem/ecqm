@@ -40,7 +40,7 @@ define "Radiation Treatment During Measurement Period":
 define "Radiation Treatment with Cancer Diagnosis":
 	"Radiation Treatment During Measurement Period" RadiationTreatment
 		with [Condition: "Cancer"] Cancer
-			such that Cancer.clinicalStatus.coding[0].code='active'
+			such that Cancer.clinicalStatus.coding[0].code.value='active'
 					and Interval[FHIRHelpers.ToDateTime(Cancer.onset),FHIRHelpers.ToDateTime(Cancer.abatement)] overlaps (RadiationTreatment.performed as Period)
 
 define "Numerator 2":
@@ -60,15 +60,10 @@ define "Numerator 1":
 					and FHIRHelpers.ToDateTime(PainAssessed.issued) during FaceToFaceEncounterWithChemo.period
 				and PainAssessed.value is not null
 
-define "Numerator": exists"Numerator 1" and exists"Numerator 2"
-
-define "Denominator": exists"Denominator 1" and exists"Denominator 2"
 
 define "Initial Population 1":
 	"Face to Face Encounter with Ongoing Chemotherapy"
 
-define "Initial Population":
-	exists("Initial Population 1") and exists("Initial Population 2")
 
 define "Face to Face Encounter with Ongoing Chemotherapy":
 	from
@@ -79,7 +74,7 @@ define "Face to Face Encounter with Ongoing Chemotherapy":
 		where (FaceToFaceEncounter.status.value='in-progress' or FaceToFaceEncounter.status.value='finished')
       and ChemoBeforeEncounter.status.value='completed'
       and ChemoAfterEncounter.status.value='completed'
-      and Cancer.clinicalStatus.coding[0].code='active'
+      and Cancer.clinicalStatus.coding[0].code.value='active'
       and (ChemoBeforeEncounter.performed as Period) starts 30 days or less on or before day of end of FaceToFaceEncounter.period
 			and (ChemoAfterEncounter.performed as Period) starts 30 days or less on or after day of end of FaceToFaceEncounter.period
 			and ChemoBeforeEncounter !~ ChemoAfterEncounter

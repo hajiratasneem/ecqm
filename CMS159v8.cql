@@ -47,8 +47,8 @@ define "Denominator Identification Period":
 	Interval[start of "Measurement Period" - 14 months, start of "Measurement Period" - 2 months )
 
 define "Depression Diagnoses":
-	([Condition: "Major Depression Including Remission"]C where C.clinicalStatus.coding[0].code='active')
-		union ([Condition: "Dysthymia"]C where C.clinicalStatus.coding[0].code='active')
+	([Condition: "Major Depression Including Remission"]C where C.clinicalStatus.coding[0].code.value='active')
+		union ([Condition: "Dysthymia"]C where C.clinicalStatus.coding[0].code.value='active')
 
 define "Denominator":
 	"Initial Population"
@@ -62,7 +62,7 @@ define "Disorder Diagnoses":
 		union [Condition: "Personality Disorder"]
 		union [Condition: "Schizophrenia or Psychotic Disorder"]
 		union [Condition: "Pervasive Developmental Disorder"] ) DisorderDiagnoses
-		where DisorderDiagnoses.clinicalStatus.coding[0].code='active'
+		where DisorderDiagnoses.clinicalStatus.coding[0].code.value='active'
 				and Interval[FHIRHelpers.ToDateTime(DisorderDiagnoses.onset),FHIRHelpers.ToDateTime(DisorderDiagnoses.abatement)] starts before end of "Follow-Up Assessment Period"
 
 define "Palliative Care Order":
