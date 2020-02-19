@@ -88,6 +88,58 @@ context Patient
 
 define "Denominator":
 	"Initial Population"
+	
+define "Rotavirus 2 Dose Immunizations or Procedures":
+	( ([Immunization: "rotavirus, live, monovalent vaccine"]I where I.status.value = 'completed')
+		union ( [Procedure: "Rotavirus Vaccine (2 dose schedule) Administered"] Rotavirus2Administration
+				where Rotavirus2Administration.status.value = 'completed'
+				return Immunization { recorded: Rotavirus2Administration.performed as dateTime }
+		) ) TwoDoseRotavirus
+	where FHIRHelpers.ToDateTime(TwoDoseRotavirus.recorded) during Interval[FHIRHelpers.ToDate(Patient.birthDate) + 42 days, FHIRHelpers.ToDate(Patient.birthDate) + 2 years]
+
+define "Rotavirus 3 Dose Immunizations or Procedures":
+	( ([Immunization: "Rotavirus Vaccine (3 dose schedule)"]R where R.status.value = 'completed')
+		union ( [Procedure: "Rotavirus Vaccine (3 dose schedule) Administered"] Rotavirus3Administration
+				where Rotavirus3Administration.status.value = 'completed'
+				return Immunization { recorded: Rotavirus3Administration.performed as dateTime }
+		) ) ThreeDoseRotavirus
+		where FHIRHelpers.ToDateTime(ThreeDoseRotavirus.recorded) during Interval[FHIRHelpers.ToDate(Patient.birthDate) + 42 days, FHIRHelpers.ToDate(Patient.birthDate) + 2 years]
+
+define "DTaP Immunizations or Procedures":
+	( ([Immunization : "DTaP Vaccine"]D where D.status.value = 'completed')
+		union ( [Procedure: "DTaP Vaccine Administered"] DtapAdministration
+				where DtapAdministration.status.value = 'completed'
+				return Immunization { recorded: DtapAdministration.performed as dateTime }
+		) ) DTaPVaccination
+		where ( FHIRHelpers.ToDateTime(DTaPVaccination.recorded) during Interval[FHIRHelpers.ToDate(Patient.birthDate) + 42 days, FHIRHelpers.ToDate(Patient.birthDate) + 2 years])
+			
+define "Rotavirus 2 Dose Vaccination Followed by Two Rotavirus 3 Dose Vaccinations":
+	from
+		"Rotavirus 2 Dose Immunizations or Procedures" Rotavirus233Vaccination1,
+		"Rotavirus 3 Dose Immunizations or Procedures" Rotavirus233Vaccination2,
+		"Rotavirus 3 Dose Immunizations or Procedures" Rotavirus233Vaccination3
+		where FHIRHelpers.ToDateTime(Rotavirus233Vaccination2.recorded)  1 day or more after FHIRHelpers.ToDateTime(Rotavirus233Vaccination1.recorded)
+			and FHIRHelpers.ToDateTime(Rotavirus233Vaccination3.recorded)  1 day or more after FHIRHelpers.ToDateTime(Rotavirus233Vaccination2.recorded) 
+		return Rotavirus233Vaccination1
+		
+define "Rotavirus 3 Dose Vaccination Followed by A Rotavirus 2 Dose Vaccination and A Rotavirus 3 Dose Vaccination":
+	from
+		"Rotavirus 3 Dose Immunizations or Procedures" Rotavirus323Vaccination1,
+		"Rotavirus 2 Dose Immunizations or Procedures" Rotavirus323Vaccination2,
+		"Rotavirus 3 Dose Immunizations or Procedures" Rotavirus323Vaccination3
+		where FHIRHelpers.ToDateTime(Rotavirus323Vaccination2.recorded)  1 day or more after day of FHIRHelpers.ToDateTime(Rotavirus323Vaccination1.recorded)
+			and FHIRHelpers.ToDateTime(Rotavirus323Vaccination3.recorded)  1 day or more after day of FHIRHelpers.ToDateTime(Rotavirus323Vaccination2.recorded) 
+		return Rotavirus323Vaccination1
+		
+define "Rotavirus 3 Dose Vaccinations Followed by One Rotavirus 2 Dose Vaccination":
+	from
+		"Rotavirus 3 Dose Immunizations or Procedures" Rotavirus332Vaccination1,
+		"Rotavirus 3 Dose Immunizations or Procedures" Rotavirus332Vaccination2,
+		"Rotavirus 2 Dose Immunizations or Procedures" Rotavirus332Vaccination3
+		where FHIRHelpers.ToDateTime(Rotavirus332Vaccination2.recorded)  1 day or more after day of FHIRHelpers.ToDateTime(Rotavirus332Vaccination1.recorded) 
+			and FHIRHelpers.ToDateTime(Rotavirus332Vaccination3.recorded)  1 day or more after day of FHIRHelpers.ToDateTime(Rotavirus332Vaccination2.recorded)
+		return Rotavirus332Vaccination1
+				
 
 define "Rotavirus 2 or 3 Dose Vaccinations":
 	( "Rotavirus 2 Dose Vaccination Followed by Two Rotavirus 3 Dose Vaccinations"
@@ -96,25 +148,35 @@ define "Rotavirus 2 or 3 Dose Vaccinations":
 	)
 
 define "Qualifying Encounter":
-	( [Encounter: "Office Visit"]
-		union [Encounter: "Home Healthcare Services"]
-		union [Encounter: "Preventive Care, Established Office Visit, 0 to 17"]
-		union [Encounter: "Preventive Care Services, Initial Office Visit, 0 to 17"] ) ValidEncounter
+	( ([Encounter: "Office Visit"]OV where OV.status.value='in-progress' or OV.status.value='finished')
+		union ([Encounter: "Home Healthcare Services"]HHS where HHS.status.value ='in-progress' or HHS.status.value='finished')
+		union ([Encounter: "Preventive Care, Established Office Visit, 0 to 17"]PC where PC.status.value ='in-progress' or PC.status.value='finished')
+		union ([Encounter: "Preventive Care Services, Initial Office Visit, 0 to 17"]PCS where PCS.status.value ='in-progress' or PCS.status.value='finished')) ValidEncounter
 		where ValidEncounter.period during "Measurement Period"
+	
 
+		
 define "Four DTaP Vaccinations":
 	from
 		"DTaP Immunizations or Procedures" DTaPVaccination1,
 		"DTaP Immunizations or Procedures" DTaPVaccination2,
 		"DTaP Immunizations or Procedures" DTaPVaccination3,
 		"DTaP Immunizations or Procedures" DTaPVaccination4
-		where DTaPVaccination2.recorded 1 day or more after day of DTaPVaccination1.recorded 
-			and DTaPVaccination3.recorded  1 day or more after day of DTaPVaccination2.recorded 
-			and DTaPVaccination4.recorded  1 day or more after day of DTaPVaccination3.recorded 
+		where FHIRHelpers.ToDateTime(DTaPVaccination2.recorded) 1 day or more after day of FHIRHelpers.ToDateTime(DTaPVaccination1.recorded) 
+			and FHIRHelpers.ToDateTime(DTaPVaccination3.recorded)  1 day or more after day of FHIRHelpers.ToDateTime(DTaPVaccination2.recorded)
+			and FHIRHelpers.ToDateTime(DTaPVaccination4.recorded)  1 day or more after day of FHIRHelpers.ToDateTime(DTaPVaccination3.recorded) 
 		return DTaPVaccination1
 
 define "Denominator Exclusions":
 	Hospice."Has Hospice"("Measurement Period")
+
+define "Pneumococcal Conjugate Immunizations or Procedures":
+	( ([Immunization : "Pneumococcal Conjugate Vaccine"]P where P.status.value = 'completed')
+		union ( [Procedure: "Pneumococcal Conjugate Vaccine Administered"] PneumococcalAdministration
+				where PneumococcalAdministration.status.value = 'completed'
+				return "Immunization"{recorded: PneumococcalAdministration.performed as dateTime }
+		) ) PneumococcalVaccination
+		where ( FHIRHelpers.ToDateTime(PneumococcalVaccination.recorded) during Interval[FHIRHelpers.ToDate(Patient.birthDate) + 42 days, FHIRHelpers.ToDate(Patient.birthDate) + 2 years])
 
 define "Four Pneumococcal Conjugate Vaccinations":
 	from
@@ -122,61 +184,46 @@ define "Four Pneumococcal Conjugate Vaccinations":
 		"Pneumococcal Conjugate Immunizations or Procedures" PneumococcalVaccination2,
 		"Pneumococcal Conjugate Immunizations or Procedures" PneumococcalVaccination3,
 		"Pneumococcal Conjugate Immunizations or Procedures" PneumococcalVaccination4
-		where PneumococcalVaccination2.recorded  1 day or more after day of PneumococcalVaccination1.recorded 
-			and PneumococcalVaccination3.recorded  1 day or more after day of PneumococcalVaccination2.recorded 
-			and PneumococcalVaccination4.recorded  1 day or more after day of PneumococcalVaccination3.recorded 
+		where FHIRHelpers.ToDateTime(PneumococcalVaccination2.recorded)  1 day or more after day of FHIRHelpers.ToDateTime(PneumococcalVaccination1.recorded)
+			and FHIRHelpers.ToDateTime(PneumococcalVaccination3.recorded)  1 day or more after day of FHIRHelpers.ToDateTime(PneumococcalVaccination2.recorded) 
+			and FHIRHelpers.ToDateTime(PneumococcalVaccination4.recorded)  1 day or more after day of FHIRHelpers.ToDateTime(PneumococcalVaccination3.recorded) 
 		return PneumococcalVaccination1
 
-define "Rotavirus 2 Dose Vaccination Followed by Two Rotavirus 3 Dose Vaccinations":
-	from
-		"Rotavirus 2 Dose Immunizations or Procedures" Rotavirus233Vaccination1,
-		"Rotavirus 3 Dose Immunizations or Procedures" Rotavirus233Vaccination2,
-		"Rotavirus 3 Dose Immunizations or Procedures" Rotavirus233Vaccination3
-		where Rotavirus233Vaccination2.recorded  1 day or more after day of Rotavirus233Vaccination1.recorded 
-			and Rotavirus233Vaccination3.recorded  1 day or more after day of Rotavirus233Vaccination2.recorded 
-		return Rotavirus233Vaccination1
+
 
 define "Rotavirus 2 Dose Vaccinations":
 	from
 		"Rotavirus 2 Dose Immunizations or Procedures" Rotavirus2Vaccination1,
 		"Rotavirus 2 Dose Immunizations or Procedures" Rotavirus2Vaccination2
-		where Rotavirus2Vaccination2.recorded  1 day or more after day of Rotavirus2Vaccination1.recorded 
+		where FHIRHelpers.ToDateTime(Rotavirus2Vaccination2.recorded)  1 day or more after day of FHIRHelpers.ToDateTime(Rotavirus2Vaccination1.recorded)
 		return Rotavirus2Vaccination1
 
-define "Rotavirus 3 Dose Vaccination Followed by A Rotavirus 2 Dose Vaccination and A Rotavirus 3 Dose Vaccination":
-	from
-		"Rotavirus 3 Dose Immunizations or Procedures" Rotavirus323Vaccination1,
-		"Rotavirus 2 Dose Immunizations or Procedures" Rotavirus323Vaccination2,
-		"Rotavirus 3 Dose Immunizations or Procedures" Rotavirus323Vaccination3
-		where Rotavirus323Vaccination2.recorded  1 day or more after day of Rotavirus323Vaccination1.recorded 
-			and Rotavirus323Vaccination3.recorded  1 day or more after day of Rotavirus323Vaccination2.recorded 
-		return Rotavirus323Vaccination1
+
 
 define "Rotavirus 3 Dose Vaccinations":
 	from
 		"Rotavirus 3 Dose Immunizations or Procedures" Rotavirus3Vaccination1,
 		"Rotavirus 3 Dose Immunizations or Procedures" Rotavirus3Vaccination2,
 		"Rotavirus 3 Dose Immunizations or Procedures" Rotavirus3Vaccination3
-		where Rotavirus3Vaccination2.recorded  1 day or more after day of Rotavirus3Vaccination1.recorded 
-			and Rotavirus3Vaccination3.recorded  1 day or more after day of Rotavirus3Vaccination2.recorded 
+		where FHIRHelpers.ToDateTime(Rotavirus3Vaccination2.recorded)  1 day or more after day of FHIRHelpers.ToDateTime(Rotavirus3Vaccination1.recorded) 
+			and FHIRHelpers.ToDateTime(Rotavirus3Vaccination3.recorded)  1 day or more after day of FHIRHelpers.ToDateTime(Rotavirus3Vaccination2.recorded)
 		return Rotavirus3Vaccination1
 
-define "Rotavirus 3 Dose Vaccinations Followed by One Rotavirus 2 Dose Vaccination":
-	from
-		"Rotavirus 3 Dose Immunizations or Procedures" Rotavirus332Vaccination1,
-		"Rotavirus 3 Dose Immunizations or Procedures" Rotavirus332Vaccination2,
-		"Rotavirus 2 Dose Immunizations or Procedures" Rotavirus332Vaccination3
-		where Rotavirus332Vaccination2.recorded  1 day or more after day of Rotavirus332Vaccination1.recorded 
-			and Rotavirus332Vaccination3.recorded  1 day or more after day of Rotavirus332Vaccination2.recorded 
-		return Rotavirus332Vaccination1
+define "Hepatitis B Immunizations or Procedures":
+	( ([Immunization: "Hepatitis B Vaccine"]H where H.status.value = 'completed')
+		union ( [Procedure: "Hepatitis B Vaccine Administered"] HepatitisBAdministration
+				where HepatitisBAdministration.status.value = 'completed'
+				return Immunization{ recorded: HepatitisBAdministration.performed as dateTime }
+		) ) HepatitisBVaccination
+		where ( FHIRHelpers.ToDateTime(HepatitisBVaccination.recorded) during Interval[FHIRHelpers.ToDate(Patient.birthDate), FHIRHelpers.ToDate(Patient.birthDate) + 2 years])
 
 define "Three Hepatitis B Vaccinations":
 	from
 		"Hepatitis B Immunizations or Procedures" HepatitisBVaccination1,
 		"Hepatitis B Immunizations or Procedures" HepatitisBVaccination2,
 		"Hepatitis B Immunizations or Procedures" HepatitisBVaccination3
-		where HepatitisBVaccination2.recorded  1 day or more after day of HepatitisBVaccination1.recorded 
-			and HepatitisBVaccination3.recorded  1 day or more after day of HepatitisBVaccination2.recorded 
+		where FHIRHelpers.ToDateTime(HepatitisBVaccination2.recorded)  1 day or more after day of FHIRHelpers.ToDateTime(HepatitisBVaccination1.recorded)
+			and FHIRHelpers.ToDateTime(HepatitisBVaccination3.recorded)  1 day or more after day of FHIRHelpers.ToDateTime(HepatitisBVaccination2.recorded)
 		return HepatitisBVaccination1
 
 define "Three Polio Vaccinations":
@@ -184,15 +231,15 @@ define "Three Polio Vaccinations":
 		"Polio Immunizations or Procedures" PolioVaccination1,
 		"Polio Immunizations or Procedures" PolioVaccination2,
 		"Polio Immunizations or Procedures" PolioVaccination3
-		where PolioVaccination2.recorded  1 day or more after day of PolioVaccination1.recorded 
-			and PolioVaccination3.recorded 1 day or more after day of PolioVaccination2.recorded 
+		where FHIRHelpers.ToDateTime(PolioVaccination2.recorded)  1 day or more after day of FHIRHelpers.ToDateTime(PolioVaccination1.recorded)
+			and FHIRHelpers.ToDateTime(PolioVaccination3.recorded) 1 day or more after day of FHIRHelpers.ToDateTime(PolioVaccination2.recorded) 
 		return PolioVaccination1
 
 define "Two Influenza Vaccinations":
 	from
 		"Influenza Immunizations or Procedures" FluVaccination1,
 		"Influenza Immunizations or Procedures" FluVaccination2
-		where FluVaccination2.recorded 1 day or more after day of FluVaccination1.recorded 
+		where FHIRHelpers.ToDateTime(FluVaccination2.recorded) 1 day or more after day of FHIRHelpers.ToDateTime(FluVaccination1.recorded)
 		return FluVaccination1
 
 define "HiB 3 or 4 Dose Immunizations":
@@ -217,85 +264,74 @@ define "Has Appropriate Number of HiB Immunizations":
 				)
 	)
 
-define "Pneumococcal Conjugate Immunizations or Procedures":
-	( [Immunization : "Pneumococcal Conjugate Vaccine"]
-		union ( [Procedure: "Pneumococcal Conjugate Vaccine Administered"] PneumococcalAdministration
-				return "Immunization"{recorded: start of (PneumococcalAdministration.performed as Period) }
-		) ) PneumococcalVaccination
-		where ( PneumococcalVaccination.recorded during Interval[Patient.birthDate + 42 days, Patient.birthDate + 2 years])
-
-define "DTaP Immunizations or Procedures":
-	( [Immunization : "DTaP Vaccine"]
-		union ( [Procedure: "DTaP Vaccine Administered"] DtapAdministration
-				return Immunization { recorded: start of (DtapAdministration.performed as Period) }
-		) ) DTaPVaccination
-		where ( DTaPVaccination.recorded during Interval[Patient.birthDate + 42 days, Patient.birthDate + 2 years])
-
 define "DTaP Numerator Inclusion Conditions":
 	( [Condition: "Anaphylactic Reaction to DTaP Vaccine"]
 		union [Condition: "Encephalopathy due to Childhood Vaccination"] ) DTaPConditions
-		where ( (DTaPConditions.onset as dateTime) during Interval[Patient.birthDatetime, Patient.birthDatetime + 2 years])
+		where ( FHIRHelpers.ToDateTime(DTaPConditions.onset as dateTime) during Interval[FHIRHelpers.ToDate(Patient.birthDate), FHIRHelpers.ToDate(Patient.birthDate) + 2 years])
 
 define "Hepatitis A Numerator Inclusion Conditions":
 	( ( [Observation: "Anti Hepatitis A IgG Antigen Test"] HepatitisAAntigenTest
-			where HepatitisAAntigenTest.value as Code in "Positive Finding"
+			where HepatitisAAntigenTest.value as CodeableConcept in "Positive Finding"
 	)
 		union ( [Condition: "Anaphylactic Reaction to Hepatitis A Vaccine"] HepatitisAReaction
-				return Observation{ issued: start of HepatitisAReaction.onset as Period }
+				return Observation {effective: HepatitisAReaction.onset as dateTime }
 		)
 		union ( [Condition: "Hepatitis A"] HepatitisADiagnosis
-				return Observation {issued: start of HepatitisADiagnosis.prevalencePeriod }
+				return Observation {effective: HepatitisADiagnosis.onset as dateTime }
 		) ) HepatitisAConditions
-		where ( (HepatitisAConditions.effective as dateTime) during Interval[Patient.birthDatetime, Patient.birthDatetime + 2 years])
+		where ( FHIRHelpers.ToDateTime(HepatitisAConditions.effective as dateTime) during Interval[FHIRHelpers.ToDate(Patient.birthDate), FHIRHelpers.ToDate(Patient.birthDate) + 2 years])
 
 
 
 define "Hepatitis B Numerator Inclusion Conditions":
 	( ( [Observation: "Anti Hepatitis B Virus Surface Ab"] HepatitisBAntigenTest
-			where HepatitisBAntigenTest.value as Code in "Positive Finding"
+			where HepatitisBAntigenTest.value as CodeableConcept in "Positive Finding"
 	)
 		union ( [Condition: "Anaphylaxis due to Hepatitis B vaccine (disorder)"] HepatitisBReaction
-				return Observation { issued: start of HepatitisBReaction.onset as Period }
+				return Observation { effective: HepatitisBReaction.onset as dateTime }
 		)
 		union ( [Condition: "Anaphylactic Reaction to Common Baker's Yeast"] YeastReaction
-				return Observation { issued: start of YeastReaction.onset as Period }
+				return Observation { effective: YeastReaction.onset as dateTime }
 		)
 		union ( [Condition: "Hepatitis B"] HepatitisBDiagnosis
-				return Observation { issued: start of HepatitisBDiagnosis.onset as Period }
+				return Observation { effective: HepatitisBDiagnosis.onset as dateTime }
 		) ) HepBConditions
-		where ((HepBConditions.performed as dateTime) during Interval[Patient.birthDatetime, Patient.birthDatetime + 2 years])
+		where (FHIRHelpers.ToDateTime(HepBConditions.effective as dateTime) during Interval[FHIRHelpers.ToDate(Patient.birthDate), FHIRHelpers.ToDate(Patient.birthDate) + 2 years])
 
 define "Hepatitis B Immunizations or Procedures":
 	( [Immunization: "Hepatitis B Vaccine"]
 		union ( [Procedure: "Hepatitis B Vaccine Administered"] HepatitisBAdministration
 				return Immunization{ recorded: start of (HepatitisBAdministration.performed as Period) }
 		) ) HepatitisBVaccination
-		where ( HepatitisBVaccination.recorded during Interval[Patient.birthDatetime, Patient.birthDatetime + 2 years])
+		where ( FHIRHelpers.ToDateTime(HepatitisBVaccination.recorded) during Interval[FHIRHelpers.ToDateTime(Patient.birthDate), FHIRHelpers.ToDate(Patient.birthDate) + 2 years])
 		
 define "HiB 3 Dose Immunizations or Procedures":
-	( [Immunization: "HiB Vaccine (3 dose schedule)"]
+	( ([Immunization: "HiB Vaccine (3 dose schedule)"]Hi where Hi.status.value = 'completed')
 		union ( [Procedure: "HiB Vaccine (3 dose schedule) Administered"] HiB3Administration
-				return "Immunization"{ recorded: start of HiB3Administration.performed as Period }
+				where HiB3Administration.status.value = 'completed'
+				return "Immunization"{ recorded: HiB3Administration.performed as dateTime}
 		) ) ThreeDoseHiB
-		where ( ThreeDoseHiB.recorded during Interval[Patient.birthDatetime + 42 days, Patient.birthDatetime + 2 years])
+		where ( FHIRHelpers.ToDateTime(ThreeDoseHiB.recorded) during Interval[FHIRHelpers.ToDate(Patient.birthDate) + 42 days, FHIRHelpers.ToDate(Patient.birthDate) + 2 years])
 
 define "HiB 4 Dose Immunizations or Procedures":
-	( [Immunization: "HiB Vaccine (4 dose schedule)"]
+	( ([Immunization: "HiB Vaccine (4 dose schedule)"]H4 where H4.status.value = 'completed')
 		union ( [Procedure: "HiB Vaccine (4 dose schedule) Administered"] HiB4Administration
-				return Immunization {recorded: start of HiB4Administration.performed as Period }
+				where HiB4Administration.status.value = 'completed'
+				return Immunization {recorded: HiB4Administration.performed as dateTime}
 		) ) FourDoseHiB
-		where ( FourDoseHiB.recorded during Interval[Patient.birthDatetime + 42 days, Patient.birthDatetime + 2 years])
+		where ( FHIRHelpers.ToDateTime(FourDoseHiB.recorded) during Interval[FHIRHelpers.ToDate(Patient.birthDate) + 42 days, FHIRHelpers.ToDate(Patient.birthDate) + 2 years])
 
 define "HiB Numerator Inclusion Conditions":
 	[Condition: "Anaphylaxis due to Haemophilus influenzae type b vaccine (disorder)"] HibReaction
-		where ( HibReaction.onset as dateTime during Interval[Patient.birthDatetime, Patient.birthDatetime + 2 years])
+		where ( FHIRHelpers.ToDateTime(HibReaction.onset as dateTime) during Interval[FHIRHelpers.ToDate(Patient.birthDate), FHIRHelpers.ToDate(Patient.birthDate) + 2 years])
 
 define "Influenza Immunizations or Procedures":
-	( [Immunization: "Influenza Vaccine"]
+	( ([Immunization: "Influenza Vaccine"]In where In.status.value = 'completed')
 		union ( [Procedure: "Influenza Vaccine Administered"] InfluenzaAdministration
-				return "Immunization" { recorded: start of InfluenzaAdministration.performed as Period }
+				where InfluenzaAdministration.status.value = 'completed'
+				return "Immunization" { recorded: InfluenzaAdministration.performed as dateTime }
 		) ) InfluenzaVaccination
-		where ( InfluenzaVaccination.recorded during Interval[Patient.birthDatetime + 180 days, Patient.birthDatetime + 2 years])
+		where ( FHIRHelpers.ToDateTime(InfluenzaVaccination.recorded) during Interval[FHIRHelpers.ToDate(Patient.birthDate) + 180 days, FHIRHelpers.ToDate(Patient.birthDate) + 2 years])
 
 define "Influenza Numerator Inclusion Conditions":
 	( [Condition: "Influenza virus vaccine adverse reaction (disorder)"]
@@ -303,139 +339,130 @@ define "Influenza Numerator Inclusion Conditions":
 		union [Condition: "Neomycin adverse reaction (disorder)"]
 		union [Condition: "HIV"]
 		union [Condition: "Disorders of the Immune System"] ) InfluenzaConditions
-		where ( (InfluenzaConditions.onset as dateTime) during Interval[Patient.birthDatetime, Patient.birthDatetime + 2 years])
+		where ( FHIRHelpers.ToDateTime(InfluenzaConditions.onset as dateTime) during Interval[FHIRHelpers.ToDate(Patient.birthDate), FHIRHelpers.ToDate(Patient.birthDate) + 2 years])
 
 define "Measles Indicators":
 	( ( [Observation: "Measles Antibody Test (IgG Antibody Titer)"] MeaslesTiter
-			where MeaslesTiter.value >= 1.10
+			where MeaslesTiter.value as Quantity >= 1.10
 	)
 		union ( [Observation: "Measles Antibody Test (IgG Antibody presence)"] MeaslesIgGPresence
-				where MeaslesIgGPresence.value as Code in "Positive Finding"
+				where MeaslesIgGPresence.value as CodeableConcept in "Positive Finding"
 		)
 		union ( [Condition: "Measles"] MeaslesDiagnosis
-				return "Observation" { issued: start of MeaslesDiagnosis.onset as Period }
+				return "Observation" { effective: MeaslesDiagnosis.onset as dateTime }
 		) ) Measles
-		where ( Measles.issued during Interval[Patient.birthDatetime, Patient.birthDatetime + 2 years])
+		where ( FHIRHelpers.ToDateTime(Measles.effective as dateTime) during Interval[FHIRHelpers.ToDate(Patient.birthDate), FHIRHelpers.ToDate(Patient.birthDate) + 2 years])
 
 define "MMR Numerator Inclusion Conditions":
 	( [Condition: "Disorders of the Immune System"]
 		union [Condition: "HIV"]
 		union [Condition: "Malignant Neoplasm of Lymphatic and Hematopoietic Tissue"]
 		union [Condition: "Neomycin adverse reaction (disorder)"] ) MMRConditions
-		where ( (MMRConditions.onset as dateTime) during Interval[Patient.birthDatetime, Patient.birthDatetime + 2 years])
+		where ( FHIRHelpers.ToDateTime(MMRConditions.onset as dateTime) during Interval[FHIRHelpers.ToDate(Patient.birthDate), FHIRHelpers.ToDate(Patient.birthDate) + 2 years])
 
 define "Mumps Indicators":
 	( ( [Observation: "Mumps Antibody Test (IgG Antibody Titer)"] MumpsTiter
-			where MumpsTiter.value >= 1.10
+			where MumpsTiter.value as Quantity >= 1.10
 	)
 		union ( [Observation: "Mumps Antibody Test (IgG Antibody presence)"] MumpsIgGPresence
-				where MumpsIgGPresence.value as Code in "Positive Finding"
+				where MumpsIgGPresence.value as CodeableConcept in "Positive Finding"
 		)
 		union ( [Condition: "Mumps"] MumpsDiagnosis
-				return "Observation" { issued: start of MumpsDiagnosis.onset as Period }
+				return "Observation" { effective: MumpsDiagnosis.onset as dateTime }
 		) ) Mumps
-		where ( Mumps.issued during Interval[Patient.birthDatetime, Patient.birthDatetime + 2 years])
+		where ( FHIRHelpers.ToDateTime(Mumps.effective as dateTime) during Interval[FHIRHelpers.ToDate(Patient.birthDate), FHIRHelpers.ToDate(Patient.birthDate) + 2 years])
 
 define "One Chicken Pox Vaccination":
-	( [Immunization: "Varicella Zoster Vaccine (VZV)"]
+	( ([Immunization: "Varicella Zoster Vaccine (VZV)"]VZ where VZ.status.value = 'completed')
 		union ( [Procedure: "Varicella Zoster Vaccine (VZV) Administered"] ChickenPoxAdministration
-				return "Immunization" { recorded: start of ChickenPoxAdministration.performed as Period }
+				return "Immunization" { recorded: ChickenPoxAdministration.performed as dateTime }
 		) ) ChickenPoxVaccination
-		where ( ChickenPoxVaccination.recorded during Interval[Patient.birthDatetime, Patient.birthDatetime + 2 years])
+		where ( FHIRHelpers.ToDateTime(ChickenPoxVaccination.recorded) during Interval[FHIRHelpers.ToDate(Patient.birthDate), FHIRHelpers.ToDate(Patient.birthDate) + 2 years])
 
 define "One Hepatitis A Vaccinations":
-	( [Immunization: "Hepatitis A Vaccine"]
+	( ([Immunization: "Hepatitis A Vaccine"]HA where HA.status.value = 'completed')
 		union ( [Procedure: "Hepatitis A Vaccine Administered"] HepatitisAAdministration
-				return Immunization { recorded: start of HepatitisAAdministration.performed as Period }
+				where HepatitisAAdministration.status.value = 'completed'
+				return Immunization { recorded: HepatitisAAdministration.performed as dateTime}
 		) ) HepatitisAVaccination
-		where ( HepatitisAVaccination.recorded during Interval[Patient.birthDatetime, Patient.birthDatetime + 2 years])
+		where ( FHIRHelpers.ToDateTime(HepatitisAVaccination.recorded) during Interval[FHIRHelpers.ToDate(Patient.birthDate), FHIRHelpers.ToDate(Patient.birthDate) + 2 years])
 
 define "One MMR Vaccination":
-	( [Immunization: "Measles, Mumps and Rubella (MMR) Vaccine"]
+	( ([Immunization: "Measles, Mumps and Rubella (MMR) Vaccine"]MMR where MMR.status.value = 'completed')
 		union ( [Procedure: "Measles, Mumps and Rubella (MMR) Vaccine Administered"] MMRAdministration
-				return Immunization { recorded: start of MMRAdministration.performed as Period }
+				where  MMRAdministration.status.value = 'comppleted'
+				return Immunization { recorded: MMRAdministration.performed as dateTime }
 		) ) MMRVaccination
-		where ( MMRVaccination.recorded during Interval[Patient.birthDatetime, Patient.birthDatetime + 2 years])
+		where ( FHIRHelpers.ToDateTime(MMRVaccination.recorded) during Interval[FHIRHelpers.ToDate(Patient.birthDate), FHIRHelpers.ToDate(Patient.birthDate) + 2 years])
 
 define "Pneumococcal Conjugate Numerator Inclusion Conditions":
 	[Condition: "Pneumococcal vaccine adverse reaction (disorder)"] PneumococcalReaction
-		where ( (PneumococcalReaction.onset as dateTime) during Interval[Patient.birthDatetime, Patient.birthDatetime + 2 years])
+		where ( FHIRHelpers.ToDateTime(PneumococcalReaction.onset as dateTime) during Interval[FHIRHelpers.ToDate(Patient.birthDate), FHIRHelpers.ToDate(Patient.birthDate) + 2 years])
 
 define "Polio Immunizations or Procedures":
-	( [Immunization: "Inactivated Polio Vaccine (IPV)"]
+	( ([Immunization: "Inactivated Polio Vaccine (IPV)"]IP where IP.status.value = 'completed')
 		union ( [Procedure: "Inactivated Polio Vaccine (IPV) Administered"] PolioAdministration
-				return Immunization{ recorded: start of PolioAdministration.relevantPeriod }
+				where PolioAdministration.status.value = 'completed'
+				return Immunization{ recorded: PolioAdministration.performed as dateTime }
 		) ) PolioVaccination
-		where ( PolioVaccination.recorded during Interval[Patient.birthDatetime + 42 days, Patient.birthDatetime + 2 years])
+		where ( FHIRHelpers.ToDateTime(PolioVaccination.recorded) during Interval[FHIRHelpers.ToDate(Patient.birthDate), FHIRHelpers.ToDate(Patient.birthDate) + 2 years])
 
 define "Polio Numerator Inclusion Conditions":
 	( [Condition: "Poliomyelitis vaccine adverse reaction (disorder)"]
 		union [Condition: "Streptomycin adverse reaction (disorder)"]
 		union [Condition: "Polymyxin B adverse reaction (disorder)"]
 		union [Condition: "Neomycin adverse reaction (disorder)"] ) PolioConditions
-		where ( PolioConditions.onset as dateTime during Interval[Patient.birthDatetime, Patient.birthDatetime + 2 years])
+		where ( FHIRHelpers.ToDateTime(PolioConditions.onset as dateTime) during Interval[FHIRHelpers.ToDate(Patient.birthDate), FHIRHelpers.ToDate(Patient.birthDate) + 2 years])
 
 define "Rotavirus Numerator Inclusion Conditions":
 	( ( [Condition: "Anaphylaxis due to rotavirus vaccine (disorder)"]
 			union [Condition: "Severe Combined Immunodeficiency"]
 			union [Condition: "Intussusception"] ) RotavirusConditions
-			where ( RotavirusConditions.onset as dateTime during Interval[Patient.birthDatetime, Patient.birthDatetime + 2 years])
+			where ( FHIRHelpers.ToDateTime(RotavirusConditions.onset as dateTime) during Interval[FHIRHelpers.ToDate(Patient.birthDate), FHIRHelpers.ToDate(Patient.birthDate) + 2 years])
 	)
 
 define "Rubella Indicators":
 	( ( [Observation: "Rubella Antibody Test (IgG Antibody Titer)"] RubellaTiter
-			where RubellaTiter.value >= 1.10
+			where RubellaTiter.value as Quantity >= 1.10
 	)
 		union ( [Observation: "Rubella Antibody Test (IgG Antibody presence)"] RubellaIgGPresence
-				where RubellaIgGPresence.value as Code in "Positive Finding"
+				where RubellaIgGPresence.value as CodeableConcept in "Positive Finding"
 		)
 		union ( [Condition: "Rubella"] RubellaDiagnosis
-				return "Observation" { issued: start of RubellaDiagnosis.prevalencePeriod }
+				return "Observation" { effective: RubellaDiagnosis.onset as dateTime}
 		) ) Rubella
-		where ( Rubella.issued during Interval[Patient.birthDatetime, Patient.birthDatetime + 2 years])
+		where ( FHIRHelpers.ToDateTime(Rubella.effective as dateTime) during Interval[FHIRHelpers.ToDate(Patient.birthDate), FHIRHelpers.ToDate(Patient.birthDate) + 2 years])
 
 define "Varicella Zoster Numerator Inclusion Conditions":
 	( ( [Observation: "Varicella Zoster Antibody Test (IgG Antibody Titer)"] ChickenPoxTiter
-			where ChickenPoxTiter.result >= 1.10
+			where ChickenPoxTiter.value as Quantity >= 1.10
 	)
 		union ( [Observation: "Varicella Zoster Antibody Test (IgG Antibody Presence)"] ChickenPoxIgGPresence
-				where ChickenPoxIgGPresence.result as Code in "Positive Finding"
+				where ChickenPoxIgGPresence.value as CodeableConcept in "Positive Finding"
 		)
 		union ( [Condition: "Disorders of the Immune System"] ImmuneDisorder
-				return Observation { issued: start of ImmuneDisorder.prevalencePeriod }
+				return Observation { effective: ImmuneDisorder.onset as dateTime }
 		)
 		union ( [Condition: "HIV"] HIV
-				return Observation { issued: start of HIV.prevalencePeriod }
+				return Observation { effective: HIV.onset as dateTime }
 		)
 		union ( [Condition: "Malignant Neoplasm of Lymphatic and Hematopoietic Tissue"] LymphaticMalignantNeoplasm
-				return Observation{ issued: start of LymphaticMalignantNeoplasm.prevalencePeriod }
+				return Observation{ effective: LymphaticMalignantNeoplasm.onset as dateTime}
 		)
-		union ( ["Diagnosis": "Neomycin adverse reaction (disorder)"] NeomycinReaction
-				return Observation { issued: start of NeomycinReaction.prevalencePeriod }
+		union ( [Condition: "Neomycin adverse reaction (disorder)"] NeomycinReaction
+				return Observation { effective: NeomycinReaction.onset as dateTime }
 		)
-		union ( ["Diagnosis": "Varicella Zoster"] VaricellaZoster
-				return Observation { issued: start of VaricellaZoster.prevalencePeriod }
+		union ( [Condition: "Varicella Zoster"] VaricellaZoster
+				return Observation { effective: VaricellaZoster.onset as dateTime }
 		) ) VaricellaZosterConditions
-		where ( VaricellaZosterConditions.issued during Interval[Patient.birthDatetime, Patient.birthDatetime + 2 years])
+		where ( FHIRHelpers.ToDateTime(VaricellaZosterConditions.effective as dateTime) during Interval[FHIRHelpers.ToDate(Patient.birthDate), FHIRHelpers.ToDate(Patient.birthDate) + 2 years])
 
 define "Initial Population":
 	exists ( AgeInYearsAt(start of "Measurement Period") >= 1 and AgeInYearsAt(end of "Measurement Period") < 2
 	)
 		and exists ( "Qualifying Encounter" )
 
-define "Rotavirus 2 Dose Immunizations or Procedures":
-	( [Immunization: "rotavirus, live, monovalent vaccine"]
-		union ( [Procedure: "Rotavirus Vaccine (2 dose schedule) Administered"] Rotavirus2Administration
-				return Immunization { recorded: start of Rotavirus2Administration.performed as Period }
-		) ) TwoDoseRotavirus
-		where ( TwoDoseRotavirus.recorded during Interval[Patient.birthDatetime + 42 days, Patient.birthDatetime + 2 years])
 
-define "Rotavirus 3 Dose Immunizations or Procedures":
-	( [Immunization: "Rotavirus Vaccine (3 dose schedule)"]
-		union ( [Procedure: "Rotavirus Vaccine (3 dose schedule) Administered"] Rotavirus3Administration
-				return Immunization { recorded: start of Rotavirus3Administration.performed as Period }
-		) ) ThreeDoseRotavirus
-		where ( ThreeDoseRotavirus.recorded during Interval[Patient.birthDatetime + 42 days, Patient.birthDatetime + 2 years])
 
 define "Numerator":
 	( exists ( "Four DTaP Vaccinations" )
@@ -478,6 +505,6 @@ define "Numerator":
 define "All Hib Vaccinations":
 	"HiB 3 or 4 Dose Immunizations" AllHiBDoses1
 		with "HiB 3 or 4 Dose Immunizations" AllHiBDoses2
-			such that AllHiBDoses1.recorded  more than 1 day before AllHiBDoses2.recorded 
-				or AllHiBDoses1.recorded  more than 1 day after AllHiBDoses2.recorded 
+			such that FHIRHelpers.ToDateTime(AllHiBDoses1.recorded) more than 1 day before FHIRHelpers.ToDateTime(AllHiBDoses2.recorded)
+				or FHIRHelpers.ToDateTime(AllHiBDoses1.recorded)  more than 1 day after FHIRHelpers.ToDateTime((AllHiBDoses2.recorded) 
 				
