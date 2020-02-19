@@ -1,0 +1,6 @@
+The electronic clinical quality measures (eCQMs) are updated for calendar year 2020 reporting for eligible clinicians participating in the Quality Payment Program (QPP): the Merit-based Incentive Payment System (MIPS) and Advanced Alternative Payment Models (Advanced APMs); Comprehensive Primary Care Plus (CPC+); and eligible professionals participating in the Medicaid Promoting Interoperability Program. Measures will not be eligible for 2020 reporting unless and until they are proposed and finalized through notice-and-comment rulemaking for each applicable program.
+
+Each year, CMS makes updates to the eCQMs adopted for submission in CMS programs. CMS requires the use of updated eCQMs for all its quality programs because they include updated codes, logic corrections, and clarifications. Reporting eCQM data to CMS quality programs requires that an eligible professional or eligible clinician use the most current version of the eCQMs identified below for the applicable performance period. Performance period for eligible clinicians is defined as the measure data capture period of the calendar year between January 1 and December 31.
+
+CMS may publish addenda to the eCQM updates.  The addenda provide updates to the codes used in value sets based on code system changes.
+
